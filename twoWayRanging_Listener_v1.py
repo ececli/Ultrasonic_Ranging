@@ -50,7 +50,7 @@ ratio = 500000
 f0 = 24000
 duration = 2000 # microseconds
 
-THRESHOLD = 0.03
+THRESHOLD = 0.003
 
 fulldata = []
 fullTS = []
