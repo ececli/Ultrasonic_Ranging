@@ -51,7 +51,7 @@ ratio = 500000
 f0 = 24000
 duration = 2000 # microseconds
 THRESHOLD = 0.003
-NumRanging = 3
+NumRanging = 50
 
 # init variables
 # fulldata = []
