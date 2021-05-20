@@ -48,7 +48,7 @@ pin_OUT = 12
 ratio = 500000
 
 # Parameters
-f0 = 24000
+f0 = 30000
 duration = 2000 # microseconds
 THRESHOLD = 0.003
 NumRanging = 50
