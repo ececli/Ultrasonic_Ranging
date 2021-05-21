@@ -50,7 +50,7 @@ ratio = 500000
 # Parameters
 f0 = 30000
 duration = 2000 # microseconds
-THRESHOLD = 0.003
+THRESHOLD = 0.006
 NumRanging = 100
 
 # init variables
