@@ -25,9 +25,9 @@ global signal_TS_OUT
 signal_TS_OUT = []
 pin_OUT = 12
 ratio = 500000
-f0 = 24000
-duration = 2000 # microseconds
-numSending = 10
+f0 = 6400
+duration = 10000000 # microseconds
+numSending = 1
 intervalSending = 0.4 # seconds
 
 pi = pigpio.pi()
