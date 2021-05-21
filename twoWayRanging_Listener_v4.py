@@ -150,3 +150,16 @@ pi_IO.stop()
 
 print(T3T2Delay_micros)
 print(T3T2Delay_NumSample)
+
+
+rcvSigal = np.concatenate(fulldata)
+plt.figure()
+plt.plot(rcvSigal,'r.')
+plt.show()
+
+
+xcorrelation = abs(signal.correlate(rcvSigal, RefSignal, mode = 'valid'))
+
+plt.figure()
+plt.plot(xcorrelation,'r.')
+plt.show()
