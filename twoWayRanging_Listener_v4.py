@@ -54,8 +54,8 @@ THRESHOLD = 0.006
 NumRanging = 100
 
 # init variables
-# fulldata = []
-# fullTS = []
+fulldata = []
+fullTS = []
 # frames = []
 # frameTime = []
 counter_NumRanging = 0
@@ -101,14 +101,16 @@ while True:
             break
         # currentTime = time.time()
         currentTime = pi_IO.get_current_tick()
+        counter = counter + 1
         if firstChunk:
             firstChunk = False
             continue
         ndata = np.frombuffer(data,dtype=np.float32)
         frames.append(ndata)
         frameTime.append(currentTime)
-        # fulldata.append(ndata)
-        # fullTS.append(currentTime)
+        if counter == 2:
+            fulldata.append(ndata)
+            fullTS.append(currentTime)
 
         if len(frames) < NumReqFrames:
             continue
@@ -122,7 +124,6 @@ while True:
             # break
         frames.pop(0)
         frameTime.pop(0)
-        counter = counter + 1
         if counter == 100:
             print("Time out")
             stream.stop_stream()

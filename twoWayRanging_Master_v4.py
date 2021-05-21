@@ -53,6 +53,8 @@ THRESHOLD = 0.006
 NumRanging = 100
 
 # init variables
+fulldata = []
+fullTS = []
 counter_NumRanging = 0
 T4T1Delay_micros = np.zeros(NumRanging)
 T4T1Delay_NumSample = np.zeros(NumRanging)
@@ -107,8 +109,9 @@ while True:
         ndata = np.frombuffer(data,dtype=np.float32)
         frames.append(ndata)
         frameTime.append(currentTime)
-        # fulldata.append(ndata)
-        # fullTS.append(currentTime)
+        if counter == 2:
+            fulldata.append(ndata)
+            fullTS.append(currentTime)
 
         if len(frames) < NumReqFrames:
             continue
