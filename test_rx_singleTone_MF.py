@@ -72,7 +72,9 @@ p.terminate()
 
 rcvSigal = np.concatenate(fulldata)
 plt.figure()
-plt.plot(rcvSigal,'r.')
+plt.plot(rcvSigal,'r-o')
+plt.xlabel('Index of Samples')
+plt.ylabel('Output of the Microphone')
 plt.show()
 
 
@@ -80,4 +82,6 @@ xcorrelation = abs(signal.correlate(rcvSigal, RefSignal, mode = 'valid'))
 
 plt.figure()
 plt.plot(xcorrelation,'r.')
+plt.xlabel('Index of Samples')
+plt.ylabel('Output of the cross-correlation')
 plt.show()

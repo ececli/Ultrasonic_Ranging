@@ -49,8 +49,8 @@ ratio = 500000
 # Parameters
 f0 = 30000
 duration = 2000 # microseconds
-THRESHOLD = 0.006
-NumRanging = 100
+THRESHOLD = 0.003
+NumRanging = 10
 
 # init variables
 fulldata = []
@@ -109,7 +109,7 @@ while True:
         ndata = np.frombuffer(data,dtype=np.float32)
         frames.append(ndata)
         frameTime.append(currentTime)
-        if counter == 2:
+        if counter_NumRanging == 9:
             fulldata.append(ndata)
             fullTS.append(currentTime)
 
