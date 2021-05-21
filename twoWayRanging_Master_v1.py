@@ -54,7 +54,7 @@ frames = []
 frameTime = []
 counter = 0
 
-THRESHOLD = 0.003
+THRESHOLD = 0.005
 
 # init
 pi_IO = pigpio.pi()
