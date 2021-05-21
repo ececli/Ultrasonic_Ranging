@@ -27,7 +27,8 @@ def findDeviceIndex(p):
 
 def getRefSignal(f0,duration,sr):
     Ns = duration * sr
-    t = np.r_[0.0:Ns]/sr
+    # t = np.r_[0.0:Ns]/sr
+    t = np.arange(int(Ns))/sr
     return np.sin(2*np.pi*f0*t)
 
 def matchedFilter(frames,refSignal):
