@@ -15,38 +15,35 @@ def getRefSignal(f0,duration,sr):
     t = np.arange(int(Ns))/sr
     return np.sin(2*np.pi*f0*t)
 
+# def getRefSignal_old(f0,duration,sr):
+#     Ns = duration * sr
+#     t = np.r_[0.0:Ns]/sr
+#     # t = np.arange(int(Ns))/sr
+#     return np.sin(2*np.pi*f0*t)
+
 
 ########################################
-# confFile = "UR_pyConfig.conf"
+confFile = "UR_pyConfig.conf"
 
-# cp = configparser.ConfigParser()
-# cp.read(confFile)
+cp = configparser.ConfigParser()
+cp.read(confFile)
 
+CHANNELS = cp.getint("MIC","CHANNELS")
+RATE = cp.getint("MIC","RATE")
+CHUNK = cp.getint("MIC", "CHUNK")
 
-# FORMAT = cp.get("MIC","FORMAT")
-# CHANNELS = cp.getint("MIC","CHANNELS")
-# RATE = cp.getint("MIC","RATE")
-# CHUNK = cp.getint("MIC", "CHUNK")
-
-# f0 = cp.getint("SIGNAL","f0")
-# duration = cp.get("SIGNAL","duration")
+f0 = cp.getint("SIGNAL","f0")
+duration = cp.getint("SIGNAL","duration")
 
 # parameters
 FORMAT = pyaudio.paFloat32
-CHANNELS = 1
-RATE = 64000
-CHUNK = 8192
-
-
-f0 = 30000
-duration = 0.002 # seconds
 
 # init
 fulldata = []
 fullTS = []
 counter = 0
 
-RefSignal = getRefSignal(f0,duration,RATE)
+RefSignal = getRefSignal(f0,duration/1000000.0,RATE)
 
 p = pyaudio.PyAudio()
 
