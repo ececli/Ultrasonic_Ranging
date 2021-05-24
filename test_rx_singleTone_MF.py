@@ -41,7 +41,7 @@ FORMAT = pyaudio.paFloat32
 # init
 fulldata = []
 fullTS = []
-counter = 0
+
 
 RefSignal = getRefSignal(f0,duration/1000000.0,RATE)
 
@@ -60,15 +60,27 @@ stream = p.open(format=FORMAT,
                 input=True,
                 input_device_index = DEV_INDEX,
                 frames_per_buffer=CHUNK)
-print("* recording")
 
-firstChunk = True
+print("Mic - ON")
+# throw aray first second data since mic is transient, i.e., not stable
+counter_warmup = 0
+while True:
+    data = stream.read(CHUNK)
+    counter_warmup = counter_warmup + 1
+    if counter_warmup>= int(RATE/CHUNK+1):
+        break
+    
+print("Mic - READY")
+
+
+# firstChunk = True
+counter = 0
 while True:
     data = stream.read(CHUNK)
     currentTime = time.time()
-    if firstChunk:
-        firstChunk = False
-        continue
+    # if firstChunk:
+    #     firstChunk = False
+    #     continue
     ndata = np.frombuffer(data,dtype=np.float32)
     fulldata.append(ndata)
     fullTS.append(currentTime)

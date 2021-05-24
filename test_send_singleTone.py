@@ -2,7 +2,7 @@
 # The frequency of the tone is f0.
 # The duration of the tone is duration.
 # The code records the timestamps of each tone sent
-
+import configparser
 import pigpio
 import time
 import matplotlib.pyplot as plt
@@ -23,11 +23,24 @@ def cb_raisingEdgeTS(gpio, level, tick):
 
 global signal_TS_OUT
 signal_TS_OUT = []
-pin_OUT = 12
-ratio = 500000
-f0 = 30000
-duration = 2000 # microseconds
-numSending = 1
+
+
+confFile = "UR_pyConfig.conf"
+
+cp = configparser.ConfigParser()
+cp.read(confFile)
+
+
+f0 = cp.getint("SIGNAL","f0")
+duration = cp.getint("SIGNAL","duration")
+ratio = cp.getint("SPEAKER","ratio")
+pin_OUT = cp.getint("SPEAKER","pin_OUT")
+
+# pin_OUT = 12
+# ratio = 500000
+# f0 = 30000
+# duration = 2000 # microseconds
+numSending = 10
 intervalSending = 0.4 # seconds
 
 pi = pigpio.pi()
@@ -43,11 +56,13 @@ while True:
         break
 
 pi.stop()
-time.sleep(0.5)
-plt.figure()
-plt.plot(np.asarray(signal_TS_OUT)-signal_TS_OUT[0],'r.')
-plt.show()
+if len(signal_TS_OUT)>0:
+    # if the callback function works
+    time.sleep(0.5)
+    plt.figure()
+    plt.plot(np.asarray(signal_TS_OUT)-signal_TS_OUT[0],'r.')
+    plt.show()
 
-plt.figure()
-plt.plot(np.diff(np.asarray(signal_TS_OUT)),'r.')
-plt.show()
+    plt.figure()
+    plt.plot(np.diff(np.asarray(signal_TS_OUT)),'r.')
+    plt.show()
