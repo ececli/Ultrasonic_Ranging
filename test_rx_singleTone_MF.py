@@ -43,7 +43,7 @@ def micWarmUp(sec):
             print("Mic - READY")
             return 
     
-print("Mic - READY")
+
     
 
 ########################################
@@ -112,15 +112,16 @@ stream.close()
 p.terminate()
 print("Mic - OFF")
 
-rcvSigal = np.concatenate(fulldata)
+rcvSignal = np.concatenate(fulldata)
 plt.figure()
-plt.plot(rcvSigal,'r-o')
+plt.plot(rcvSignal,'r-o')
 plt.xlabel('Index of Samples')
 plt.ylabel('Output of the Microphone')
 plt.show()
 
 
-xcorrelation = abs(signal.correlate(rcvSigal, RefSignal, mode = 'valid'))
+# xcorrelation = abs(signal.correlate(rcvSignal, RefSignal, mode = 'valid'))
+xcorrelation = abs(np.correlate(rcvSignal, RefSignal, mode = 'valid'))
 
 plt.figure()
 plt.plot(xcorrelation,'r.')
