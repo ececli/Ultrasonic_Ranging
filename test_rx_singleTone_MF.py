@@ -21,6 +21,30 @@ def getRefSignal(f0,duration,sr):
 #     # t = np.arange(int(Ns))/sr
 #     return np.sin(2*np.pi*f0*t)
 
+def preProcessingData(data,FORMAT):
+    if FORMAT == pyaudio.paFloat32:
+        return np.frombuffer(data,dtype=np.float32)
+    elif FORMAT == pyaudio.paInt32:
+        ndata = np.frombuffer(data,dtype=np.int32)
+        # For I2S mic only, which only has 18 bits data and 14 bits 0.
+        return (ndata>>14)/(2**17)
+    else:
+        print("Please use Float32 or Int32")
+        return np.frombuffer(data,dtype=np.int32)
+
+def micWarmUp(sec):
+    counter_warmup = 0
+    if stream.is_stopped():
+        stream.start_stream()
+    while True:
+        data = stream.read(CHUNK)
+        counter_warmup = counter_warmup + 1
+        if counter_warmup>= int(sec*RATE/CHUNK+1):
+            print("Mic - READY")
+            return 
+    
+print("Mic - READY")
+    
 
 ########################################
 confFile = "UR_pyConfig.conf"
@@ -62,15 +86,8 @@ stream = p.open(format=FORMAT,
                 frames_per_buffer=CHUNK)
 
 print("Mic - ON")
-# throw aray first second data since mic is transient, i.e., not stable
-counter_warmup = 0
-while True:
-    data = stream.read(CHUNK)
-    counter_warmup = counter_warmup + 1
-    if counter_warmup>= int(RATE/CHUNK+1):
-        break
-    
-print("Mic - READY")
+# throw aray first n seconds data since mic is transient, i.e., not stable
+micWarmUp(5)
 
 
 # firstChunk = True
@@ -81,7 +98,7 @@ while True:
     # if firstChunk:
     #     firstChunk = False
     #     continue
-    ndata = np.frombuffer(data,dtype=np.float32)
+    ndata = preProcessingData(data,FORMAT)
     fulldata.append(ndata)
     fullTS.append(currentTime)
     counter = counter + 1
@@ -89,10 +106,11 @@ while True:
         break
 
 # stop Recording
-print("* done recording")
+
 stream.stop_stream()
 stream.close()
 p.terminate()
+print("Mic - OFF")
 
 rcvSigal = np.concatenate(fulldata)
 plt.figure()

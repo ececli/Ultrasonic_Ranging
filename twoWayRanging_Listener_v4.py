@@ -1,5 +1,5 @@
 # two way ranging - listener: first listen and then send
-
+import configparser
 import pyaudio
 import numpy as np
 import matplotlib.pyplot as plt
@@ -39,19 +39,38 @@ def matchedFilter(frames,refSignal):
 
 
 
+
+confFile = "UR_pyConfig.conf"
+
+cp = configparser.ConfigParser()
+cp.read(confFile)
+
+CHANNELS = cp.getint("MIC","CHANNELS")
+RATE = cp.getint("MIC","RATE")
+CHUNK = cp.getint("MIC", "CHUNK")
+
+ratio = cp.getint("SPEAKER","ratio")
+pin_OUT = cp.getint("SPEAKER","pin_OUT")
+
+f0 = cp.getint("SIGNAL","f0") 
+duration = cp.getint("SIGNAL","duration") # microseconds
+THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
+NumRanging = cp.getint("SIGNAL","NumRanging")
+
+
 # Constant
 FORMAT = pyaudio.paFloat32
-CHANNELS = 1
-RATE = 64000
-CHUNK = 8192
-pin_OUT = 12
-ratio = 500000
+# CHANNELS = 1
+# RATE = 64000
+# CHUNK = 8192
+# pin_OUT = 12
+# ratio = 500000
 
 # Parameters
-f0 = 30000
-duration = 2000 # microseconds
-THRESHOLD = 0.003
-NumRanging = 10
+# f0 = 30000
+# duration = 2000 # microseconds
+# THRESHOLD = 0.003
+# NumRanging = 10
 
 # init variables
 fulldata = []
@@ -83,6 +102,19 @@ stream = p.open(format=FORMAT,
                 input=True,
                 input_device_index = DEV_INDEX,
                 frames_per_buffer=CHUNK)
+
+print("Mic - ON")
+# throw aray first second data since mic is transient, i.e., not stable
+counter_warmup = 0
+while True:
+    data = stream.read(CHUNK)
+    counter_warmup = counter_warmup + 1
+    if counter_warmup>= int(2*RATE/CHUNK+1):
+        break
+    
+print("Mic - READY")
+
+
 stream.stop_stream() # pause
 
 
@@ -91,7 +123,7 @@ while True:
     frames = []
     frameTime = []
     counter = 0
-    firstChunk = True
+    # firstChunk = True
     signalDetected = False
     stream.start_stream()
     while True:
@@ -102,9 +134,9 @@ while True:
         # currentTime = time.time()
         currentTime = pi_IO.get_current_tick()
         counter = counter + 1
-        if firstChunk:
-            firstChunk = False
-            continue
+        # if firstChunk:
+        #     firstChunk = False
+        #     continue
         ndata = np.frombuffer(data,dtype=np.float32)
         frames.append(ndata)
         frameTime.append(currentTime)
