@@ -9,7 +9,7 @@ import time
 import pigpio
 import twoWayRangingLib as func
 
-
+warmUpSecond = 2
 FORMAT = pyaudio.paFloat32
 confFile = "UR_pyConfig.conf"
 
@@ -62,7 +62,7 @@ stream = p.open(format=FORMAT,
 
 print("Mic - ON")
 # throw aray first sec seconds data since mic is transient, i.e., not stable
-func.micWarmUp(stream,CHUNK,RATE,sec)
+func.micWarmUp(stream,CHUNK,RATE,warmUpSecond)
 
 stream.stop_stream() # pause
 
@@ -77,7 +77,7 @@ while True:
     frames = []
     frameTime = []
     counter = 0
-    # firstChunk = True
+    firstChunk = True
     signalDetected = False
     while True:
         data = stream.read(CHUNK)
@@ -87,7 +87,9 @@ while True:
         # currentTime = time.time()
         currentTime = pi_IO.get_current_tick()
         counter = counter + 1
-
+        if firstChunk:
+            firstChunk = False
+            continue
         ndata = func.preProcessingData(data,FORMAT)
         frames.append(ndata)
         frameTime.append(currentTime)

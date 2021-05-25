@@ -134,9 +134,9 @@ while True:
         # currentTime = time.time()
         currentTime = pi_IO.get_current_tick()
         counter = counter + 1
-        # if firstChunk:
-        #     firstChunk = False
-        #     continue
+        if firstChunk:
+            firstChunk = False
+            continue
         ndata = np.frombuffer(data,dtype=np.float32)
         frames.append(ndata)
         frameTime.append(currentTime)
