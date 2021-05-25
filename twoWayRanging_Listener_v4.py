@@ -123,7 +123,7 @@ while True:
     frames = []
     frameTime = []
     counter = 0
-    firstChunk = True
+    # firstChunk = True
     signalDetected = False
     stream.start_stream()
     while True:
