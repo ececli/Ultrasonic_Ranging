@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import time
 import pigpio
 import twoWayRangingLib as func
+from myMQTT_Class import myMQTT
 
 
 warmUpSecond = 2
@@ -147,3 +148,12 @@ xcorrelation = abs(np.correlate(rcvSignal, RefSignal, mode = 'valid'))
 plt.figure()
 plt.plot(xcorrelation,'r.')
 plt.show()
+
+time.sleep(5)
+broker_address = "192.168.1.207"
+topic1 = "ranging/delay/t3t2_delay_ms"
+topic2 = "ranging/delay/t3t2_delay_count"
+mqttc = myMQTT(broker_address)
+mqttc.sendMsg(topic1,T3T2Delay_micros)
+mqttc.sendMsg(topic2,T3T2Delay_NumSample)
+

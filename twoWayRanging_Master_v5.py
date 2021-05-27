@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import time
 import pigpio
 import twoWayRangingLib as func
+from myMQTT_Class import myMQTT
 
 warmUpSecond = 2
 FORMAT = pyaudio.paFloat32
@@ -148,3 +149,25 @@ xcorrelation = abs(np.correlate(rcvSignal, RefSignal, mode = 'valid'))
 plt.figure()
 plt.plot(xcorrelation,'r.')
 plt.show()
+
+
+
+broker_address = "192.168.1.207"
+topic1 = "ranging/delay/t3t2_delay_ms"
+topic2 = "ranging/delay/t3t2_delay_count"
+mqttc = myMQTT(broker_address)
+mqttc.registerTopic(topic1)
+mqttc.registerTopic(topic2)
+
+
+while True:
+    if mqttc.checkTopicDataLength(topic1)==NumRanging and mqttc.checkTopicDataLength(topic2)==NumRanging:
+        mqttc.closeClient()
+        break
+
+
+T3T2Delay_ms = mqttc.readTopicData(topic1)
+T3T2Delay_NumSample = mqttc.readTopicData(topic2)
+
+
+ToF1 = T4T1Delay_micros - T3T2Delay_micros
