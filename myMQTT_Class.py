@@ -79,7 +79,7 @@ class myMQTT:
     
     def sendMsg(self, topic, msg):
         for k in msg:
-            self.client.publish(topic, msg)
+            self.client.publish(topic, int(k))
 
     def closeClient(self):
         self.client.loop_stop()
