@@ -2,17 +2,15 @@ import paho.mqtt.client as mqtt
 from queue import Queue
 import time
 
-# http://www.steves-internet-guide.com/mqtt-python-beginners-course/
-# https://appcodelabs.com/introduction-to-iot-build-an-mqtt-server-using-raspberry-pi
-
+# Use MQTT to transfer data among Raspberry Pi's which are under the same network. 
 class myMQTT:
 
     def __init__(self, address, clientName={}):
-        self.q = {}
-        self.qcounter = 0
+        self.q = {} # setup a queue dictionary
+        self.qcounter = 0 
         self.clientName = clientName
         self.broker_address = address
-        self.client = mqtt.Client(clientName) 
+        self.client = mqtt.Client(clientName) # create an MQTT instance
         self.client.connected_flag = False
         self.client.on_connect = self.on_connect # bind callback function
         self.client.on_message = self.on_message
@@ -24,15 +22,14 @@ class myMQTT:
             print("Connected Failed")
             exit(1)
 
-        self.client.loop_start()
+        self.client.loop_start() # this will let the client run in a new thread
         while not self.client.connected_flag:
             print("Connecting...")
             time.sleep(0.5)
         
 
     def on_connect(self, client, userdata, flags, rc): # callback function
-        # self.client.subscribe([(myMQTT.topic1, 0),(myMQTT.topic2, 0)])
-        if rc == 0:
+        if rc == 0: # rc: return code
             self.client.connected_flag = True
             print("Connected Successfully")
         else:
@@ -41,7 +38,8 @@ class myMQTT:
     def on_subscribe(self, client, userdata, mid, granted_qos):
         print("Subscribed Successfully")
 
-    def on_message(self, client, userdata, msg):
+    def on_message(self, client, userdata, msg): 
+        # this callback function handle how to store/use the received data
         message = str(msg.payload.decode("utf-8"))
         if msg.topic in self.q.keys():
             self.q[msg.topic].put(message)
@@ -51,6 +49,7 @@ class myMQTT:
 
 
     def registerTopic(self, topic, qos = 0):
+        # when subscribe a topic, generate a new queue
         self.client.subscribe(topic, qos)
         self.q[topic]= Queue()
         self.qcounter = self.qcounter + 1
@@ -62,9 +61,10 @@ class myMQTT:
         if topic in self.q.keys():
             return self.q[topic].qsize()
         else:
-            return -1
+            return -1 # if no such topic, return -1
 
-    def getQData(self, q):
+    def getQData(self, q): 
+        # pull data from queue
         data = []
         while not q.empty():
             temp = q.get()
@@ -75,13 +75,15 @@ class myMQTT:
         if topic in self.q.keys():
             return self.getQData(self.q[topic])
         else:
-            return -1
+            return -1 # if no such topic, return -1
     
     def sendMsg(self, topic, msg):
+        # send the data out. 
+        # msg could be an array, but currently only integer will be sent
+        # I may change this in future to support float and string
         for k in msg:
             self.client.publish(topic, int(k))
 
     def closeClient(self):
         self.client.loop_stop()
         self.client.disconnect()
-
