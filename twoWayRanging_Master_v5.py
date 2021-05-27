@@ -135,22 +135,6 @@ p.terminate()
 pi_IO.stop()
 print("Mic - OFF")
 
-print(T4T1Delay_micros)
-print(T4T1Delay_NumSample)
-
-rcvSignal = np.concatenate(fulldata)
-plt.figure()
-plt.plot(rcvSignal,'r.')
-plt.show()
-
-
-xcorrelation = abs(np.correlate(rcvSignal, RefSignal, mode = 'valid'))
-
-plt.figure()
-plt.plot(xcorrelation,'r.')
-plt.show()
-
-
 
 broker_address = "192.168.1.207"
 topic1 = "ranging/delay/t3t2_delay_ms"
@@ -166,8 +150,38 @@ while True:
         break
 
 
-T3T2Delay_ms = mqttc.readTopicData(topic1)
+T3T2Delay_micros = mqttc.readTopicData(topic1)
 T3T2Delay_NumSample = mqttc.readTopicData(topic2)
 
+print("--------------------")
+print(T4T1Delay_micros)
+print(T4T1Delay_NumSample)
+print("--------------------")
+print(T3T2Delay_micros)
+print(T3T2Delay_NumSample)
+print("--------------------")
 
-ToF1 = T4T1Delay_micros - T3T2Delay_micros
+ToF1 = (T4T1Delay_micros - T3T2Delay_micros)/2/1000.0
+ToF2 = (T4T1Delay_NumSample - T3T2Delay_NumSample)/RATE/2*1000.0
+
+print("Mean of ToF = "+str(np.mean(ToF1))+", Std of ToF = "+ str(np.std(ToF1)))
+print("Mean of ToF = "+str(np.mean(ToF2))+", Std of ToF = "+ str(np.std(ToF2)))
+plt.figure()
+plt.plot(ToF1,'r.')
+plt.show()
+
+plt.figure()
+plt.plot(ToF2,'b.')
+plt.show()
+
+# For debug only:
+rcvSignal = np.concatenate(fulldata)
+plt.figure()
+plt.plot(rcvSignal,'r.')
+plt.show()
+
+xcorrelation = abs(np.correlate(rcvSignal, RefSignal, mode = 'valid'))
+
+plt.figure()
+plt.plot(xcorrelation,'r.')
+plt.show()
