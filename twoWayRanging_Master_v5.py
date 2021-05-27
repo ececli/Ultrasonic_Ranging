@@ -4,7 +4,7 @@ import configparser
 import pyaudio
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy import signal
+# from scipy import signal
 import time
 import pigpio
 import twoWayRangingLib as func
