@@ -6,68 +6,44 @@ import matplotlib.pyplot as plt
 from scipy import signal
 import time
 import os
+import twoWayRangingLib as func
 
 
-
-
-def getRefSignal(f0,duration,sr):
-    Ns = duration * sr
-    t = np.arange(int(Ns))/sr
-    return np.sin(2*np.pi*f0*t)
-
-# def getRefSignal_old(f0,duration,sr):
-#     Ns = duration * sr
-#     t = np.r_[0.0:Ns]/sr
-#     # t = np.arange(int(Ns))/sr
-#     return np.sin(2*np.pi*f0*t)
-
-def preProcessingData(data,FORMAT):
-    if FORMAT == pyaudio.paFloat32:
-        return np.frombuffer(data,dtype=np.float32)
-    elif FORMAT == pyaudio.paInt32:
-        ndata = np.frombuffer(data,dtype=np.int32)
-        # For I2S mic only, which only has 18 bits data and 14 bits 0.
-        return (ndata>>14)/(2**17)
-    else:
-        print("Please use Float32 or Int32")
-        return np.frombuffer(data,dtype=np.int32)
-
-def micWarmUp(sec):
-    counter_warmup = 0
-    if stream.is_stopped():
-        stream.start_stream()
-    while True:
-        data = stream.read(CHUNK)
-        counter_warmup = counter_warmup + 1
-        if counter_warmup>= int(sec*RATE/CHUNK+1):
-            print("Mic - READY")
-            return 
-    
-
-    
-
-########################################
+# Load Parameters
 confFile = "UR_pyConfig.conf"
-
 cp = configparser.ConfigParser()
 cp.read(confFile)
 
+warmUpSecond = cp.getint("MIC","WARMUP_TIME")
 CHANNELS = cp.getint("MIC","CHANNELS")
 RATE = cp.getint("MIC","RATE")
 CHUNK = cp.getint("MIC", "CHUNK")
+FORMAT_SET = cp.get("MIC","FORMAT")
+if FORMAT_SET == "Int":
+    FORMAT = pyaudio.paInt32
+elif FORMAT_SET == "Float":
+    FORMAT = pyaudio.paFloat32
+else:
+    FORMAT = pyaudio.paInt32
+    print("Unsupport Format. Have been Changed to Int32.")
 
-f0 = cp.getint("SIGNAL","f0")
-duration = cp.getint("SIGNAL","duration")
 
-# parameters
-FORMAT = pyaudio.paFloat32
+
+f0 = cp.getint("SIGNAL","f0") 
+duration = cp.getint("SIGNAL","duration") # microseconds
+
+
+
+
+########################################
+
 
 # init
 fulldata = []
 fullTS = []
 
 
-RefSignal = getRefSignal(f0,duration/1000000.0,RATE)
+RefSignal = func.getRefSignal(f0,duration/1000000.0,RATE)
 
 p = pyaudio.PyAudio()
 
@@ -87,7 +63,7 @@ stream = p.open(format=FORMAT,
 
 print("Mic - ON")
 # throw aray first n seconds data since mic is transient, i.e., not stable
-micWarmUp(5)
+func.micWarmUp(stream,CHUNK,RATE,warmUpSecond)
 
 
 # firstChunk = True
@@ -98,7 +74,7 @@ while True:
     # if firstChunk:
     #     firstChunk = False
     #     continue
-    ndata = preProcessingData(data,FORMAT)
+    ndata = func.preProcessingData(data,FORMAT)
     fulldata.append(ndata)
     fullTS.append(currentTime)
     counter = counter + 1
