@@ -10,16 +10,23 @@ import pigpio
 import twoWayRangingLib as func
 from myMQTT_Class import myMQTT
 
-warmUpSecond = 2
-FORMAT = pyaudio.paFloat32
+# Load Parameters
 confFile = "UR_pyConfig.conf"
-
 cp = configparser.ConfigParser()
 cp.read(confFile)
 
+warmUpSecond = cp.getint("MIC","WARMUP_TIME")
 CHANNELS = cp.getint("MIC","CHANNELS")
 RATE = cp.getint("MIC","RATE")
 CHUNK = cp.getint("MIC", "CHUNK")
+FORMAT_SET = cp.get("MIC","FORMAT")
+if FORMAT_SET == "Int":
+    FORMAT = pyaudio.paInt32
+elif FORMAT_SET == "Float":
+    FORMAT = pyaudio.paFloat32
+else:
+    FORMAT = pyaudio.paInt32
+    print("Unsupport Format. Have been Changed to Int32.")
 
 ratio = cp.getint("SPEAKER","ratio")
 pin_OUT = cp.getint("SPEAKER","pin_OUT")
@@ -28,7 +35,6 @@ f0 = cp.getint("SIGNAL","f0")
 duration = cp.getint("SIGNAL","duration") # microseconds
 THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
 NumRanging = cp.getint("SIGNAL","NumRanging")
-
 
 broker_address = cp.get("COMMUNICATION",'broker_address')
 topic1 = cp.get("COMMUNICATION",'topic1')
@@ -55,6 +61,7 @@ p = pyaudio.PyAudio()
 DEV_INDEX = func.findDeviceIndex(p)
 if DEV_INDEX == -1:
     print("Error: No Mic Found!")
+    exit(1)
 
 # init Recording
 stream = p.open(format=FORMAT,

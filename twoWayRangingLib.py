@@ -43,7 +43,8 @@ def preProcessingData(data,FORMAT):
     elif FORMAT == pyaudio.paInt32:
         ndata = np.frombuffer(data,dtype=np.int32)
         # For I2S mic only, which only has 18 bits data and 14 bits 0.
-        return (ndata>>14)/(2**17)
+        # return (ndata>>14)/(2**17) # return float numbers
+        return (ndata>>14)
     else:
         print("Please use Float32 or Int32")
         return np.frombuffer(data,dtype=np.int32)
