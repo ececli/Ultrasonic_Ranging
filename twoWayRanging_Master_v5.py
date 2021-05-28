@@ -30,6 +30,9 @@ THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
 NumRanging = cp.getint("SIGNAL","NumRanging")
 
 
+broker_address = cp.get("COMMUNICATION",'broker_address')
+topic1 = cp.get("COMMUNICATION",'topic1')
+topic2 = cp.get("COMMUNICATION",'topic2')
 
 
 # init variables
@@ -136,9 +139,7 @@ pi_IO.stop()
 print("Mic - OFF")
 
 
-broker_address = "192.168.1.207"
-topic1 = "ranging/delay/t3t2_delay_ms"
-topic2 = "ranging/delay/t3t2_delay_count"
+
 mqttc = myMQTT(broker_address)
 mqttc.registerTopic(topic1)
 mqttc.registerTopic(topic2)

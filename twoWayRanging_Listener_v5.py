@@ -29,7 +29,9 @@ duration = cp.getint("SIGNAL","duration") # microseconds
 THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
 NumRanging = cp.getint("SIGNAL","NumRanging")
 
-
+broker_address = cp.get("COMMUNICATION",'broker_address')
+topic1 = cp.get("COMMUNICATION",'topic1')
+topic2 = cp.get("COMMUNICATION",'topic2')
 
 
 # init variables
@@ -136,9 +138,6 @@ print("Mic - OFF")
 
 
 time.sleep(5)
-broker_address = "192.168.1.207"
-topic1 = "ranging/delay/t3t2_delay_ms"
-topic2 = "ranging/delay/t3t2_delay_count"
 mqttc = myMQTT(broker_address)
 mqttc.sendMsg(topic1,T3T2Delay_micros)
 mqttc.sendMsg(topic2,T3T2Delay_NumSample)
