@@ -123,7 +123,7 @@ while True:
         frames.pop(0)
         frameTime.pop(0)
 
-        if counter == 100:
+        if counter == 400:
             print("Time out")
             stream.stop_stream()
             break
@@ -191,5 +191,5 @@ plt.show()
 xcorrelation = abs(np.correlate(rcvSignal, RefSignal, mode = 'valid'))
 
 plt.figure()
-plt.plot(xcorrelation,'r.')
+plt.plot(xcorrelation,'r-o')
 plt.show()
