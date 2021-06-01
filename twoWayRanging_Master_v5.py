@@ -42,6 +42,7 @@ topic2 = cp.get("COMMUNICATION",'topic2')
 
 
 # init variables
+wrapsFix = 2**32 # constant
 fulldata = []
 fullTS = []
 counter_NumRanging = 0
@@ -131,7 +132,10 @@ while True:
 
     # print("* done")
     if signalDetected:
-        T4T1Delay_micros[counter_NumRanging] = peakTS - T1
+        T4_T1 = peakTS - T1
+        if T4_T1 < 0:
+            T4_T1 = T4_T1 + wrapsFix
+        T4T1Delay_micros[counter_NumRanging] = T4_T1
         T4T1Delay_NumSample[counter_NumRanging] = (counter-NumReqFrames)*CHUNK+Index
         
     counter_NumRanging = counter_NumRanging + 1
