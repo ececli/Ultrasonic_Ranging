@@ -41,6 +41,7 @@ topic2 = cp.get("COMMUNICATION",'topic2')
 
 
 # init variables
+wrapsFix = 2**32 # constant
 fulldata = []
 fullTS = []
 # frames = []
@@ -126,8 +127,10 @@ while True:
     if signalDetected:
         # Send Signal Out
         T3 = func.sendSingleTone(pi_IO,pin_OUT,f0,duration,ratio)
-
-        T3T2Delay_micros[counter_NumRanging] = T3-peakTS
+        T3_T2 = T3-peakTS
+        if T3_T2 < 0:
+            T3_T2 = T3_T2 + wrapsFix
+        T3T2Delay_micros[counter_NumRanging] = T3_T2
         T3T2Delay_NumSample[counter_NumRanging] = (NumReqFrames+1)*CHUNK-Index
 
     counter_NumRanging = counter_NumRanging + 1
