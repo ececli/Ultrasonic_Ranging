@@ -44,6 +44,8 @@ topic2 = cp.get("COMMUNICATION",'topic2')
 wrapsFix = 2**32 # constant
 fulldata = []
 fullTS = []
+peak_pre = []
+peak_cur = []
 # frames = []
 # frameTime = []
 counter_NumRanging = 0
@@ -114,9 +116,11 @@ while True:
         if peak > THRESHOLD:
             if continueFlag: # first time detected, need to see one more frame
                 continueFlag = False
+                peak_pre.append(peak) # debug purpose
             else:
                 # stream.stop_stream()
                 print("Peak Detected: ",peak)
+                peak_cur.append(peak) # debug purpose
                 peakTS = frameTime[0] + int(1000000*(Index/RATE - CHUNK/RATE)) # T2
                 signalDetected = True
                 continue
