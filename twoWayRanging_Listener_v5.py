@@ -87,6 +87,7 @@ while True:
     counter = 0
     firstChunk = True
     signalDetected = False
+    continueFlag = True
     stream.start_stream()
     while True:
         data = stream.read(CHUNK)
@@ -111,11 +112,14 @@ while True:
             continue
         ave,peak,Index = func.matchedFilter(frames,RefSignal)
         if peak > THRESHOLD:
-            # stream.stop_stream()
-            print("Peak Detected: ",peak)
-            peakTS = frameTime[0] + int(1000000*(Index/RATE - CHUNK/RATE)) # T2
-            signalDetected = True
-            continue
+            if continueFlag: # first time detected, need to see one more frame
+                continueFlag = False
+            else:
+                # stream.stop_stream()
+                print("Peak Detected: ",peak)
+                peakTS = frameTime[0] + int(1000000*(Index/RATE - CHUNK/RATE)) # T2
+                signalDetected = True
+                continue
             # break
         frames.pop(0)
         frameTime.pop(0)
