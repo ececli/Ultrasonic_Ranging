@@ -51,13 +51,27 @@ def preProcessingData(data,FORMAT):
     
     
     
-def micWarmUp(stream,CHUNK,RATE,sec):
+def micWarmUp(stream,CHUNK,RATE,FORMAT,sec):
+    # DCOffset = micWarmUp(stream,CHUNK,RATE,FORMAT,sec)
     counter_warmup = 0
+    ave_data = []
+    if sec >= 3: # use the data after 3 seconds to calculate DC offset
+        removeFirst_N_frame = 3*RATE/CHUNK
+    elif sec >= 2:
+        removeFirst_N_frame = 2*RATE/CHUNK
+    else:
+        removeFirst_N_frame = 0
+        
     if stream.is_stopped():
         stream.start_stream()
+
     while True:
         data = stream.read(CHUNK)
+        ndata = preProcessingData(data,FORMAT)
         counter_warmup = counter_warmup + 1
+        if counter_warmup >= removeFirst_N_frame:
+            ave_data.append(ndata)
         if counter_warmup>= int(sec*RATE/CHUNK+1):
+            stream.stop_stream()
             print("Mic - READY")
-            return 
+            return int(np.mean(np.concatenate(ave_data)))

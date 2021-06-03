@@ -75,9 +75,9 @@ stream = p.open(format=FORMAT,
 
 print("Mic - ON")
 # throw aray first sec seconds data since mic is transient, i.e., not stable
-func.micWarmUp(stream,CHUNK,RATE,warmUpSecond)
-
-stream.stop_stream() # pause
+# throw aray first n seconds data since mic is transient, i.e., not stable
+DCOffset = func.micWarmUp(stream,CHUNK,RATE,FORMAT,warmUpSecond)
+print("DC offset of this Mic is ",DCOffset)
 
 
 while True:
@@ -99,7 +99,7 @@ while True:
         if firstChunk:
             firstChunk = False
             continue
-        ndata = func.preProcessingData(data,FORMAT)
+        ndata = func.preProcessingData(data,FORMAT)-DCOffset
         frames.append(ndata)
         frameTime.append(currentTime)
         # for debug purpose:

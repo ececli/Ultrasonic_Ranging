@@ -63,22 +63,23 @@ stream = p.open(format=FORMAT,
 
 print("Mic - ON")
 # throw aray first n seconds data since mic is transient, i.e., not stable
-func.micWarmUp(stream,CHUNK,RATE,warmUpSecond)
-
+DCOffset = func.micWarmUp(stream,CHUNK,RATE,FORMAT,warmUpSecond)
+print("DC offset of this Mic is ",DCOffset)
 
 # firstChunk = True
 counter = 0
+stream.start_stream()
 while True:
     data = stream.read(CHUNK)
     currentTime = time.time()
     # if firstChunk:
     #     firstChunk = False
     #     continue
-    ndata = func.preProcessingData(data,FORMAT)
+    ndata = func.preProcessingData(data,FORMAT) - DCOffset
     fulldata.append(ndata)
     fullTS.append(currentTime)
     counter = counter + 1
-    if counter == 100:
+    if counter == 500:
         break
 
 # stop Recording
@@ -100,7 +101,7 @@ plt.show()
 xcorrelation = abs(np.correlate(rcvSignal, RefSignal, mode = 'valid'))
 
 plt.figure()
-plt.plot(xcorrelation,'r.')
+plt.plot(xcorrelation[10:],'r.')
 plt.xlabel('Index of Samples')
 plt.ylabel('Output of the cross-correlation')
 plt.show()
