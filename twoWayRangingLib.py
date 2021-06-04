@@ -2,18 +2,35 @@
 import pyaudio
 import numpy as np
 # import matplotlib.pyplot as plt
-# from scipy import signal
+from scipy import signal
 # import time
 import pigpio
+# from scipy.signal import chirp
 
 
 def sendSingleTone(pi_IO,pin,f0,duration,ratio):
+    # duration is in microsecond
     pi_IO.hardware_PWM(pin,f0,ratio)
     startTS = pi_IO.get_current_tick()
     while (pi_IO.get_current_tick() - startTS) < duration:
         pass
     pi_IO.hardware_PWM(pin,0,0)
     return startTS
+
+
+def sendChirp(pi_IO,pin,f0,f1,duration,sr,ratio):
+    # duration is in microsecond
+    Ns = int(np.round(duration*sr/1e6))
+    f_all = np.linspace(f0,f1,Ns, endpoint = False)
+    interval = duration/Ns # in microsecond
+    TS0 = 0
+    startTS = pi_IO.get_current_tick()
+    for f in f_all:
+        pi_IO.hardware_PWM(pin,int(f),ratio)
+        TS0 = pi_IO.get_current_tick()
+        while (pi_IO.get_current_tick() - TS0) < interval:
+            pass
+    return startTs
 
 def findDeviceIndex(p):
     DEV_INDEX = -1
@@ -24,10 +41,20 @@ def findDeviceIndex(p):
     return DEV_INDEX
 
 def getRefSignal(f0,duration,sr):
+    # single-tone with frequency "f0" and duration "duration"
+    # "sr" is the sampling rate
     Ns = duration * sr
     # t = np.r_[0.0:Ns]/sr
     t = np.arange(int(Ns))/sr
     return np.sin(2*np.pi*f0*t)
+
+def getRefChirp(f0,f1,duration,sr):
+    # chirp signal from "f0" to "f1" with duration "duration"
+    # "sr" is the sampling rate
+    Ns = duration * sr
+    # t = np.r_[0.0:Ns]/sr
+    t = np.arange(int(Ns))/sr
+    return signal.chirp(t,f0,t[-1],f1)
 
 def matchedFilter(frames,refSignal):
     sig = np.concatenate(frames)
