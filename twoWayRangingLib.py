@@ -30,7 +30,7 @@ def sendChirp(pi_IO,pin,f0,f1,duration,sr,ratio):
         TS0 = pi_IO.get_current_tick()
         while (pi_IO.get_current_tick() - TS0) < interval:
             pass
-    return startTs
+    return startTS
 
 def findDeviceIndex(p):
     DEV_INDEX = -1
