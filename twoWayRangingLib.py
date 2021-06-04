@@ -75,3 +75,4 @@ def micWarmUp(stream,CHUNK,RATE,FORMAT,sec):
             stream.stop_stream()
             print("Mic - READY")
             return int(np.mean(np.concatenate(ave_data)))
+        
