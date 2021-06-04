@@ -175,8 +175,9 @@ while True:
                 break
 
         T3_T2 = mqttc.readTopicData(topic1)
-        T3T2Delay_micros[counter_NumRanging] = T3_T2
-        T3T2Delay_NumSample[counter_NumRanging] = mqttc.readTopicData(topic2)
+        T3_T2_NumSample = mqttc.readTopicData(topic2)
+        T3T2Delay_micros[counter_NumRanging] = T3_T2[-1]
+        T3T2Delay_NumSample[counter_NumRanging] = T3_T2_NumSample[-1]
         ToF1 = (T4_T1 - T3_T2[-1])/2/1000.0 # ms
         ToF2 = (T4T1Delay_NumSample[counter_NumRanging] - T3T2Delay_NumSample[counter_NumRanging])/RATE/2*1000.0 # ms
         Ranging1[counter_NumRanging] = SOUNDSPEED*ToF1
