@@ -1,6 +1,7 @@
 import paho.mqtt.client as mqtt
 from queue import Queue
 import time
+import numpy as np
 
 # Use MQTT to transfer data among Raspberry Pi's which are under the same network. 
 class myMQTT:
