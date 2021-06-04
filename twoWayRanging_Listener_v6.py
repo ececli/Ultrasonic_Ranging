@@ -151,8 +151,8 @@ while True:
         if T3_T2 < 0:
             T3_T2 = T3_T2 + wrapsFix
         T3_T2_NamSample = (NumReqFrames+1)*CHUNK-Index
-        T3T2Delay_micros[counter_NumRanging] = T3_T2
-        T3T2Delay_NumSample[counter_NumRanging] = T3_T2_NamSample
+        T3T2Delay_micros.append(T3_T2)
+        T3T2Delay_NumSample.append(T3_T2_NamSample)
         mqttc.sendMsg(topic1,T3_T2)
         mqttc.sendMsg(topic2,T3_T2_NamSample)
 
