@@ -42,6 +42,7 @@ topic2 = cp.get("COMMUNICATION",'topic2')
 
 
 # init variables
+SOUNDSPEED = 0.343 # m/ms
 wrapsFix = 2**32 # constant
 fulldata = []
 fullTS = []
@@ -83,7 +84,7 @@ print("DC offset of this Mic is ",DCOffset)
 
 
 while True:
-    time.sleep(1)
+    time.sleep(0.5)
     print(counter_NumRanging)
     # Send Signal Out
     T1 = func.sendSingleTone(pi_IO,pin_OUT,f0,duration,ratio)
@@ -186,6 +187,9 @@ print("--------------------")
 ToF1 = (T4T1Delay_micros - T3T2Delay_micros)/2/1000.0
 ToF2 = (T4T1Delay_NumSample - T3T2Delay_NumSample)/RATE/2*1000.0
 
+Ranging1 = SOUNDSPEED*np.asarray(ToF1)
+Ranging2 = SOUNDSPEED*np.asarray(ToF2)
+
 print("Mean of ToF = "+str(np.mean(ToF1))+", Std of ToF = "+ str(np.std(ToF1)))
 print("Mean of ToF = "+str(np.mean(ToF2))+", Std of ToF = "+ str(np.std(ToF2)))
 plt.figure()
@@ -194,6 +198,22 @@ plt.show()
 
 plt.figure()
 plt.plot(ToF2,'b.')
+plt.show()
+
+
+
+print("Mean of Ranging = "+str(np.mean(Ranging1))+", Std of Ranging = "+ str(np.std(Ranging1)))
+print("Mean of Ranging = "+str(np.mean(Ranging2))+", Std of Ranging = "+ str(np.std(Ranging2)))
+plt.figure()
+plt.plot(Ranging1,'r.')
+plt.xlabel('Index of Samples')
+plt.ylabel('Estimated Distance (m)')
+plt.show()
+
+plt.figure()
+plt.plot(Ranging2,'b.')
+plt.xlabel('Index of Samples')
+plt.ylabel('Estimated Distance (m)')
 plt.show()
 
 # For debug only:
