@@ -81,7 +81,7 @@ class myMQTT:
         # send the data out. 
         # msg could be an array, but currently only integer will be sent
         # I may change this in future to support float and string
-        if isinstance(msg,list):
+        if isinstance(msg,list) or isinstance(msg,np.ndarray):
             for k in msg:
                 self.client.publish(topic, int(k))
         else:
