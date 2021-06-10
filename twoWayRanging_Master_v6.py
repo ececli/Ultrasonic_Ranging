@@ -4,7 +4,7 @@ import configparser
 import pyaudio
 import numpy as np
 import matplotlib.pyplot as plt
-# from scipy import signal
+from scipy import signal
 import time
 import pigpio
 import twoWayRangingLib as func
@@ -60,6 +60,12 @@ Ranging2 = np.zeros(NumRanging)
 NumReqFrames = int(np.ceil(RATE / CHUNK * duration/1000000.0) + 1.0)
 RefSignal = func.getRefSignal(f0,duration/1000000.0,RATE)
 
+
+nyq = 0.5*RATE
+normal_cutoff = 1000/nyq
+order = 5
+LPF_B, LPF_A  = signal.butter(order,normal_cutoff, btype='lowpass', analog = False)
+
 # init functions
 pi_IO = pigpio.pi()
 pi_IO.set_mode(pin_OUT,pigpio.OUTPUT)
@@ -99,7 +105,7 @@ print("DC offset of this Mic is ",DCOffset)
 
 
 while True:
-    # time.sleep(1)
+    time.sleep(0.5)
     print(counter_NumRanging)
     # Send Signal Out
     T1 = func.sendSingleTone(pi_IO,pin_OUT,f0,duration,ratio)
@@ -133,7 +139,8 @@ while True:
 
         if len(frames) < NumReqFrames:
             continue
-        ave,peak,Index = func.matchedFilter(frames,RefSignal)
+        # ave,peak,Index = func.matchedFilter(frames,RefSignal)
+        ave,peak,Index = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
 
         if peak > THRESHOLD:
             if continueFlag:
@@ -208,7 +215,7 @@ print(T3T2Delay_micros)
 print(T3T2Delay_NumSample)
 print("--------------------")
 
-np.savetxt("Ranging.csv",[Ranging1,Ranging2], fmt="%.4f", delimiter = ",")
+np.savetxt("Output\Ranging.csv",[Ranging1,Ranging2], fmt="%.4f", delimiter = ",")
 
 func.getStat(Ranging1,label = "Distance 1", unit = "m")
 func.getStat(Ranging2,label = "Distance 2", unit = "m")

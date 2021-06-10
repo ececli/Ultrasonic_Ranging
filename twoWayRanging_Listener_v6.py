@@ -3,7 +3,7 @@ import configparser
 import pyaudio
 import numpy as np
 import matplotlib.pyplot as plt
-# from scipy import signal
+from scipy import signal
 import time
 import pigpio
 import twoWayRangingLib as func
@@ -56,6 +56,12 @@ T3T2Delay_NumSample = []
 
 NumReqFrames = int(np.ceil(RATE / CHUNK * duration/1000000.0) + 1.0)
 RefSignal = func.getRefSignal(f0,duration/1000000.0,RATE)
+
+
+nyq = 0.5*RATE
+normal_cutoff = 1000/nyq
+order = 5
+LPF_B, LPF_A  = signal.butter(order,normal_cutoff, btype='lowpass', analog = False)
 
 # init
 pi_IO = pigpio.pi()
@@ -118,7 +124,8 @@ while True:
 
         if len(frames) < NumReqFrames:
             continue
-        ave,peak,Index = func.matchedFilter(frames,RefSignal)
+        # ave,peak,Index = func.matchedFilter(frames,RefSignal)
+        ave,peak,Index = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
         if peak > THRESHOLD:
             if continueFlag: # first time detected, need to see one more frame
                 continueFlag = False

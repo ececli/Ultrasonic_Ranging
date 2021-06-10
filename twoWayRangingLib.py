@@ -1,7 +1,7 @@
 # import configparser
 import pyaudio
 import numpy as np
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 from scipy import signal
 # import time
 import pigpio
@@ -57,12 +57,25 @@ def getRefChirp(f0,f1,duration,sr):
     return signal.chirp(t,f0,t[-1],f1)
 
 def matchedFilter(frames,refSignal):
+    # simple peak detection
     sig = np.concatenate(frames)
     autoc = abs(np.correlate(sig, refSignal, mode = 'valid'))
     ave = np.mean(autoc)
     peak = np.max(autoc)
     Index = np.argmax(autoc)
     return ave,peak,Index
+
+
+def LPF_PeakDetection(frames,refSignal,LPF_A,LPF_B):
+    # low pass filter method: Use a LFP after the matched filter
+    sig = np.concatenate(frames)
+    autoc = abs(np.correlate(sig, refSignal, mode = 'valid'))
+    filtered = signal.lfilter(LPF_B, LPF_A, autoc)
+    ave = np.mean(autoc)
+    peak = np.max(autoc)
+    Index = np.argmax(autoc)
+    return ave,peak,Index
+
 
 def preProcessingData(data,FORMAT):
     if FORMAT == pyaudio.paFloat32:
