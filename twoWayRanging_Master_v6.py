@@ -218,7 +218,7 @@ print(T3T2Delay_micros)
 print(T3T2Delay_NumSample)
 print("--------------------")
 
-np.savetxt("\Output\Ranging.csv",[Ranging1,Ranging2], fmt="%.4f", delimiter = ",")
+np.savetxt("Ranging.csv",[Ranging1,Ranging2], fmt="%.4f", delimiter = ",")
 
 func.getStat(Ranging1,label = "Distance 1", unit = "m")
 func.getStat(Ranging2,label = "Distance 2", unit = "m")
@@ -226,13 +226,11 @@ func.getStat(Ranging2,label = "Distance 2", unit = "m")
 
 
 # For debug only:
-# rcvSignal = np.concatenate(fulldata)
-# plt.figure()
-# plt.plot(rcvSignal,'r-o')
-# plt.show()
+# rcvSignal = np.concatenate(fulldata[0])
 
 # xcorrelation = abs(np.correlate(rcvSignal, RefSignal, mode = 'valid'))
-
+# filtered = signal.lfilter(LPF_B,LPF_A,xcorrelation)
 # plt.figure()
 # plt.plot(xcorrelation,'r-o')
+# plt.plot(filtered,'b-o')
 # plt.show()
