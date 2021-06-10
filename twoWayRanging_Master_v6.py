@@ -45,8 +45,8 @@ topic2 = cp.get("COMMUNICATION",'topic2')
 # init variables
 SOUNDSPEED = 0.343 # m/ms
 wrapsFix = 2**32 # constant
-fulldata = []
-fullTS = []
+# fulldata = []
+# fullTS = []
 peak_pre = []
 peak_cur = []
 counter_NumRanging = 0
@@ -57,10 +57,14 @@ T3T2Delay_NumSample = np.zeros(NumRanging)
 Ranging1 = np.zeros(NumRanging)
 Ranging2 = np.zeros(NumRanging)
 
+# for debug purpose, record all the data
+fulldata = np.frompyfunc(list, 0, 1)(np.empty((NumRanging), dtype=object))
+fullTS = np.frompyfunc(list, 0, 1)(np.empty((NumRanging), dtype=object))
+
 NumReqFrames = int(np.ceil(RATE / CHUNK * duration/1000000.0) + 1.0)
 RefSignal = func.getRefSignal(f0,duration/1000000.0,RATE)
 
-
+# low pass filter method
 nyq = 0.5*RATE
 normal_cutoff = 1000/nyq
 order = 5
@@ -133,9 +137,8 @@ while True:
         frames.append(ndata)
         frameTime.append(currentTime)
         # for debug purpose:
-        if counter_NumRanging == 9:
-            fulldata.append(ndata)
-            fullTS.append(currentTime)
+        fulldata[counter_NumRanging].append(ndata)
+        fullTS[counter_NumRanging].append(currentTime)
 
         if len(frames) < NumReqFrames:
             continue
@@ -215,7 +218,7 @@ print(T3T2Delay_micros)
 print(T3T2Delay_NumSample)
 print("--------------------")
 
-np.savetxt("Output\Ranging.csv",[Ranging1,Ranging2], fmt="%.4f", delimiter = ",")
+np.savetxt("\Output\Ranging.csv",[Ranging1,Ranging2], fmt="%.4f", delimiter = ",")
 
 func.getStat(Ranging1,label = "Distance 1", unit = "m")
 func.getStat(Ranging2,label = "Distance 2", unit = "m")
@@ -223,13 +226,13 @@ func.getStat(Ranging2,label = "Distance 2", unit = "m")
 
 
 # For debug only:
-rcvSignal = np.concatenate(fulldata)
-plt.figure()
-plt.plot(rcvSignal,'r-o')
-plt.show()
+# rcvSignal = np.concatenate(fulldata)
+# plt.figure()
+# plt.plot(rcvSignal,'r-o')
+# plt.show()
 
-xcorrelation = abs(np.correlate(rcvSignal, RefSignal, mode = 'valid'))
+# xcorrelation = abs(np.correlate(rcvSignal, RefSignal, mode = 'valid'))
 
-plt.figure()
-plt.plot(xcorrelation,'r-o')
-plt.show()
+# plt.figure()
+# plt.plot(xcorrelation,'r-o')
+# plt.show()

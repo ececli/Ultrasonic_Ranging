@@ -44,8 +44,8 @@ topic2 = cp.get("COMMUNICATION",'topic2')
 # init variables
 SOUNDSPEED = 0.343 # m/ms
 wrapsFix = 2**32 # constant
-fulldata = []
-fullTS = []
+# fulldata = []
+# fullTS = []
 peak_pre = []
 peak_cur = []
 # frames = []
@@ -53,6 +53,10 @@ peak_cur = []
 counter_NumRanging = 0
 T3T2Delay_micros = []
 T3T2Delay_NumSample = []
+
+# for debug purpose, record all the data
+fulldata = np.frompyfunc(list, 0, 1)(np.empty((NumRanging), dtype=object))
+fullTS = np.frompyfunc(list, 0, 1)(np.empty((NumRanging), dtype=object))
 
 NumReqFrames = int(np.ceil(RATE / CHUNK * duration/1000000.0) + 1.0)
 RefSignal = func.getRefSignal(f0,duration/1000000.0,RATE)
@@ -118,9 +122,8 @@ while True:
         frames.append(ndata)
         frameTime.append(currentTime)
         # for debug purpose:
-        if counter_NumRanging == 9:
-            fulldata.append(ndata)
-            fullTS.append(currentTime)
+        fulldata[counter_NumRanging].append(ndata)
+        fullTS[counter_NumRanging].append(currentTime)
 
         if len(frames) < NumReqFrames:
             continue
