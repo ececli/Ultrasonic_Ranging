@@ -208,21 +208,12 @@ print(T3T2Delay_micros)
 print(T3T2Delay_NumSample)
 print("--------------------")
 
+np.savetxt("Ranging.csv",[Ranging1,Ranging2], fmt="%.4f", delimiter = ",")
+
+func.getStat(Ranging1,label = "Distance 1", unit = "m")
+func.getStat(Ranging2,label = "Distance 2", unit = "m")
 
 
-print("Mean of Ranging = "+str(np.mean(Ranging1))+", Std of Ranging = "+ str(np.std(Ranging1)))
-print("Mean of Ranging = "+str(np.mean(Ranging2))+", Std of Ranging = "+ str(np.std(Ranging2)))
-plt.figure()
-plt.plot(Ranging1,'r.')
-plt.xlabel('Index of Samples')
-plt.ylabel('Estimated Distance (m)')
-plt.show()
-
-plt.figure()
-plt.plot(Ranging2,'b.')
-plt.xlabel('Index of Samples')
-plt.ylabel('Estimated Distance (m)')
-plt.show()
 
 # For debug only:
 rcvSignal = np.concatenate(fulldata)

@@ -103,3 +103,17 @@ def micWarmUp(stream,CHUNK,RATE,FORMAT,sec):
             print("Mic - READY")
             return int(np.mean(np.concatenate(ave_data)))
         
+
+
+def getStat(a,label = " ", unit = " "):
+    meanA = np.mean(a)
+    stdA = np.std(a)
+    
+    print("Mean of "+label + " = " +str(meanA)+", Std of "+label + " = " +str(stdA))
+    plt.figure()
+    plt.plot(a,'b.')
+    plt.xlabel('Index of Samples')
+    plt.ylabel(label + "(" + unit + ")")
+    plt.show()
+    return meanA, stdA
+    

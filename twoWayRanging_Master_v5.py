@@ -201,7 +201,7 @@ plt.plot(ToF2,'b.')
 plt.show()
 
 
-
+np.savetxt("ToF.csv",[ToF1,ToF2], fmt="%.4f", delimiter = ",")
 print("Mean of Ranging = "+str(np.mean(Ranging1))+", Std of Ranging = "+ str(np.std(Ranging1)))
 print("Mean of Ranging = "+str(np.mean(Ranging2))+", Std of Ranging = "+ str(np.std(Ranging2)))
 plt.figure()
