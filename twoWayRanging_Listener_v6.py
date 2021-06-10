@@ -55,8 +55,8 @@ T3T2Delay_micros = []
 T3T2Delay_NumSample = []
 
 # for debug purpose, record all the data
-fulldata = np.frompyfunc(list, 0, 1)(np.empty((NumRanging), dtype=object))
-fullTS = np.frompyfunc(list, 0, 1)(np.empty((NumRanging), dtype=object))
+fulldata = np.frompyfunc(list, 0, 1)(np.empty((NumRanging+1), dtype=object))
+fullTS = np.frompyfunc(list, 0, 1)(np.empty((NumRanging+1), dtype=object))
 
 NumReqFrames = int(np.ceil(RATE / CHUNK * duration/1000000.0) + 1.0)
 RefSignal = func.getRefSignal(f0,duration/1000000.0,RATE)
@@ -184,15 +184,10 @@ print(T3T2Delay_micros)
 print(T3T2Delay_NumSample)
 
 
-rcvSignal = np.concatenate(fulldata)
-plt.figure()
-plt.plot(rcvSignal,'r.')
-plt.show()
+# rcvSignal = np.concatenate(fulldata)
+# xcorrelation = abs(np.correlate(rcvSignal, RefSignal, mode = 'valid'))
 
-
-xcorrelation = abs(np.correlate(rcvSignal, RefSignal, mode = 'valid'))
-
-plt.figure()
-plt.plot(xcorrelation,'r-o')
-plt.show()
+# plt.figure()
+# plt.plot(xcorrelation,'r-o')
+# plt.show()
 
