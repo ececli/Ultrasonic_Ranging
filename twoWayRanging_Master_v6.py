@@ -226,5 +226,5 @@ func.getStat(Ranging2,label = "Distance 2", unit = "m")
 
 
 # For debug only:
-getOutputFig(fulldata[0],RefSignal,LPF_B,LPF_A)
+func.getOutputFig(fulldata[0],RefSignal,LPF_B,LPF_A)
 
