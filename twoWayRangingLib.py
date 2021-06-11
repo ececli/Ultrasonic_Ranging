@@ -71,9 +71,9 @@ def LPF_PeakDetection(frames,refSignal,LPF_A,LPF_B):
     sig = np.concatenate(frames)
     autoc = abs(np.correlate(sig, refSignal, mode = 'valid'))
     filtered = signal.lfilter(LPF_B, LPF_A, autoc)
-    ave = np.mean(autoc)
-    peak = np.max(autoc)
-    Index = np.argmax(autoc)
+    ave = np.mean(filtered)
+    peak = np.max(filtered)
+    Index = np.argmax(filtered)
     return ave,peak,Index
 
 
