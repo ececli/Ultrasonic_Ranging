@@ -145,7 +145,7 @@ while True:
         # ave,peak,Index = func.matchedFilter(frames,RefSignal)
         ave,peak,Index = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
 
-        if peak > THRESHOLD:
+        if peak > THRESHOLD or continueFlag == False:
             if continueFlag:
                 continueFlag = False
                 peak_pre.append(peak) # debug purpose
