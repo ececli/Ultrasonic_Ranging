@@ -130,3 +130,12 @@ def getStat(a,label = " ", unit = " "):
     plt.show()
     return meanA, stdA
     
+def getOutputFig(fulldata,RefSignal,LPF_B,LPF_A):
+    
+    rcvSignal = np.concatenate(fulldata)
+    xcorrelation = abs(np.correlate(rcvSignal, RefSignal, mode = 'valid'))
+    filtered = signal.lfilter(LPF_B,LPF_A,xcorrelation)
+    plt.figure()
+    plt.plot(xcorrelation,'r-o')
+    plt.plot(filtered,'b-o')
+    plt.show()
