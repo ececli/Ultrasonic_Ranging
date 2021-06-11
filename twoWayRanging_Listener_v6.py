@@ -184,6 +184,6 @@ print(T3T2Delay_micros)
 print(T3T2Delay_NumSample)
 
 # For debug only: 
-getOutputFig(fulldata[0],RefSignal,LPF_B,LPF_A)
+func.getOutputFig(fulldata[0],RefSignal,LPF_B,LPF_A)
 
 
