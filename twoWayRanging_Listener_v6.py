@@ -183,12 +183,7 @@ print("Mic - OFF")
 print(T3T2Delay_micros)
 print(T3T2Delay_NumSample)
 
+# For debug only: 
+getOutputFig(fulldata[0],RefSignal,LPF_B,LPF_A)
 
-# rcvSignal = np.concatenate(fulldata[0])
-# xcorrelation = abs(np.correlate(rcvSignal, RefSignal, mode = 'valid'))
-# filtered = signal.lfilter(LPF_B,LPF_A, xcorrelation)
-# plt.figure()
-# plt.plot(xcorrelation,'r-o')
-# plt.plot(filtered, 'b-o')
-# plt.show()
 
