@@ -165,7 +165,7 @@ while True:
         frames.pop(0)
         frameTime.pop(0)
 
-        if counter == TIMEOUTCOUNTS:
+        if counter == int(TIMEOUTCOUNTS/3):
             print("Time out")
             stream.stop_stream()
             break
