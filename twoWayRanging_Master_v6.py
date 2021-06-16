@@ -228,3 +228,9 @@ func.getStat(Ranging2,label = "Distance 2", unit = "m")
 # For debug only:
 func.getOutputFig(fulldata[0],RefSignal,LPF_B,LPF_A)
 
+# To compare different speaker:
+peak = np.maximum(peak_cur,peak_pre)
+print("Mean Peak: ",np.mean(peak))
+print("Std of Peak: ",np.std(peak))
+
+
