@@ -55,8 +55,8 @@ T3T2Delay_micros = []
 T3T2Delay_NumSample = []
 
 # for debug purpose, record all the data
-fulldata = np.frompyfunc(list, 0, 1)(np.empty((NumRanging+1), dtype=object))
-fullTS = np.frompyfunc(list, 0, 1)(np.empty((NumRanging+1), dtype=object))
+fulldata = np.frompyfunc(list, 0, 1)(np.empty((NumRanging*2), dtype=object))
+fullTS = np.frompyfunc(list, 0, 1)(np.empty((NumRanging*2), dtype=object))
 
 NumReqFrames = int(np.ceil(RATE / CHUNK * duration/1000000.0) + 1.0)
 RefSignal = func.getRefSignal(f0,duration/1000000.0,RATE)
@@ -96,6 +96,7 @@ DCOffset = func.micWarmUp(stream,CHUNK,RATE,FORMAT,warmUpSecond)
 print("DC offset of this Mic is ",DCOffset)
 
 TimeOutFlag = False
+TimeOutCount = 0
 while True:
     print(counter_NumRanging)
     if TimeOutFlag:
@@ -150,12 +151,16 @@ while True:
         frameTime.pop(0)
         if counter == TIMEOUTCOUNTS:
             print("Time out")
-            TimeOutFlag = True
+            # TimeOutFlag = True
             stream.stop_stream()
+            # for test purpose:
+            TimeOutCount = TimeOutCount + 1
             break
 
     if signalDetected:
         # Send Signal Out
+        # add this only for method 1
+        time.sleep(0.1)
         T3 = func.sendSingleTone(pi_IO,pin_OUT,f0,duration,ratio)
         T3_T2 = T3-peakTS
         if T3_T2 < 0:
@@ -165,10 +170,13 @@ while True:
         T3T2Delay_NumSample.append(T3_T2_NamSample)
         mqttc.sendMsg(topic1,T3_T2)
         mqttc.sendMsg(topic2,T3_T2_NamSample)
+        TimeOutCount = 0 # reset timeout counter
 
     counter_NumRanging = counter_NumRanging + 1
     # if counter_NumRanging>= NumRanging:
     #     break
+    if TimeOutCount >=2:
+        TimeOutFlag = True
 
 
 print("done")
