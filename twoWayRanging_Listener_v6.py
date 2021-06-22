@@ -128,9 +128,9 @@ while True:
 
         if len(frames) < NumReqFrames:
             continue
-        # ave,peak,Index = func.matchedFilter(frames,RefSignal)
+        ave,peak,Index = func.matchedFilter(frames,RefSignal)
         # ave,peak,Index = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
-        ave,peak,Index = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
+        # ave,peak,Index = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
         if peak > THRESHOLD or continueFlag == False:
             if continueFlag: # first time detected, need to see one more frame
                 continueFlag = False
