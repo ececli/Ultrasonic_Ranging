@@ -79,9 +79,9 @@ def LPF_PeakDetection(frames,refSignal,LPF_A,LPF_B):
 def sincos_PeakDetection(frames,refSignal1,refSignal2):
     # sin-cos method: use two phases reference signals
     sig = np.concatenate(frames)
-    autoc1 = abs(np.correlate(sig, refSignal1, mode = 'valid'))
-    autoc2 = abs(np.correlate(sig, refSignal2, mode = 'valid'))
-    autoc = (autoc1 + autoc2)/2
+    autoc1 = (np.correlate(sig, refSignal1, mode = 'valid'))
+    autoc2 = (np.correlate(sig, refSignal2, mode = 'valid'))
+    autoc = np.sqrt((autoc1*autoc1 + autoc2*autoc2)/2)
     ave = np.mean(autoc)
     peak = np.max(autoc)
     Index = np.argmax(autoc)
