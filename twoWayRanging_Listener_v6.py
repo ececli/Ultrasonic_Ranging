@@ -128,8 +128,8 @@ while True:
 
         if len(frames) < NumReqFrames:
             continue
-        ave,peak,Index = func.matchedFilter(frames,RefSignal)
-        # ave,peak,Index = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
+        # ave,peak,Index = func.matchedFilter(frames,RefSignal)
+        ave,peak,Index = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
         # ave,peak,Index = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
         if peak > THRESHOLD or continueFlag == False:
             if continueFlag: # first time detected, need to see one more frame
@@ -199,3 +199,8 @@ func.getOutputFig(fulldata[0],RefSignal,LPF_B,LPF_A)
 peak = np.maximum(peak_cur,peak_pre)
 print("Mean Peak: ", np.mean(peak))
 print("Std of Peak: ", np.std(peak))
+plt.figure()
+plt.plot(peak,'r.')
+plt.xlabel('Index of Samples')
+plt.ylabel('Peak Value')
+plt.show()
