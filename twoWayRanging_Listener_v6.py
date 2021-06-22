@@ -59,8 +59,8 @@ fulldata = np.frompyfunc(list, 0, 1)(np.empty((NumRanging*2), dtype=object))
 fullTS = np.frompyfunc(list, 0, 1)(np.empty((NumRanging*2), dtype=object))
 
 NumReqFrames = int(np.ceil(RATE / CHUNK * duration/1000000.0) + 1.0)
-RefSignal = func.getRefSignal(f0,duration/1000000.0,RATE)
-
+RefSignal = func.getRefSignal(f0,duration/1000000.0,RATE, 0)
+RefSignal2 = func.getRefSignal(f0,duration/1000000.0,RATE, np.pi/2)
 
 nyq = 0.5*RATE
 normal_cutoff = 1000/nyq
@@ -129,7 +129,8 @@ while True:
         if len(frames) < NumReqFrames:
             continue
         # ave,peak,Index = func.matchedFilter(frames,RefSignal)
-        ave,peak,Index = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
+        # ave,peak,Index = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
+        ave,peak,Index = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
         if peak > THRESHOLD or continueFlag == False:
             if continueFlag: # first time detected, need to see one more frame
                 continueFlag = False
