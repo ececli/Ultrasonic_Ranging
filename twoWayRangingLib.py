@@ -40,13 +40,13 @@ def findDeviceIndex(p):
             DEV_INDEX = dev['index']
     return DEV_INDEX
 
-def getRefSignal(f0,duration,sr):
+def getRefSignal(f0,duration,sr, phi=0):
     # single-tone with frequency "f0" and duration "duration"
     # "sr" is the sampling rate
     Ns = duration * sr
     # t = np.r_[0.0:Ns]/sr
     t = np.arange(int(Ns))/sr
-    return np.sin(2*np.pi*f0*t)
+    return np.sin(2*np.pi*f0*t + phi)
 
 def getRefChirp(f0,f1,duration,sr):
     # chirp signal from "f0" to "f1" with duration "duration"
@@ -76,6 +76,16 @@ def LPF_PeakDetection(frames,refSignal,LPF_A,LPF_B):
     Index = np.argmax(filtered)
     return ave,peak,Index
 
+def sincos_PeakDetection(frames,refSignal1,refSignal2):
+    # sin-cos method: use two phases reference signals
+    sig = np.concatenate(frames)
+    autoc1 = abs(np.correlate(sig, refSignal1, mode = 'valid'))
+    autoc2 = abs(np.correlate(sig, refSignal2, mode = 'valid'))
+    autoc = autoc1 + autoc2
+    ave = np.mean(autoc)
+    peak = np.max(autoc)
+    Index = np.argmax(autoc)
+    return ave,peak,Index
 
 def preProcessingData(data,FORMAT):
     if FORMAT == pyaudio.paFloat32:
