@@ -87,6 +87,38 @@ def sincos_PeakDetection(frames,refSignal1,refSignal2):
     Index = np.argmax(autoc)
     return ave,peak,Index
 
+
+
+def Nader_PeakDetection(frames,refSignal,threshold):
+    # Nader's method: Use all the local peaks from the raising edge to
+    # fit a line, and use all the local peaks from the falling edge to
+    # fit another line. Then the intersection of two line is the time
+    # of the peak.
+    sig = np.concatenate(frames)
+    autoc = np.abs(np.correlate(sig, refSignal1, mode = 'valid'))
+    ave = np.mean(autoc)
+    peak = np.max(autoc)
+    Index = np.argmax(autoc)
+    if peak > threshold:
+        # fit lines
+        localPeaks = signal.argrelextrema(autoc, np.greater)
+        aaa = autoc[localPeaks[0]]>=threshold
+        goodPeaksIndex = localPeaks[0][aaa]
+        goodPeaks = autoc[goodPeaksIndex]
+        if len(goodPeaksIndex[goodPeaksIndex <= Index])>=2:
+            z1 = np.polyfit(goodPeaksIndex[goodPeaksIndex<=Index], goodPeaks[goodPeaksIndex<=Index], 1)
+        else:
+            return ave,peak,Index
+        if len(goodPeaksIndex[goodPeaksIndex >= Index])>=2:
+            z2 = np.polyfit(goodPeaksIndex[goodPeaksIndex>=Index], goodPeaks[goodPeaksIndex>=Index], 1)
+        else:
+            return ave,peak,Index
+        NaderIndex = int(np.round((z2[1] - z1[1])/(z1[0]-z2[0])))
+        return ave,peak,NaderIndex
+    else:
+        return ave,peak,Index
+
+
 def preProcessingData(data,FORMAT):
     if FORMAT == pyaudio.paFloat32:
         return np.frombuffer(data,dtype=np.float32)
