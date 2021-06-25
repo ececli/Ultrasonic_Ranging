@@ -130,7 +130,8 @@ while True:
             continue
         # ave,peak,Index = func.matchedFilter(frames,RefSignal)
         # ave,peak,Index = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
-        ave,peak,Index = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
+        # ave,peak,Index = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
+        ave,peak,Index = func.Nader_PeakDetection(frames,RefSignal,THRESHOLD)
         if peak > THRESHOLD or continueFlag == False:
             if continueFlag: # first time detected, need to see one more frame
                 continueFlag = False
@@ -161,7 +162,7 @@ while True:
     if signalDetected:
         # Send Signal Out
         # add this only for method 1
-        time.sleep(0.1)
+        time.sleep(0.2)
         T3 = func.sendSingleTone(pi_IO,pin_OUT,f0,duration,ratio)
         T3_T2 = T3-peakTS
         if T3_T2 < 0:
