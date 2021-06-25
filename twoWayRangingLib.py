@@ -95,7 +95,7 @@ def Nader_PeakDetection(frames,refSignal,threshold):
     # fit another line. Then the intersection of two line is the time
     # of the peak.
     sig = np.concatenate(frames)
-    autoc = np.abs(np.correlate(sig, refSignal1, mode = 'valid'))
+    autoc = np.abs(np.correlate(sig, refSignal, mode = 'valid'))
     ave = np.mean(autoc)
     peak = np.max(autoc)
     Index = np.argmax(autoc)
