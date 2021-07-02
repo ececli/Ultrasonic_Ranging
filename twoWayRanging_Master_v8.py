@@ -50,9 +50,9 @@ wrapsFix = 2**32 # constant
 # peak_pre = []
 # peak_cur = []
 counter_NumRanging = 0
-T4T1Delay = np.zeros((NumRanging,4))
-T3T2Delay = np.zeros((NumRanging,4))
-Ranging_Record = np.zeros((NumRanging,4))
+T4T1Delay = np.zeros(NumRanging)
+T3T2Delay = np.zeros(NumRanging)
+Ranging_Record = np.zeros(NumRanging)
 
 
 # for debug purpose, record all the data
@@ -76,13 +76,13 @@ pi_IO.hardware_PWM(pin_OUT,0,0)
 
 mqttc = myMQTT(broker_address)
 mqttc.registerTopic(topic1)
-mqttc.registerTopic(topic2)
+# mqttc.registerTopic(topic2)
 
 # clear msg in topics
 if mqttc.checkTopicDataLength(topic1)>0:
     mqttc.readTopicData(topic1)
-if mqttc.checkTopicDataLength(topic2)>0:
-    mqttc.readTopicData(topic2)
+# if mqttc.checkTopicDataLength(topic2)>0:
+#     mqttc.readTopicData(topic2)
     
 p = pyaudio.PyAudio()
 
@@ -124,24 +124,7 @@ while True:
     preIndex1=0
     continueFlag1 = True
     signalDetected1 = False
-    
-    prePeak2=0
-    preIndex2=0
-    continueFlag2 = True
-    signalDetected2 = False
-    
-    prePeak3=0
-    preIndex3=0
-    continueFlag3 = True
-    signalDetected3 = False
-    
-    prePeak4=0
-    preIndex4=0
-    continueFlag4 = True
-    signalDetected4 = False
-    
-    # allSignalDetected = False
-    # anySignalDetected = False
+
     
     stream.start_stream()
     while True:
@@ -166,33 +149,16 @@ while True:
             continue
         # ave,peak,Index = func.matchedFilter(frames,RefSignal)
         # ave,peak,Index = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
-        # ave,peak,Index = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
+        ave,peak1,Index1 = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
         # ave,peak,Index = func.Nader_PeakDetection(frames,RefSignal,THRESHOLD)
-        peak1, peak2, peak3, peak4, Index1, Index2, Index3, Index4 = func.multi_PeakDetection(frames,RefSignal,RefSignal2,LPF_A,LPF_B, THRESHOLD)
+        # peak1, peak2, peak3, peak4, Index1, Index2, Index3, Index4 = func.multi_PeakDetection(frames,RefSignal,RefSignal2,LPF_A,LPF_B, THRESHOLD)
+        peakTS1 = func.index2TS(Index1, frameTime, RATE, CHUNK)
         if not signalDetected1:
-            peak1, Index1, prePeak1, preIndex1, continueFlag1, signalDetected1= func.lookBack(peak1, Index1, prePeak1, preIndex1, continueFlag1, THRESHOLD)
+            peak1, peakTS1, prePeak1, prePeakTS1, continueFlag1, signalDetected1= func.lookBack(peak1, peakTS1, prePeak1, prePeakTS1, continueFlag1, THRESHOLD)
             if signalDetected1:
-                peakTS1 = func.index2TS(Index1, frameTime, RATE, CHUNK)
-        if not signalDetected2:
-            peak2, Index2, prePeak2, preIndex2, continueFlag2, signalDetected2= func.lookBack(peak2, Index2, prePeak2, preIndex2, continueFlag2, THRESHOLD)
-            if signalDetected2:
-                peakTS2 = func.index2TS(Index2, frameTime, RATE, CHUNK)
-        if not signalDetected3:
-            peak3, Index3, prePeak3, preIndex3, continueFlag3, signalDetected3= func.lookBack(peak3, Index3, prePeak3, preIndex3, continueFlag3, THRESHOLD)
-            if signalDetected3:
-                peakTS3 = func.index2TS(Index3, frameTime, RATE, CHUNK)
-        if not signalDetected4:
-            peak4, Index4, prePeak4, preIndex4, continueFlag4, signalDetected4= func.lookBack(peak4, Index4, prePeak4, preIndex4, continueFlag4, THRESHOLD)
-            if signalDetected4:
-                peakTS4 = func.index2TS(Index4, frameTime, RATE, CHUNK)            
+                stream.stop_stream()
+                break
         
-        # if signalDetected1 or signalDetected2 or signalDetected3 or signalDetected4:
-        #     anySignalDetected = True
-        
-        if signalDetected1 and signalDetected2 and signalDetected3 and signalDetected4:
-            stream.stop_stream()
-            break
-
         if counter == int(TIMEOUTCOUNTS):
             print("Time out")
             stream.stop_stream()
@@ -202,43 +168,20 @@ while True:
         frameTime.pop(0)
         
     # print("* done")
-    if signalDetected1 or signalDetected2 or signalDetected3 or signalDetected4:
-        MSG = [0,0,0,0]
-        if signalDetected1:
-            T4_T1 = peakTS1 - T1
-            if T4_T1 < 0:
-                T4_T1 = T4_T1 + wrapsFix
-            T4T1Delay[counter_NumRanging,0] = T4_T1
-            MSG[0] = T4_T1
-            
-        if signalDetected2:
-            T4_T1 = peakTS2 - T1
-            if T4_T1 < 0:
-                T4_T1 = T4_T1 + wrapsFix
-            T4T1Delay[counter_NumRanging,1] = T4_T1
-            MSG[1] = T4_T1
-            
-        if signalDetected3:
-            T4_T1 = peakTS3 - T1
-            if T4_T1 < 0:
-                T4_T1 = T4_T1 + wrapsFix
-            T4T1Delay[counter_NumRanging,2] = T4_T1
-            MSG[2] = T4_T1
-            
-        if signalDetected4:
-            T4_T1 = peakTS4 - T1
-            if T4_T1 < 0:
-                T4_T1 = T4_T1 + wrapsFix
-            T4T1Delay[counter_NumRanging,3] = T4_T1
-            MSG[3] = T4_T1
+    if signalDetected1:
+
+        T4_T1 = peakTS1 - T1
+        if T4_T1 < 0:
+            T4_T1 = T4_T1 + wrapsFix
+        T4T1Delay[counter_NumRanging] = T4_T1
         
         while True:
-            if mqttc.checkTopicDataLength(topic1)>=4:
+            if mqttc.checkTopicDataLength(topic1)>=1:
                 break
         T3_T2 = mqttc.readTopicData(topic1)
-        Ranging = (np.asarray(MSG) - np.asarray(T3_T2))/2/1000.0*SOUNDSPEED
-        Ranging_Record[counter_NumRanging,:] = Ranging
-        T3T2Delay[counter_NumRanging,:] = T3_T2
+        Ranging = (T4_T1 - T3_T2[-1])/2/1000.0*SOUNDSPEED
+        Ranging_Record[counter_NumRanging] = Ranging
+        T3T2Delay[counter_NumRanging] = T3_T2[-1]
         
     counter_NumRanging = counter_NumRanging + 1
     if counter_NumRanging >= NumRanging:
@@ -259,8 +202,14 @@ print("--------------------")
 print(Ranging_Record)
 
 plt.figure()
-plt.plot(Ranging_Record[:,0],'r.')
-plt.plot(Ranging_Record[:,1],'b.')
-plt.plot(Ranging_Record[:,2],'k.')
-plt.plot(Ranging_Record[:,3],'m.')
+plt.plot(Ranging_Record,'r.')
 plt.show()
+
+func.getStat(Ranging_Record,label = "Distance 1", unit = "m")
+
+
+
+
+# For debug only:
+func.getOutputFig(fulldata[0],RefSignal,LPF_B,LPF_A)
+func.getOutputFig_IQMethod(fulldata[0], RefSignal, RefSignal2)

@@ -151,21 +151,21 @@ def Nader_Method(autoc,threshold):
 
 
 
-def lookBack(curPeak, curIndex, prePeak, preIndex, continueFlag, THRESHOLD):
+def lookBack(curPeak, curTS, prePeak, preTS, continueFlag, THRESHOLD):
     signalDetected = False
     if curPeak > THRESHOLD or continueFlag == False:
         if continueFlag:
             continueFlag = False
             prePeak = curPeak
-            preIndex = curIndex
+            preTS = curTS
         else: 
             # stream.stop_stream()            
             if curPeak <= prePeak:
-                curIndex = preIndex
+                curTS = preTS
                 curPeak = prePeak
             signalDetected = True
             print("Peak Detected: ", curPeak)
-    return curPeak, curIndex, prePeak, preIndex, continueFlag, signalDetected
+    return curPeak, curTS, prePeak, preTS, continueFlag, signalDetected
 
 def index2TS(Index, frameTime, RATE, CHUNK):
     # frameTime is in microsecond
