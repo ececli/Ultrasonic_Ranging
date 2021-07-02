@@ -121,7 +121,7 @@ while True:
     firstChunk = True
     
     prePeak1=0
-    preIndex1=0
+    prePeakTS1=0
     continueFlag1 = True
     signalDetected1 = False
 
@@ -197,13 +197,6 @@ mqttc.closeClient()
 print("Mic - OFF")
 
 
-
-print("--------------------")
-print(Ranging_Record)
-
-plt.figure()
-plt.plot(Ranging_Record,'r.')
-plt.show()
 
 func.getStat(Ranging_Record,label = "Distance 1", unit = "m")
 

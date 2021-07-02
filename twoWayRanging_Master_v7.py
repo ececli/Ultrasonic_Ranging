@@ -121,22 +121,22 @@ while True:
     firstChunk = True
     
     prePeak1=0
-    preIndex1=0
+    prePeakTS1=0
     continueFlag1 = True
     signalDetected1 = False
     
     prePeak2=0
-    preIndex2=0
+    prePeakTS2=0
     continueFlag2 = True
     signalDetected2 = False
     
     prePeak3=0
-    preIndex3=0
+    prePeakTS3=0
     continueFlag3 = True
     signalDetected3 = False
     
     prePeak4=0
-    preIndex4=0
+    prePeakTS4=0
     continueFlag4 = True
     signalDetected4 = False
     
@@ -169,22 +169,19 @@ while True:
         # ave,peak,Index = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
         # ave,peak,Index = func.Nader_PeakDetection(frames,RefSignal,THRESHOLD)
         peak1, peak2, peak3, peak4, Index1, Index2, Index3, Index4 = func.multi_PeakDetection(frames,RefSignal,RefSignal2,LPF_A,LPF_B, THRESHOLD)
+        peakTS1 = func.index2TS(Index1, frameTime, RATE, CHUNK)
+        peakTS2 = func.index2TS(Index2, frameTime, RATE, CHUNK)
+        peakTS3 = func.index2TS(Index3, frameTime, RATE, CHUNK)
+        peakTS4 = func.index2TS(Index4, frameTime, RATE, CHUNK)
         if not signalDetected1:
-            peak1, Index1, prePeak1, preIndex1, continueFlag1, signalDetected1= func.lookBack(peak1, Index1, prePeak1, preIndex1, continueFlag1, THRESHOLD)
-            if signalDetected1:
-                peakTS1 = func.index2TS(Index1, frameTime, RATE, CHUNK)
+            peak1, peakTS1, prePeak1, prePeakTS1, continueFlag1, signalDetected1= func.lookBack(peak1, peakTS1, prePeak1, prePeakTS1, continueFlag1, THRESHOLD)
         if not signalDetected2:
-            peak2, Index2, prePeak2, preIndex2, continueFlag2, signalDetected2= func.lookBack(peak2, Index2, prePeak2, preIndex2, continueFlag2, THRESHOLD)
-            if signalDetected2:
-                peakTS2 = func.index2TS(Index2, frameTime, RATE, CHUNK)
+            peak2, peakTS2, prePeak2, prePeakTS2, continueFlag2, signalDetected2= func.lookBack(peak2, peakTS2, prePeak2, prePeakTS2, continueFlag2, THRESHOLD)
         if not signalDetected3:
-            peak3, Index3, prePeak3, preIndex3, continueFlag3, signalDetected3= func.lookBack(peak3, Index3, prePeak3, preIndex3, continueFlag3, THRESHOLD)
-            if signalDetected3:
-                peakTS3 = func.index2TS(Index3, frameTime, RATE, CHUNK)
+            peak3, peakTS3, prePeak3, prePeakTS3, continueFlag3, signalDetected3= func.lookBack(peak3, peakTS3, prePeak3, prePeakTS3, continueFlag3, THRESHOLD)
         if not signalDetected4:
-            peak4, Index4, prePeak4, preIndex4, continueFlag4, signalDetected4= func.lookBack(peak4, Index4, prePeak4, preIndex4, continueFlag4, THRESHOLD)
-            if signalDetected4:
-                peakTS4 = func.index2TS(Index4, frameTime, RATE, CHUNK)            
+            peak4, peakTS4, prePeak4, prePeakTS4, continueFlag4, signalDetected4= func.lookBack(peak4, peakTS4, prePeak4, prePeakTS4, continueFlag4, THRESHOLD)
+                       
         
         # if signalDetected1 or signalDetected2 or signalDetected3 or signalDetected4:
         #     anySignalDetected = True
