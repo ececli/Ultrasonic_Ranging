@@ -173,19 +173,19 @@ while True:
         if not signalDetected1:
             peak1, Index1, prePeak1, preIndex1, continueFlag1, signalDetected1= func.lookBack(peak1, Index1, prePeak1, preIndex1, continueFlag1, THRESHOLD)
             if signalDetected1:
-                peakTS1 = index2TS(Index1, frameTime, RATE, CHUNK)
+                peakTS1 = func.index2TS(Index1, frameTime, RATE, CHUNK)
         if not signalDetected2:
             peak2, Index2, prePeak2, preIndex2, continueFlag2, signalDetected2= func.lookBack(peak2, Index2, prePeak2, preIndex2, continueFlag2, THRESHOLD)
             if signalDetected2:
-                peakTS2 = index2TS(Index2, frameTime, RATE, CHUNK)
+                peakTS2 = func.index2TS(Index2, frameTime, RATE, CHUNK)
         if not signalDetected3:
             peak3, Index3, prePeak3, preIndex3, continueFlag3, signalDetected3= func.lookBack(peak3, Index3, prePeak3, preIndex3, continueFlag3, THRESHOLD)
             if signalDetected3:
-                peakTS3 = index2TS(Index3, frameTime, RATE, CHUNK)
+                peakTS3 = func.index2TS(Index3, frameTime, RATE, CHUNK)
         if not signalDetected4:
             peak4, Index4, prePeak4, preIndex4, continueFlag4, signalDetected4= func.lookBack(peak4, Index4, prePeak4, preIndex4, continueFlag4, THRESHOLD)
             if signalDetected4:
-                peakTS4 = index2TS(Index4, frameTime, RATE, CHUNK)            
+                peakTS4 = func.index2TS(Index4, frameTime, RATE, CHUNK)            
         
         # if signalDetected1 or signalDetected2 or signalDetected3 or signalDetected4:
         #     anySignalDetected = True
