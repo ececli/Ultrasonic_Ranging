@@ -130,8 +130,8 @@ while True:
             continue
         # ave,peak,Index = func.matchedFilter(frames,RefSignal)
         # ave,peak,Index = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
-        # ave,peak,Index = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
-        ave,peak,Index = func.Nader_PeakDetection(frames,RefSignal,THRESHOLD)
+        ave,peak,Index = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
+        # ave,peak,Index = func.Nader_PeakDetection(frames,RefSignal,THRESHOLD)
         if peak > THRESHOLD or continueFlag == False:
             if continueFlag: # first time detected, need to see one more frame
                 continueFlag = False
@@ -173,7 +173,7 @@ while True:
         mqttc.sendMsg(topic1,T3_T2)
         mqttc.sendMsg(topic2,T3_T2_NamSample)
         TimeOutCount = 0 # reset timeout counter
-
+        time.sleep(0.1)
     counter_NumRanging = counter_NumRanging + 1
     # if counter_NumRanging>= NumRanging:
     #     break
