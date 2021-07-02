@@ -152,6 +152,7 @@ def Nader_Method(autoc,threshold):
 
 
 def lookBack(curPeak, curIndex, prePeak, preIndex, continueFlag, THRESHOLD):
+    signalDetected = False
     if curPeak > THRESHOLD or continueFlag == False:
         if continueFlag:
             continueFlag = False

@@ -194,7 +194,7 @@ while True:
             stream.stop_stream()
             break
 
-        if counter == int(TIMEOUTCOUNTS/3):
+        if counter == int(TIMEOUTCOUNTS):
             print("Time out")
             stream.stop_stream()
             break
@@ -203,29 +203,40 @@ while True:
         frameTime.pop(0)
         
     # print("* done")
-    if signalDetected1:
-        T4_T1 = peakTS1 - T1
-        if T4_T1 < 0:
-            T4_T1 = T4_T1 + wrapsFix
-        T4T1Delay_micros1[counter_NumRanging] = T4_T1
+    if signalDetected1 or signalDetected2 or signalDetected3 or signalDetected4:
+        MSG = [0,0,0,0]
+        if signalDetected1:
+            T4_T1 = peakTS1 - T1
+            if T4_T1 < 0:
+                T4_T1 = T4_T1 + wrapsFix
+            T4T1Delay_micros1[counter_NumRanging] = T4_T1
+            MSG[0] = T4_T1
+            
+        if signalDetected2:
+            T4_T1 = peakTS2 - T1
+            if T4_T1 < 0:
+                T4_T1 = T4_T1 + wrapsFix
+            T4T1Delay_micros2[counter_NumRanging] = T4_T1
+            MSG[1] = T4_T1
+            
+        if signalDetected3:
+            T4_T1 = peakTS3 - T1
+            if T4_T1 < 0:
+                T4_T1 = T4_T1 + wrapsFix
+            T4T1Delay_micros3[counter_NumRanging] = T4_T1
+            MSG[2] = T4_T1
+            
+        if signalDetected4:
+            T4_T1 = peakTS4 - T1
+            if T4_T1 < 0:
+                T4_T1 = T4_T1 + wrapsFix
+            T4T1Delay_micros4[counter_NumRanging] = T4_T1
+            MSG[3] = T4_T1
         
-    if signalDetected2:
-        T4_T1 = peakTS2 - T1
-        if T4_T1 < 0:
-            T4_T1 = T4_T1 + wrapsFix
-        T4T1Delay_micros2[counter_NumRanging] = T4_T1
-        
-    if signalDetected3:
-        T4_T1 = peakTS3 - T1
-        if T4_T1 < 0:
-            T4_T1 = T4_T1 + wrapsFix
-        T4T1Delay_micros3[counter_NumRanging] = T4_T1
-        
-    if signalDetected4:
-        T4_T1 = peakTS4 - T1
-        if T4_T1 < 0:
-            T4_T1 = T4_T1 + wrapsFix
-        T4T1Delay_micros4[counter_NumRanging] = T4_T1
+        while True:
+            if mqttc.checkTopicDataLength(topic1)>=1:
+                break
+        T3_T2 = mqttc.readTopicData(topic1)
         
         
     counter_NumRanging = counter_NumRanging + 1
@@ -244,34 +255,7 @@ print("Mic - OFF")
 
 
 print("--------------------")
-print(T4T1Delay_micros)
-print(T4T1Delay_NumSample)
-print("--------------------")
-print(T3T2Delay_micros)
-print(T3T2Delay_NumSample)
-print("--------------------")
-
-np.savetxt("Ranging.csv",[Ranging1,Ranging2], fmt="%.4f", delimiter = ",")
-
-func.getStat(Ranging1,label = "Distance 1", unit = "m")
-func.getStat(Ranging2,label = "Distance 2", unit = "m")
-
-
-
-# For debug only:
-func.getOutputFig(fulldata[0],RefSignal,LPF_B,LPF_A)
-func.getOutputFig_IQMethod(fulldata[0], RefSignal, RefSignal2)
-
-# To compare different speaker:
-peak = np.maximum(peak_cur,peak_pre)
-print("Mean Peak: ",np.mean(peak))
-print("Std of Peak: ",np.std(peak))
-
-plt.figure()
-plt.plot(peak,'r.')
-plt.xlabel('Index of Samples')
-plt.ylabel('Peak Value')
-plt.show()
-
-
-
+print(T4T1Delay_micros1)
+print(T4T1Delay_micros2)
+print(T4T1Delay_micros3)
+print(T4T1Delay_micros4)
