@@ -97,9 +97,37 @@ def Nader_PeakDetection(frames,refSignal,threshold):
     sig = np.concatenate(frames)
     autoc = np.abs(np.correlate(sig, refSignal, mode = 'valid'))
     ave = np.mean(autoc)
+    peak, Index = Nader_Method(autoc,threshold)
+    return ave, peak, Index
+
+
+
+def multi_PeakDetection(frames,refSignal1,refSignal2,LPF_A,LPF_B, threshold):
+    # compare different methods at the same time
+    sig = np.concatenate(frames)
+    autoc1 = np.correlate(sig, refSignal1, mode = 'valid')
+    autoc2 = np.correlate(sig, refSignal2, mode = 'valid')
+    autoc = np.sqrt((autoc1*autoc1 + autoc2*autoc2)/2)
+    abs_autoc1 = np.abs(autoc1)
+    filtered = signal.lfilter(LPF_B, LPF_A, abs_autoc1)
+    
+    peak1 = np.max(abs_autoc1)
+    peak2 = np.max(autoc)
+    peak3 = np.max(filtered)
+    
+    Index1 = np.argmax(abs_autoc1)
+    Index2 = np.argmax(autoc)
+    Index3 = np.argmax(filtered)
+    
+    peak4, Index4 = Nader_Method(abs_autoc1,threshold)
+    
+    return peak1, peak2, peak3, peak4, Index1, Index2, Index3, Index4
+
+
+def Nader_Method(autoc,threshold):
     peak = np.max(autoc)
     Index = np.argmax(autoc)
-    if peak > threshold:
+    if np.max(autoc) > threshold:
         # fit lines
         localPeaks = signal.argrelextrema(autoc, np.greater)
         aaa = autoc[localPeaks[0]]>=threshold
@@ -108,15 +136,40 @@ def Nader_PeakDetection(frames,refSignal,threshold):
         if len(goodPeaksIndex[goodPeaksIndex <= Index])>=2:
             z1 = np.polyfit(goodPeaksIndex[goodPeaksIndex<=Index], goodPeaks[goodPeaksIndex<=Index], 1)
         else:
-            return ave,peak,Index
+            return peak,Index
+        
         if len(goodPeaksIndex[goodPeaksIndex >= Index])>=2:
             z2 = np.polyfit(goodPeaksIndex[goodPeaksIndex>=Index], goodPeaks[goodPeaksIndex>=Index], 1)
         else:
-            return ave,peak,Index
+            return peak,Index
+        
         NaderIndex = int(np.round((z2[1] - z1[1])/(z1[0]-z2[0])))
-        return ave,peak,NaderIndex
+        return peak,NaderIndex
     else:
-        return ave,peak,Index
+        return peak,Index
+
+
+
+
+def lookBack(curPeak, curIndex, prePeak, preIndex, continueFlag, THRESHOLD):
+    if curPeak > THRESHOLD or continueFlag == False:
+        if continueFlag:
+            continueFlag = False
+            prePeak = curPeak
+            preIndex = curIndex
+        else: 
+            # stream.stop_stream()            
+            if curPeak <= prePeak:
+                curIndex = preIndex
+                curPeak = prePeak
+            signalDetected = True
+            print("Peak Detected: ", curPeak)
+    return curPeak, curIndex, prePeak, preIndex, continueFlag, signalDetected
+
+def index2TS(Index, frameTime, RATE, CHUNK):
+    # frameTime is in microsecond
+    # return TS is in microsecond
+    return frameTime[0] + int(1000000*(Index/RATE - CHUNK/RATE))
 
 
 def preProcessingData(data,FORMAT):

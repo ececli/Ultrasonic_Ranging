@@ -79,7 +79,7 @@ while True:
     fulldata.append(ndata)
     fullTS.append(currentTime)
     counter = counter + 1
-    if counter == 500:
+    if counter == 1000:
         break
 
 # stop Recording

@@ -114,7 +114,7 @@ while True:
     print(counter_NumRanging)
     # Send Signal Out
     T1 = func.sendSingleTone(pi_IO,pin_OUT,f0,duration,ratio)
-
+    time.sleep(0.1)
     # Turn on listening mode
     stream.start_stream()
     frames = []
@@ -145,8 +145,8 @@ while True:
             continue
         # ave,peak,Index = func.matchedFilter(frames,RefSignal)
         # ave,peak,Index = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
-        # ave,peak,Index = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
-        ave,peak,Index = func.Nader_PeakDetection(frames,RefSignal,THRESHOLD)
+        ave,peak,Index = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
+        # ave,peak,Index = func.Nader_PeakDetection(frames,RefSignal,THRESHOLD)
         if peak > THRESHOLD or continueFlag == False:
             if continueFlag:
                 continueFlag = False
