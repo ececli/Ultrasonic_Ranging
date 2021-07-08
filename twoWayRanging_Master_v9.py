@@ -36,14 +36,15 @@ duration = cp.getint("SIGNAL","duration") # microseconds
 THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
 NumRanging = cp.getint("SIGNAL","NumRanging")
 TIMEOUTCOUNTS = cp.getint("SIGNAL","TimeoutCounts")
+IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
 
 broker_address = cp.get("COMMUNICATION",'broker_address')
 topic_t3t2 = cp.get("COMMUNICATION",'topic_t3t2')
 topic_ready2recv = cp.get("COMMUNICATION",'topic_ready2recv')
 topic_counter = cp.get("COMMUNICATION",'topic_counter')
 
-MasterID = cp.get("COMMUNICATION",'MasterID')
-ListenerID = cp.get("COMMUNICATION",'ListenerID')
+MasterID = cp.getint("COMMUNICATION",'MasterID')
+ListenerID = cp.getint("COMMUNICATION",'ListenerID')
 
 # init variables
 SOUNDSPEED = 0.343 # m/ms
