@@ -212,7 +212,11 @@ def micWarmUp(stream,CHUNK,RATE,FORMAT,sec):
             print("Mic - READY")
             return int(np.mean(np.concatenate(ave_data)))
         
-
+def calDuration(T_start,T_end,wrapsFix):
+    duration = T_end - T_start
+    if duration < 0:
+        duration = duration + wrapsFix
+    return duration    
 
 def getStat(a,label = " ", unit = " "):
     meanA = np.mean(a)

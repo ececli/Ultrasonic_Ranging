@@ -38,19 +38,17 @@ NumRanging = cp.getint("SIGNAL","NumRanging")
 TIMEOUTCOUNTS = cp.getint("SIGNAL","TimeoutCounts")
 
 broker_address = cp.get("COMMUNICATION",'broker_address')
-topic1 = cp.get("COMMUNICATION",'topic1')
-topic2 = cp.get("COMMUNICATION",'topic2')
+topic_t3t2 = cp.get("COMMUNICATION",'topic_t3t2')
+topic_ready2recv = cp.get("COMMUNICATION",'topic_ready2recv')
+topic_counter = cp.get("COMMUNICATION",'topic_counter')
 
 
 # init variables
 SOUNDSPEED = 0.343 # m/ms
 wrapsFix = 2**32 # constant
-# fulldata = []
-# fullTS = []
-# peak_pre = []
-# peak_cur = []
+
 counter_NumRanging = 0
-T4T1Delay = np.zeros(NumRanging)
+T4T1Delay = np.zeros(NumRanging) # unit: microsecond
 T3T2Delay = np.zeros(NumRanging)
 Ranging_Record = np.zeros(NumRanging)
 
@@ -76,13 +74,18 @@ pi_IO.hardware_PWM(pin_OUT,0,0)
 
 # communication
 mqttc = myMQTT(broker_address)
-mqttc.registerTopic(topic1)
+mqttc.registerTopic(topic_t3t2)
+mqttc.registerTopic(topic_ready2recv)
+mqttc.registerTopic(topic_counter)
 
 
 # clear msg in topics
-if mqttc.checkTopicDataLength(topic1)>0:
-    mqttc.readTopicData(topic1)
-
+if mqttc.checkTopicDataLength(topic_t3t2)>0:
+    mqttc.readTopicData(topic_t3t2)
+if mqttc.checkTopicDataLength(topic_ready2recv)>0:
+    mqttc.readTopicData(topic_ready2recv)
+if mqttc.checkTopicDataLength(topic_counter)>0:
+    mqttc.readTopicData(topic_counter)
 
 # register mic    
 p = pyaudio.PyAudio()
@@ -109,8 +112,15 @@ print("DC offset of this Mic is ",DCOffset)
 
 
 while True:
-    time.sleep(0.2)
-    print(counter_NumRanging)
+
+    
+    while True:
+        if mqttc.checkTopicDataLength(topic_ready2recv)>=1:
+            ready2recv_Flag = mqttc.readTopicData(topic_ready2recv)
+            if ready2recv_Flag[-1] == 2:
+                print(counter_NumRanging)
+                break
+
     # Send Signal Out
     T1 = func.sendSingleTone(pi_IO,pin_OUT,f0,duration,ratio)
     # time.sleep(0.1)
@@ -119,7 +129,7 @@ while True:
     frames = []
     frameTime = []
     counter = 0
-    firstChunk = True
+    # firstChunk = True
     
     prePeak1=0
     prePeakTS1=0
@@ -130,15 +140,11 @@ while True:
     stream.start_stream()
     while True:
         data = stream.read(CHUNK)
-        # if allSignalDetected:
-        #     stream.stop_stream()
-        #     break
-        # currentTime = time.time()
         currentTime = pi_IO.get_current_tick()
         counter = counter + 1
-        if firstChunk:
-            firstChunk = False
-            continue
+        # if firstChunk:
+        #     firstChunk = False
+        #     continue
         ndata = func.preProcessingData(data,FORMAT)-DCOffset
         frames.append(ndata)
         frameTime.append(currentTime)
@@ -170,20 +176,16 @@ while True:
         
     # print("* done")
     if signalDetected1:
-
-        T4_T1 = peakTS1 - T1
-        if T4_T1 < 0:
-            T4_T1 = T4_T1 + wrapsFix
-        T4T1Delay[counter_NumRanging] = T4_T1
+        T4T1Delay[counter_NumRanging] = func.calDuration(T1, peakTS1, wrapsFix)
         
         while True:
-            if mqttc.checkTopicDataLength(topic1)>=1:
+            if mqttc.checkTopicDataLength(topic_t3t2)>=1:
                 break
-        T3_T2 = mqttc.readTopicData(topic1)
+        T3_T2 = mqttc.readTopicData(topic_t3t2)[-1]
         
-        Ranging = (T4_T1 - T3_T2[-1])/2/1000.0*SOUNDSPEED
+        Ranging = (T4_T1 - T3_T2)/2/1000.0*SOUNDSPEED
         Ranging_Record[counter_NumRanging] = Ranging
-        T3T2Delay[counter_NumRanging] = T3_T2[-1]
+        T3T2Delay[counter_NumRanging] = T3_T2
         
     counter_NumRanging = counter_NumRanging + 1
     if counter_NumRanging >= NumRanging:

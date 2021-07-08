@@ -256,8 +256,45 @@ print("--------------------")
 print(Ranging_Record)
 
 plt.figure()
-plt.plot(Ranging_Record[:,0],'r.')
-plt.plot(Ranging_Record[:,1],'b.')
-plt.plot(Ranging_Record[:,2],'k.')
-plt.plot(Ranging_Record[:,3],'m.')
+# ax = plt.subplot(1,1,1)
+plt.plot(Ranging_Record[:,0],'r.',label="Simple")
+plt.plot(Ranging_Record[:,3],'m.',label="Nader Method")
+plt.plot(Ranging_Record[:,1],'b.',label="Non-coherent")
+plt.plot(Ranging_Record[:,2],'k.',label="LFP")
+
+plt.ylabel('Estimated Distance (m)')
+plt.legend(loc="lower left")
+plt.show()
+
+print(np.mean(Ranging_Record,axis=0))
+print(np.std(Ranging_Record,axis=0))
+
+
+plt.figure()
+plt.hist(Ranging_Record[:,0],bins='auto')
+plt.xlabel('Distance (m)')
+plt.show()
+
+plt.figure()
+plt.hist(Ranging_Record[:,1],bins='auto')
+plt.xlabel('Distance (m)')
+plt.show()
+
+plt.figure()
+plt.hist(Ranging_Record[:,2],bins='auto')
+plt.xlabel('Distance (m)')
+plt.show()
+
+plt.figure()
+plt.hist(Ranging_Record[:,3],bins='auto')
+plt.xlabel('Distance (m)')
+plt.show()
+
+
+plt.figure()
+plt.hist(Ranging_Record[:,0]-0.5,bins='auto', color='r')
+plt.hist(Ranging_Record[:,1]-1,bins='auto', color='b')
+plt.hist(Ranging_Record[:,2],bins='auto', color='k')
+plt.hist(Ranging_Record[:,3],bins='auto', color='m')
+plt.xlabel('Distance (m)')
 plt.show()
