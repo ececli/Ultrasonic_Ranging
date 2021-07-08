@@ -188,7 +188,8 @@ while True:
         
     # print("* done")
     if signalDetected1:
-        T4T1Delay[counter_NumRanging] = func.calDuration(T1, peakTS1, wrapsFix)
+        T4_T1 = func.calDuration(T1, peakTS1, wrapsFix)
+        T4T1Delay[counter_NumRanging] = T4_T1
         
         while True:
             if mqttc.checkTopicDataLength(topic_t3t2)>=1:
