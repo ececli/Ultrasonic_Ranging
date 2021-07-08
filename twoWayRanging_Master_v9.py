@@ -116,7 +116,7 @@ print("DC offset of this Mic is ",DCOffset)
 
 while True:
 
-    
+    time.sleep(0.1)
     while True:
         if mqttc.checkTopicDataLength(topic_ready2recv)>=1:
             ready2recv_Flag = mqttc.readTopicData(topic_ready2recv)
@@ -157,13 +157,15 @@ while True:
         if len(frames) < NumReqFrames:
             continue
         # ave,peak,Index = func.matchedFilter(frames,RefSignal)
-        # ave,peak,Index = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
-        ave,peak1,Index1 = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
+        ave,peak1,Index1 = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
+        # ave,peak1,Index1 = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
         # ave,peak,Index = func.Nader_PeakDetection(frames,RefSignal,THRESHOLD)
         # peak1, peak2, peak3, peak4, Index1, Index2, Index3, Index4 = func.multi_PeakDetection(frames,RefSignal,RefSignal2,LPF_A,LPF_B, THRESHOLD)
         
         GlobalIndex = (counter-NumReqFrames)*CHUNK+Index1
         if GlobalIndex <= IgnoredSamples:
+            frames.pop(0)
+            frameTime.pop(0)
             continue
         else:
             if not ready2recv_Flag:
