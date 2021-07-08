@@ -42,6 +42,8 @@ topic_t3t2 = cp.get("COMMUNICATION",'topic_t3t2')
 topic_ready2recv = cp.get("COMMUNICATION",'topic_ready2recv')
 topic_counter = cp.get("COMMUNICATION",'topic_counter')
 
+MasterID = cp.get("COMMUNICATION",'MasterID')
+ListenerID = cp.get("COMMUNICATION",'ListenerID')
 
 # init variables
 SOUNDSPEED = 0.343 # m/ms
@@ -117,7 +119,7 @@ while True:
     while True:
         if mqttc.checkTopicDataLength(topic_ready2recv)>=1:
             ready2recv_Flag = mqttc.readTopicData(topic_ready2recv)
-            if ready2recv_Flag[-1] == 2:
+            if ready2recv_Flag[-1] == ListenerID:
                 print(counter_NumRanging)
                 break
 
@@ -129,6 +131,7 @@ while True:
     frames = []
     frameTime = []
     counter = 0
+    ready2recv_Flag = False
     # firstChunk = True
     
     prePeak1=0
@@ -142,9 +145,7 @@ while True:
         data = stream.read(CHUNK)
         currentTime = pi_IO.get_current_tick()
         counter = counter + 1
-        # if firstChunk:
-        #     firstChunk = False
-        #     continue
+        
         ndata = func.preProcessingData(data,FORMAT)-DCOffset
         frames.append(ndata)
         frameTime.append(currentTime)
@@ -159,6 +160,16 @@ while True:
         ave,peak1,Index1 = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
         # ave,peak,Index = func.Nader_PeakDetection(frames,RefSignal,THRESHOLD)
         # peak1, peak2, peak3, peak4, Index1, Index2, Index3, Index4 = func.multi_PeakDetection(frames,RefSignal,RefSignal2,LPF_A,LPF_B, THRESHOLD)
+        
+        GlobalIndex = (counter-NumReqFrames)*CHUNK+Index1
+        if GlobalIndex <= IgnoredSamples:
+            continue
+        else:
+            if not ready2recv_Flag:
+                ready2recv_Flag = True
+                mqttc.sendMsg(topic_ready2recv,MasterID)
+        
+        
         peakTS1 = func.index2TS(Index1, frameTime, RATE, CHUNK)
         if not signalDetected1:
             peak1, peakTS1, prePeak1, prePeakTS1, continueFlag1, signalDetected1= func.lookBack(peak1, peakTS1, prePeak1, prePeakTS1, continueFlag1, THRESHOLD)
