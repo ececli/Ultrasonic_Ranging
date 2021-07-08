@@ -35,14 +35,15 @@ duration = cp.getint("SIGNAL","duration") # microseconds
 THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
 NumRanging = cp.getint("SIGNAL","NumRanging")
 TIMEOUTCOUNTS = cp.getint("SIGNAL","TimeoutCounts")
+IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
 
 broker_address = cp.get("COMMUNICATION",'broker_address')
 topic_t3t2 = cp.get("COMMUNICATION",'topic_t3t2')
 topic_ready2recv = cp.get("COMMUNICATION",'topic_ready2recv')
 topic_counter = cp.get("COMMUNICATION",'topic_counter')
 
-MasterID = cp.get("COMMUNICATION",'MasterID')
-ListenerID = cp.get("COMMUNICATION",'ListenerID')
+MasterID = cp.getint("COMMUNICATION",'MasterID')
+ListenerID = cp.getint("COMMUNICATION",'ListenerID')
 
 # init variables
 SOUNDSPEED = 0.343 # m/ms
@@ -138,7 +139,7 @@ while True:
         # ave,peak,Index = func.Nader_PeakDetection(frames,RefSignal,THRESHOLD)
         # peak1, peak2, peak3, peak4, Index1, Index2, Index3, Index4 = func.multi_PeakDetection(frames,RefSignal,RefSignal2,LPF_A,LPF_B, THRESHOLD)
         
-        GlobalIndex = (counter-NemReqFrames)*CHUNK + Index1
+        GlobalIndex = (counter-NumReqFrames)*CHUNK + Index1
         if GlobalIndex <= IgnoredSamples:
             continue
         else:
