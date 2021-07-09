@@ -116,7 +116,7 @@ print("DC offset of this Mic is ",DCOffset)
 
 while True:
 
-    time.sleep(0.1)
+    # time.sleep(0.1)
     while True:
         if mqttc.checkTopicDataLength(topic_ready2recv)>=1:
             ready2recv_Flag = mqttc.readTopicData(topic_ready2recv)
