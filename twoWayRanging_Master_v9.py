@@ -216,9 +216,13 @@ mqttc.closeClient()
 print("Mic - OFF")
 
 
-
+np.savetxt("Ranging.csv",Ranging_Record, fmt="%.4f", delimiter = ",")
 func.getStat(Ranging_Record,label = "Distance 1", unit = "m")
 
 # For debug only:
 func.getOutputFig(fulldata[0],RefSignal,LPF_B,LPF_A)
 func.getOutputFig_IQMethod(fulldata[0], RefSignal, RefSignal2)
+
+plt.figure()
+plt.hist(Ranging_Record,bins='auto')
+plt.show()
