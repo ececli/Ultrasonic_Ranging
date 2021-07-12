@@ -24,7 +24,7 @@ pin_OUT = cp.getint("SPEAKER","pin_OUT")
 # ratio = 500000
 # f0 = 30000
 # duration = 2000 # microseconds
-numSending = 10
+numSending = 1
 intervalSending = 1 # seconds
 
 pi_IO = pigpio.pi()
