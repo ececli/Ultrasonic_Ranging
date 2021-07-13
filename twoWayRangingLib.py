@@ -200,7 +200,6 @@ def micWarmUp(stream,CHUNK,RATE,FORMAT,sec):
         
     if stream.is_stopped():
         stream.start_stream()
-
     while True:
         data = stream.read(CHUNK)
         ndata = preProcessingData(data,FORMAT)
