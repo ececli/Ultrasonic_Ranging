@@ -127,7 +127,7 @@ while True:
         if mqttc.checkTopicDataLength(topic_ready2recv)>=1:
             ready2recv_Flag = mqttc.readTopicData(topic_ready2recv)
             if ready2recv_Flag[-1] == ListenerID: # only read last msg
-                print(counter_NumRanging)
+                # print(counter_NumRanging)
                 break
 
     # Send Signal Out
