@@ -7,3 +7,13 @@ The purpose of this project is to obtain ranging estimation between two Raspberr
 
 
 ## Two-Way Ranging Algorithm
+
+## To Do List
+
+1. Test Murata Speaker at 40kHz
+2. Use chirp or barker codes
+3. Optimizing code (numba)
+4. Compare different method (low pass filter vs. non-coherence detector)
+5. Battery power up Raspberry Pi
+6. Try "top" and "nice"
+7. Analyzing results with histogram and cdf
