@@ -50,13 +50,15 @@ SOUNDSPEED = 0.343 # m/ms
 wrapsFix = 2**32 # constant
 
 counter_NumRanging = 0
-T3T2Delay = []
+
 
 
 
 # for debug purpose, record all the data
 fulldata = np.frompyfunc(list, 0, 1)(np.empty((NumRanging*2), dtype=object))
 fullTS = np.frompyfunc(list, 0, 1)(np.empty((NumRanging*2), dtype=object))
+T3T2Delay = []
+Peaks_record = []
 
 NumReqFrames = int(np.ceil(RATE / CHUNK * duration/1000000.0) + 1.0)
 RefSignal = func.getRefSignal(f0,duration/1000000.0,RATE, 0)
@@ -147,8 +149,8 @@ while True:
         if len(frames) < NumReqFrames:
             continue
         # ave,peak,Index = func.matchedFilter(frames,RefSignal)
-        # ave,peak1,Index1 = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
-        ave,peak1,Index1 = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
+        ave,peak1,Index1 = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
+        # ave,peak1,Index1 = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
         # ave,peak,Index = func.Nader_PeakDetection(frames,RefSignal,THRESHOLD)
         # peak1, peak2, peak3, peak4, Index1, Index2, Index3, Index4 = func.multi_PeakDetection(frames,RefSignal,RefSignal2,LPF_A,LPF_B, THRESHOLD)
         
@@ -164,7 +166,7 @@ while True:
                 ### TBD
                 if counter > int(TIMEOUTCOUNTS):
                     # previously use int(TIMEOUTCOUNTS/2)
-                    print("Time out")
+                    print("Time out at ", counter_NumRanging)
                     TimeOutCount = TimeOutCount + 1
                     break
             
@@ -177,7 +179,7 @@ while True:
                 peak1 = prePeak1
                 peakTS1 = prePeakTS1
             
-            print("Peak: ",peak1)
+            # print("Peak: ",peak1)
             break
         
     stream.stop_stream()
@@ -187,12 +189,13 @@ while True:
             if mqttc.checkTopicDataLength(topic_ready2recv)>=1:
                 ready2recv_Flag = mqttc.readTopicData(topic_ready2recv)
                 if ready2recv_Flag[-1] == MasterID:
-                    print(counter_NumRanging)
+                    # print(counter_NumRanging)
                     break
         T3 = func.sendWave(pi_IO, wid)
 
         T3_T2 = func.calDuration(peakTS1, T3, wrapsFix)
         T3T2Delay.append(T3_T2)
+        Peaks_record.append(peak1)
 
         mqttc.sendMsg(topic_t3t2,T3_T2)
         TimeOutCount = 0 # reset timeout counter
@@ -221,4 +224,8 @@ func.getOutputFig(fulldata[0],RefSignal,LPF_B,LPF_A)
 func.getOutputFig_IQMethod(fulldata[0], RefSignal, RefSignal2)
 
 
-
+plt.figure()
+plt.plot(Peaks_record,'.')
+plt.xlabel("Index of Trials")
+plt.ylabel("Peak values")
+plt.show()
