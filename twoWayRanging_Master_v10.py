@@ -53,14 +53,16 @@ SOUNDSPEED = 0.343 # m/ms
 wrapsFix = 2**32 # constant
 
 counter_NumRanging = 0
-T4T1Delay = np.zeros(NumRanging) # unit: microsecond
-T3T2Delay = np.zeros(NumRanging)
-Ranging_Record = np.zeros(NumRanging)
+
 
 
 # for debug purpose, record all the data
 fulldata = np.frompyfunc(list, 0, 1)(np.empty((NumRanging), dtype=object))
 fullTS = np.frompyfunc(list, 0, 1)(np.empty((NumRanging), dtype=object))
+T4T1Delay = np.zeros(NumRanging) # unit: microsecond
+T3T2Delay = np.zeros(NumRanging)
+Ranging_Record = np.zeros(NumRanging)
+Peaks_record = np.zeros(NumRanging)
 
 NumReqFrames = int(np.ceil(RATE / CHUNK * duration/1000000.0) + 1.0)
 RefSignal = func.getRefSignal(f0,duration/1000000.0,RATE, 0)
@@ -170,8 +172,8 @@ while True:
         if len(frames) < NumReqFrames:
             continue
         # ave,peak,Index = func.matchedFilter(frames,RefSignal)
-        # ave,peak1,Index1 = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
-        ave,peak1,Index1 = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
+        ave,peak1,Index1 = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
+        # ave,peak1,Index1 = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
         # peak1, peak2, peak3, peak4, Index1, Index2, Index3, Index4 = func.multi_PeakDetection(frames,RefSignal,RefSignal2,LPF_A,LPF_B, THRESHOLD)
         
         peakTS1 = func.index2TS(Index1, frameTime, RATE, CHUNK)
@@ -183,7 +185,7 @@ while True:
                 continueFlag1 = False
             else:
                 if counter > int(TIMEOUTCOUNTS):
-                    print("Time out")
+                    print("Time out at ", counter_NumRanging)
                     break
             
             frames.pop(0)
@@ -195,7 +197,7 @@ while True:
                 peak1 = prePeak1
                 peakTS1 = prePeakTS1
             
-            print("Peak: ",peak1)
+            # print("Peak: ",peak1)
             break
 
         
@@ -203,6 +205,7 @@ while True:
     if signalDetected1:
         T4_T1 = func.calDuration(T1, peakTS1, wrapsFix)
         T4T1Delay[counter_NumRanging] = T4_T1
+        Peaks_record[counter_NumRanging] = peak1
         
         while True:
             if mqttc.checkTopicDataLength(topic_t3t2)>=1:
@@ -234,6 +237,12 @@ func.getStat(Ranging_Record,label = "Distance 1", unit = "m")
 # For debug only:
 func.getOutputFig(fulldata[0],RefSignal,LPF_B,LPF_A)
 func.getOutputFig_IQMethod(fulldata[0], RefSignal, RefSignal2)
+
+plt.figure()
+plt.plot(Peaks_record,'.')
+plt.xlabel("Index of Trials")
+plt.ylabel("Peak values")
+plt.show()
 
 plt.figure()
 plt.hist(Ranging_Record,bins=30)

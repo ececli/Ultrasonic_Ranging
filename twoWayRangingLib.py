@@ -270,7 +270,9 @@ def micWarmUp(stream,CHUNK,RATE,FORMAT,sec):
 def calDuration(T_start,T_end,wrapsFix):
     duration = T_end - T_start
     if duration < 0:
+        print("wrap fix happens,duration = ",duration)
         duration = duration + wrapsFix
+        print("fixed duration = ",duration)
     return duration    
 
 def getStat(a,label = " ", unit = " "):
