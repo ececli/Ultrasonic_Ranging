@@ -110,7 +110,7 @@ print("DC offset of this Mic is ",DCOffset)
 TimeOutFlag = False
 TimeOutCount = 0
 while True:
-    print(counter_NumRanging)
+    # print(counter_NumRanging)
     if TimeOutFlag:
         break
     
