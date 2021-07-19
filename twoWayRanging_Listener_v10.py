@@ -149,8 +149,8 @@ while True:
         if len(frames) < NumReqFrames:
             continue
         # ave,peak,Index = func.matchedFilter(frames,RefSignal)
-        ave,peak1,Index1 = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
-        # ave,peak1,Index1 = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
+        # ave,peak1,Index1 = func.LPF_PeakDetection(frames, RefSignal, LPF_A, LPF_B)
+        ave,peak1,Index1 = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
         # ave,peak,Index = func.Nader_PeakDetection(frames,RefSignal,THRESHOLD)
         # peak1, peak2, peak3, peak4, Index1, Index2, Index3, Index4 = func.multi_PeakDetection(frames,RefSignal,RefSignal2,LPF_A,LPF_B, THRESHOLD)
         
