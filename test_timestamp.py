@@ -13,7 +13,7 @@ pi_IO = pigpio.pi()
 pi_IO.set_mode(pin_OUT,pigpio.OUTPUT)
 pi_IO.hardware_PWM(pin_OUT,0,0)
 
-NumRealization = 10000
+NumRealization = 1000000
 t_record = np.zeros(NumRealization)
 
 # pi_IO.hardware_PWM(pin,f0,ratio)
@@ -24,4 +24,11 @@ for count in range(NumRealization):
 durations = np.diff(t_record)
 plt.figure()
 plt.plot(durations,'.')
+plt.xlabel("Index of Realizations")
+plt.ylabel("t1-t0 (microsecond)")
+plt.show()
+
+plt.figure()
+plt.hist(durations[durations<=200],bins=50)
+plt.xlabel("t1-t0 (microsecond)")
 plt.show()
