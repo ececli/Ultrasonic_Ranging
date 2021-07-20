@@ -35,7 +35,7 @@ duration = cp.getint("SIGNAL","duration") # microseconds
 THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
 NumRanging = cp.getint("SIGNAL","NumRanging")
 TIMEOUTCOUNTS = cp.getint("SIGNAL","TimeoutCounts")
-NumIgnoredFrame = cp.getint("SIGNAL","NumIgnoredFrame")
+IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
 
 broker_address = cp.get("COMMUNICATION",'broker_address')
 topic_t3t2 = cp.get("COMMUNICATION",'topic_t3t2')
@@ -60,6 +60,7 @@ fullTS = np.frompyfunc(list, 0, 1)(np.empty((NumRanging*2), dtype=object))
 T3T2Delay = []
 Peaks_record = []
 
+NumIgnoredFrame = int(np.ceil(IgnoredSamples/CHUNK))
 NumReqFrames = int(np.ceil(RATE / CHUNK * duration/1000000.0) + 1.0)
 RefSignal = func.getRefSignal(f0,duration/1000000.0,RATE, 0)
 RefSignal2 = func.getRefSignal(f0,duration/1000000.0,RATE, np.pi/2)
@@ -179,7 +180,7 @@ while True:
                 peak1 = prePeak1
                 peakTS1 = prePeakTS1
             
-            # print("Peak: ",peak1)
+            print("Peak: ",peak1)
             break
         
     stream.stop_stream()
@@ -189,7 +190,7 @@ while True:
             if mqttc.checkTopicDataLength(topic_ready2recv)>=1:
                 ready2recv_Flag = mqttc.readTopicData(topic_ready2recv)
                 if ready2recv_Flag[-1] == MasterID:
-                    # print(counter_NumRanging)
+                    print(counter_NumRanging)
                     break
         T3 = func.sendWave(pi_IO, wid)
 
