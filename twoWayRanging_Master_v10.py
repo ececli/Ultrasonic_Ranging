@@ -38,7 +38,7 @@ duration = cp.getint("SIGNAL","duration") # microseconds
 THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
 NumRanging = cp.getint("SIGNAL","NumRanging")
 TIMEOUTCOUNTS = cp.getint("SIGNAL","TimeoutCounts")
-NumIgnoredFrame = cp.getint("SIGNAL","NumIgnoredFrame")
+IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
 
 broker_address = cp.get("COMMUNICATION",'broker_address')
 topic_t3t2 = cp.get("COMMUNICATION",'topic_t3t2')
@@ -64,9 +64,11 @@ T3T2Delay = np.zeros(NumRanging)
 Ranging_Record = np.zeros(NumRanging)
 Peaks_record = np.zeros(NumRanging)
 
+NumIgnoredFrame = int(np.ceil(IgnoredSamples/CHUNK))
 NumReqFrames = int(np.ceil(RATE / CHUNK * duration/1000000.0) + 1.0)
 RefSignal = func.getRefSignal(f0,duration/1000000.0,RATE, 0)
 RefSignal2 = func.getRefSignal(f0,duration/1000000.0,RATE, np.pi/2)
+
 
 # low pass filter method
 nyq = 0.5*RATE
@@ -151,7 +153,8 @@ while True:
     stream.start_stream()
     while True:
         data = stream.read(CHUNK)
-        currentTime = pi_IO.get_current_tick()
+        currentTime = pi_IO.get_current_tick() # version 1
+        # currentTime = time.time() # version 2
         counter = counter + 1
         
         if counter <= NumIgnoredFrame:
@@ -203,7 +206,7 @@ while True:
         
     stream.stop_stream()
     if signalDetected1:
-        T4_T1 = func.calDuration(T1, peakTS1, wrapsFix)
+        T4_T1 = func.calDuration(T1, peakTS1, wrapsFix) # version 1
         T4T1Delay[counter_NumRanging] = T4_T1
         Peaks_record[counter_NumRanging] = peak1
         

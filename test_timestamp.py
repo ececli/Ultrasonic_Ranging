@@ -2,6 +2,7 @@ import pigpio
 import matplotlib.pyplot as plt
 import numpy as np
 import configparser
+import time
 
 # Load Parameters
 confFile = "UR_pyConfig.conf"
@@ -18,7 +19,8 @@ t_record = np.zeros(NumRealization)
 
 # pi_IO.hardware_PWM(pin,f0,ratio)
 for count in range(NumRealization):
-    TS = pi_IO.get_current_tick()
+    # TS = pi_IO.get_current_tick()
+    TS =time.time()
     t_record[count] = TS
 
 durations = np.diff(t_record)

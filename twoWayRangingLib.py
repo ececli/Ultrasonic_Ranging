@@ -3,7 +3,7 @@ import pyaudio
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import signal
-# import time
+import time
 import pigpio
 # from scipy.signal import chirp
 
@@ -70,7 +70,8 @@ def sendWave(pi_IO, wid):
     # OR: f0=25000 with duration 2000
     # To use this function, use createWave and genWaveForm first.
     pi_IO.wave_send_once(wid)
-    startTS = pi_IO.get_current_tick()
+    startTS = pi_IO.get_current_tick() # version 1
+    # startTS = time.time() # version 2
     return startTS
 
 
