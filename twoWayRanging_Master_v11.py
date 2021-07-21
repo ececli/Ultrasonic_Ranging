@@ -250,4 +250,10 @@ plt.figure()
 plt.hist(Ranging_Record,bins=30)
 plt.show()
 
+plt.figure()
+plt.hist(Ranging_Record[(Ranging_Record>0) & (Ranging_Record<3)],bins=30)
+plt.show()
 
+plt.figure()
+plt.plot(Ranging_Record[(Ranging_Record>0) & (Ranging_Record<3)],'r.')
+plt.show()
