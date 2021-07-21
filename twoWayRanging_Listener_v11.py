@@ -180,7 +180,7 @@ while True:
             if mqttc.checkTopicDataLength(topic_ready2recv)>=1:
                 ready2recv_Flag = mqttc.readTopicData(topic_ready2recv)
                 if ready2recv_Flag[-1] == MasterID:
-                    print(counter_NumRanging)
+                    # print(counter_NumRanging)
                     break
         T3 = func.sendWave(pi_IO, wid)
 
@@ -211,7 +211,7 @@ mqttc.closeClient()
 
 
 # For debug only:
-func.getOutputFig(fulldata[0],RefSignal,LPF_B,LPF_A)
+# func.getOutputFig(fulldata[0],RefSignal,LPF_B,LPF_A)
 func.getOutputFig_IQMethod(fulldata[0], RefSignal, RefSignal2)
 
 
