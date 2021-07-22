@@ -321,3 +321,17 @@ def getOutputFig_IQMethod(fulldata, RefSignal1, RefSignal2):
     plt.figure()
     plt.plot(autoc,'b-o')
     plt.show()
+    
+    
+def getOutputFig_IQMethod2(fulldata, RefSignal1, RefSignal2,THRESHOLD, sigLength, th_ratio=0.7):
+    
+    rcvSignal = np.concatenate(fulldata)
+    autoc1 = np.correlate(rcvSignal, RefSignal1, mode = 'valid')
+    autoc2 = np.correlate(rcvSignal, RefSignal2, mode = 'valid')
+    autoc = np.sqrt((autoc1*autoc1 + autoc2*autoc2)/2)
+    peaks, properties = signal.find_peaks(autoc, height=THRESHOLD, distance=sigLength, width=th_ratio*sigLength)
+    print(properties)
+    plt.figure()
+    plt.plot(autoc,'b-o')
+    plt.plot(peaks, autoc[peaks],'bs')
+    plt.show()
