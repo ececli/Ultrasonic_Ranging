@@ -155,7 +155,7 @@ while True:
         # ave,peak1,Index1 = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
         
         autoc = func.noncoherence(frames,RefSignal,RefSignal2)
-        Index1, peak1 = func.NC_detector(autoc,THRESHOLD, NumSigSamples, th_ratio=0.7)
+        Index1, peak1 = func.NC_detector(autoc,THRESHOLD, NumSigSamples, th_ratio=0.65)
         
         if Index1.size>0: # signal detected
             if Index1.size>1: # multiple signal detected, interesting to see
