@@ -145,6 +145,20 @@ def sincos_PeakDetection(frames,refSignal1,refSignal2):
     return ave,peak,Index
 
 
+def noncoherence(frames,refSignal1,refSignal2):
+    # sin-cos method: use two phases reference signals
+    sig = np.concatenate(frames)
+    autoc1 = np.correlate(sig, refSignal1, mode = 'valid')
+    autoc2 = np.correlate(sig, refSignal2, mode = 'valid')
+    autoc = np.sqrt((autoc1*autoc1 + autoc2*autoc2)/2)
+    
+    return autoc
+
+def NC_detector(autoc,THRESHOLD, sigLength, th_ratio=0.7):
+    peaks, _ = signal.find_peaks(autoc, height=THRESHOLD, distance=sigLength, width=th_ratio*sigLength)
+    return peaks, autoc[peaks]
+
+
 
 def Nader_PeakDetection(frames,refSignal,threshold):
     # Nader's method: Use all the local peaks from the raising edge to
