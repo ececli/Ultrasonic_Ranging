@@ -246,7 +246,7 @@ func.getStat(Ranging_Record,label = "Distance 1", unit = "m")
 # For debug only:
 # func.getOutputFig(fulldata[0],RefSignal,LPF_B,LPF_A)
 # func.getOutputFig_IQMethod(fulldata[0], RefSignal, RefSignal2)
-func.getOutputFig_IQMethod2(fulldata, RefSignal1, RefSignal2,THRESHOLD, sigLength, th_ratio=0.7):
+func.getOutputFig_IQMethod2(fulldata[0], RefSignal, RefSignal2,THRESHOLD, NumSigSamples, th_ratio=0.7)
 
 plt.figure()
 plt.plot(Peaks_record,'.')
