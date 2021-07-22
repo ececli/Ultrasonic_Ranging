@@ -333,5 +333,5 @@ def getOutputFig_IQMethod2(fulldata, RefSignal1, RefSignal2,THRESHOLD, sigLength
     print(properties)
     plt.figure()
     plt.plot(autoc,'b-o')
-    plt.plot(peaks, autoc[peaks],'bs')
+    plt.plot(peaks, autoc[peaks],'rs')
     plt.show()
