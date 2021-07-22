@@ -188,7 +188,7 @@ while True:
         # ave,peak1,Index1 = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
         
         autoc = func.noncoherence(frames,RefSignal,RefSignal2)
-        Index1, peak1 = func.NC_detector(autoc,THRESHOLD, NumSigSamples, th_ratio=0.7)
+        Index1, peak1 = func.NC_detector(autoc,THRESHOLD, NumSigSamples, th_ratio=0.65)
         
         if Index1.size>0: # signal detected
             if Index1.size>1: # multiple signal detected, interesting to see
@@ -214,7 +214,7 @@ while True:
     if signalDetected1:
         T4_T1 = func.calDuration(T1, peakTS1, wrapsFix) # version 1
         T4T1Delay[counter_NumRanging] = T4_T1
-        Peaks_record[counter_NumRanging] = peak1
+        Peaks_record[counter_NumRanging] = peak1[0]
         
         while True:
             if mqttc.checkTopicDataLength(topic_t3t2)>=1:
