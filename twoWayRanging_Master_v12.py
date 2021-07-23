@@ -39,6 +39,7 @@ THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
 NumRanging = cp.getint("SIGNAL","NumRanging")
 TIMEOUTCOUNTS = cp.getint("SIGNAL","TimeoutCounts")
 IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
+TH_ratio_width_50 = cp.getfloat("SIGNAL","TH_ratio_width_50")
 
 broker_address = cp.get("COMMUNICATION",'broker_address')
 topic_t3t2 = cp.get("COMMUNICATION",'topic_t3t2')
@@ -188,7 +189,7 @@ while True:
         # ave,peak1,Index1 = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
         
         autoc = func.noncoherence(frames,RefSignal,RefSignal2)
-        Index1, peak1 = func.NC_detector(autoc,THRESHOLD, NumSigSamples, th_ratio=0.65)
+        Index1, peak1 = func.NC_detector(autoc, THRESHOLD, NumSigSamples, th_ratio=TH_ratio_width_50)
         
         if Index1.size>0: # signal detected
             if Index1.size>1: # multiple signal detected, interesting to see
@@ -246,7 +247,12 @@ func.getStat(Ranging_Record,label = "Distance 1", unit = "m")
 # For debug only:
 # func.getOutputFig(fulldata[0],RefSignal,LPF_B,LPF_A)
 # func.getOutputFig_IQMethod(fulldata[0], RefSignal, RefSignal2)
-func.getOutputFig_IQMethod2(fulldata[0], RefSignal, RefSignal2,THRESHOLD, NumSigSamples, th_ratio=0.7)
+func.getOutputFig_IQMethod2(fulldata[0],
+                            RefSignal,
+                            RefSignal2,
+                            THRESHOLD,
+                            NumSigSamples,
+                            th_ratio=TH_ratio_width_50)
 
 plt.figure()
 plt.plot(Peaks_record,'.')

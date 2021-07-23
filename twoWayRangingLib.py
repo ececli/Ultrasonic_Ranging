@@ -335,4 +335,5 @@ def getOutputFig_IQMethod2(fulldata, RefSignal1, RefSignal2,THRESHOLD, sigLength
     plt.figure()
     plt.plot(autoc,'b-o')
     plt.plot(peaks, autoc[peaks],'rs')
+    plt.hlines(y=properties["width_heights"],xmin=properties["left_ips"],xmax=properties["right_ips"])
     plt.show()
