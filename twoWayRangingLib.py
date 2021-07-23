@@ -63,7 +63,7 @@ def deleteWave(pi_IO, wid):
 
 def sendWave(pi_IO, wid):
     # duration is in microsecond
-    # this function (v2) uses wave function in pigpio
+    # this function uses wave function in pigpio
     # pro: controling sending time accurately.
     # con: cannot use arbitrary combination of f0 and duration
     # suggestion: f0=31250 Hz with duration =1600 or 1920 or 3200 microseconds
@@ -71,9 +71,19 @@ def sendWave(pi_IO, wid):
     # To use this function, use createWave and genWaveForm first.
     pi_IO.wave_send_once(wid)
     startTS = pi_IO.get_current_tick() # version 1
-    # startTS = time.time() # version 2
     return startTS
 
+def sendWave_v2(pi_IO, wid):
+    # duration is in microsecond
+    # this function uses wave function in pigpio
+    # pro: controling sending time accurately.
+    # con: cannot use arbitrary combination of f0 and duration
+    # suggestion: f0=31250 Hz with duration =1600 or 1920 or 3200 microseconds
+    # OR: f0=25000 with duration 2000
+    # To use this function, use createWave and genWaveForm first.
+    pi_IO.wave_send_once(wid)
+    startTS = time.time() # version 2
+    return startTS
 
 def sendChirp(pi_IO,pin,f0,f1,duration,sr,ratio):
     # duration is in microsecond
@@ -243,6 +253,10 @@ def index2TS(Index, frameTime, RATE, CHUNK):
     # return TS is in microsecond
     return frameTime[0] + int(1000000*(Index/RATE - CHUNK/RATE))
 
+def index2TS_v2(Index, frameTime, RATE, CHUNK):
+    # frameTime is in second
+    # return TS is in second
+    return frameTime[0] + (Index-CHUNK)/RATE
 
 def preProcessingData(data,FORMAT):
     if FORMAT == pyaudio.paFloat32:
