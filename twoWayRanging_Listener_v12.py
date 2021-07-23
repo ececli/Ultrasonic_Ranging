@@ -36,7 +36,7 @@ THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
 NumRanging = cp.getint("SIGNAL","NumRanging")
 TIMEOUTCOUNTS = cp.getint("SIGNAL","TimeoutCounts")
 IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
-TH_ratio_width_50 = cp.getfloat("SIGNAL","TH_ratio_width_50 ")
+TH_ratio_width_50 = cp.getfloat("SIGNAL","TH_ratio_width_50")
 
 broker_address = cp.get("COMMUNICATION",'broker_address')
 topic_t3t2 = cp.get("COMMUNICATION",'topic_t3t2')
@@ -121,7 +121,6 @@ while True:
     frameTime = []
     counter = 0
     ready2recv_Flag = False
-
     signalDetected1 = False
     
     stream.start_stream()
@@ -152,9 +151,7 @@ while True:
 
         if len(frames) < NumReqFrames:
             continue
-        # ave,peak,Index = func.matchedFilter(frames,RefSignal)
-        # ave,peak1,Index1 = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
-        
+
         autoc = func.noncoherence(frames,RefSignal,RefSignal2)
         Index1, peak1 = func.NC_detector(autoc,THRESHOLD, NumSigSamples, th_ratio=TH_ratio_width_50)
         
@@ -217,8 +214,6 @@ mqttc.closeClient()
 
 
 # For debug only:
-# func.getOutputFig(fulldata[0],RefSignal,LPF_B,LPF_A)
-# func.getOutputFig_IQMethod(fulldata[0], RefSignal, RefSignal2)
 func.getOutputFig_IQMethod2(fulldata[0],
                             RefSignal,
                             RefSignal2,
