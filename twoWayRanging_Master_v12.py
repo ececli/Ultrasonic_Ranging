@@ -74,11 +74,6 @@ NumSigSamples = len(RefSignal)
 lenOutput = CHUNK*NumReqFrames-NumSigSamples+1
 TH_MaxIndex = lenOutput - NumSigSamples
 
-# low pass filter method
-nyq = 0.5*RATE
-normal_cutoff = 1000/nyq
-order = 5
-LPF_B, LPF_A  = signal.butter(order,normal_cutoff, btype='lowpass', analog = False)
 
 # init functions
 pi_IO = pigpio.pi()
@@ -119,7 +114,6 @@ stream = p.open(format=FORMAT,
                 frames_per_buffer=CHUNK)
 
 print("Mic - ON")
-# throw aray first sec seconds data since mic is transient, i.e., not stable
 # throw aray first n seconds data since mic is transient, i.e., not stable
 DCOffset = func.micWarmUp(stream,CHUNK,RATE,FORMAT,warmUpSecond)
 print("DC offset of this Mic is ",DCOffset)
@@ -146,11 +140,6 @@ while True:
     frameTime = []
     counter = 0
     ready2recv_Flag = False
-    # firstChunk = True
-    
-    # prePeak1=0
-    # prePeakTS1=0
-    # continueFlag1 = True
     signalDetected1 = False
 
     
@@ -183,13 +172,12 @@ while True:
 
         if len(frames) < NumReqFrames:
             continue
-        # ave,peak,Index = func.matchedFilter(frames,RefSignal)
-        
-        
-        # ave,peak1,Index1 = func.sincos_PeakDetection(frames, RefSignal, RefSignal2)
         
         autoc = func.noncoherence(frames,RefSignal,RefSignal2)
-        Index1, peak1 = func.NC_detector(autoc, THRESHOLD, NumSigSamples, th_ratio=TH_ratio_width_50)
+        Index1, peak1 = func.NC_detector(autoc,
+                                         THRESHOLD,
+                                         NumSigSamples,
+                                         th_ratio=TH_ratio_width_50)
         
         if Index1.size>0: # signal detected
             if Index1.size>1: # multiple signal detected, interesting to see
@@ -245,8 +233,6 @@ np.savetxt("Ranging.csv",Ranging_Record, fmt="%.4f", delimiter = ",")
 func.getStat(Ranging_Record,label = "Distance 1", unit = "m")
 
 # For debug only:
-# func.getOutputFig(fulldata[0],RefSignal,LPF_B,LPF_A)
-# func.getOutputFig_IQMethod(fulldata[0], RefSignal, RefSignal2)
 func.getOutputFig_IQMethod2(fulldata[0],
                             RefSignal,
                             RefSignal2,
