@@ -351,3 +351,38 @@ def getOutputFig_IQMethod2(fulldata, RefSignal1, RefSignal2,THRESHOLD, sigLength
     plt.plot(peaks, autoc[peaks],'rs')
     plt.hlines(y=properties["width_heights"],xmin=properties["left_ips"],xmax=properties["right_ips"])
     plt.show()
+    
+def errorStat(data, GT, offset=0, bin=100):
+    fixedData = data - offset
+    meanData = np.mean(fixedData)
+    stdData = np.std(fixedData)
+    
+    Error = fixedData - GT
+    meanAbsError = np.mean(np.abs(Error))
+    meanError = np.mean(Error)
+    print("--------------------------------")
+    print("Number of Valid Data is ", len(fixedData))
+    print("Mean Distance = %.3f m" % meanData)
+    print("Std of Distance = %.3f m" % stdData)
+    print("Mean Error = %.3f m" % meanError)
+    print("Mean Absolute Error = %.3f m" % meanAbsError)
+    print("--------------------------------")
+    plt.figure()
+    plt.plot(fixedData,'b.')
+    plt.xlabel('Index of Samples')
+    plt.ylabel("Distance (m)")
+    plt.grid()
+    plt.show()
+    
+    count, bins_count = np.histogram(np.abs(Error), bins=bin)
+    pdf = count / sum(count)
+    cdf = np.cumsum(pdf)
+    plt.figure()
+    axes = plt.gca()
+    axes.set_ylim([0,1])
+    plt.plot(bins_count[1:], cdf)
+    plt.grid()
+    plt.xlabel("Distance (m)")
+    plt.ylabel("Probability")
+    plt.show()
+    return meanError,meanAbsError

@@ -49,6 +49,9 @@ topic_counter = cp.get("COMMUNICATION",'topic_counter')
 MasterID = cp.getint("COMMUNICATION",'MasterID')
 ListenerID = cp.getint("COMMUNICATION",'ListenerID')
 
+Ranging_Offset = cp.getfloat("RANGING","Ranging_Offset")
+Ranging_Max = cp.getint("RANGING",'Ranging_MAX')
+Ranging_Min = cp.getint("RANGING",'Ranging_MIN')
 # init variables
 SOUNDSPEED = 0.343 # m/ms
 wrapsFix = 2**32 # constant
@@ -84,6 +87,7 @@ wf = func.genWaveForm(f0, duration, pin_OUT)
 wid = func.createWave(pi_IO, wf)
 
 # setup communication
+broker_address = "192.168.68.118"
 mqttc = myMQTT(broker_address)
 mqttc.registerTopic(topic_t3t2)
 mqttc.registerTopic(topic_ready2recv)
@@ -246,15 +250,11 @@ plt.xlabel("Index of Trials")
 plt.ylabel("Peak values")
 plt.show()
 
-plt.figure()
-plt.hist(Ranging_Record,bins=30)
-plt.show()
+Ranging_Record = Ranging_Record - Ranging_Offset
+valid_Ranging = Ranging_Record[(Ranging_Record>Ranging_Min) & (Ranging_Record<Ranging_Max)]
 
 plt.figure()
-plt.hist(Ranging_Record[(Ranging_Record>0) & (Ranging_Record<3)],bins=30)
+plt.hist(valid_Ranging,bins=30)
 plt.show()
 
-plt.figure()
-plt.plot(Ranging_Record[(Ranging_Record>0) & (Ranging_Record<3)],'r.')
-plt.show()
-
+func.errorStat(valid_Ranging,GT = 0.86)
