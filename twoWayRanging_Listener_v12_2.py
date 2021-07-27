@@ -80,7 +80,6 @@ wf = func.genWaveForm(f0, duration, pin_OUT)
 wid = func.createWave(pi_IO, wf)
 
 # setup communication
-broker_address = "192.168.68.118"
 mqttc = myMQTT(broker_address)
 mqttc.registerTopic(topic_ready2recv)
 # mqttc.registerTopic(topic_counter)
@@ -127,7 +126,8 @@ while True:
     stream.start_stream()
     while True:
         data = stream.read(CHUNK)
-        currentTime = pi_IO.get_current_tick()
+        # currentTime = pi_IO.get_current_tick()
+        currentTime = time.time()
         counter = counter + 1
         
         if counter <= NumIgnoredFrame:
@@ -160,7 +160,7 @@ while True:
             if Index1.size>1: # multiple signal detected, interesting to see
                 print("At ",counter_NumRanging,counter)
                 print("multiple peaks detected!")
-            peakTS1 = func.index2TS(Index1[0], frameTime, RATE, CHUNK)
+            peakTS1 = func.index2TS_v2(Index1[0], frameTime, RATE, CHUNK)
             signalDetected1 = True
             if Index1[0] <= TH_MaxIndex: # claim the peak is detected
                 break
@@ -186,9 +186,11 @@ while True:
                 if ready2recv_Flag[-1] == MasterID:
                     # print(counter_NumRanging)
                     break
-        T3 = func.sendWave(pi_IO, wid)
+        # T3 = func.sendWave(pi_IO, wid)
+        T3 = func.sendWave_v2(pi_IO, wid)
 
-        T3_T2 = func.calDuration(peakTS1, T3, wrapsFix)
+        # T3_T2 = func.calDuration(peakTS1, T3, wrapsFix)
+        T3_T2 = int(np.round((T3 - peakTS1)*1000000))
         T3T2Delay.append(T3_T2)
         Peaks_record.append(peak1[0])
 
@@ -227,5 +229,6 @@ plt.plot(Peaks_record,'.')
 plt.xlabel("Index of Trials")
 plt.ylabel("Peak values")
 plt.show()
+
 
 
