@@ -4,6 +4,7 @@ The purpose of this project is to obtain ranging estimation between two Raspberr
 
 ## Assembling Hardware
 
+## Setup
 
 
 ## Two-Way Ranging Algorithm
@@ -17,3 +18,5 @@ The purpose of this project is to obtain ranging estimation between two Raspberr
 5. Battery power up Raspberry Pi
 6. Try "top" and "nice"
 7. Analyzing results with histogram and cdf
+8. Check [z-score algorithm](https://github.com/MatteoBattilana/robust-peak-detection-algorithm/blob/master/main.py) and related [link](https://stackoverflow.com/questions/22583391/peak-signal-detection-in-realtime-timeseries-data/22640362#22640362).
+9. Use 2 pins with reversed wave sequence to the buzzer
