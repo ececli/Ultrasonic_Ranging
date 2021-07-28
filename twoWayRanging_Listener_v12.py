@@ -80,7 +80,7 @@ wf = func.genWaveForm(f0, duration, pin_OUT)
 wid = func.createWave(pi_IO, wf)
 
 # setup communication
-broker_address = "192.168.68.118"
+# broker_address = "192.168.68.118"
 mqttc = myMQTT(broker_address)
 mqttc.registerTopic(topic_ready2recv)
 # mqttc.registerTopic(topic_counter)
