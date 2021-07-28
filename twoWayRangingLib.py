@@ -382,7 +382,7 @@ def errorStat(data, GT, offset=0, bin=100):
     axes.set_ylim([0,1])
     plt.plot(bins_count[1:], cdf)
     plt.grid()
-    plt.xlabel("Distance (m)")
+    plt.xlabel("Absolute Error (m)")
     plt.ylabel("Probability")
     plt.show()
     return meanError,meanAbsError
