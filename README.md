@@ -6,6 +6,20 @@ The purpose of this project is to obtain ranging estimation between two Raspberr
 
 ## Setup
 
+To run the code, pigpio package needs to be installed first. Detailed information about pigpio package can be found [here](https://abyz.me.uk/rpi/pigpio/). Based on the instruction from their [website](https://abyz.me.uk/rpi/pigpio/download.html), type:
+```
+$ sudo apt-get update
+$ sudo apt-get install pigpio python-pigpio python3-pigpio
+```
+After installing pigpio package, we need to enable pigpiod, by
+```
+$ sudo pigpiod
+```
+or
+```
+sudo systemctl enable pigpiod
+```
+
 
 ## Two-Way Ranging Algorithm
 
