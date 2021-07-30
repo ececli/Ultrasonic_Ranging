@@ -27,8 +27,9 @@ else:
     FORMAT = pyaudio.paInt32
     print("Unsupport Format. Have been Changed to Int32.")
 
-
-
+THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
+IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
+TH_ratio_width_50 = cp.getfloat("SIGNAL","TH_ratio_width_50")
 # f0 = cp.getint("SIGNAL","f0") 
 # duration = cp.getint("SIGNAL","duration") # microseconds
 
@@ -41,11 +42,11 @@ duration = 4000
 
 
 # init
-fulldata = []
-fullTS = []
 
-
-RefSignal = func.getRefSignal(f0,duration/1000000.0,RATE)
+NumIgnoredFrame = int(np.ceil(IgnoredSamples/CHUNK))
+RefSignal = func.getRefSignal(f0,duration/1000000.0,RATE, 0)
+RefSignal2 = func.getRefSignal(f0,duration/1000000.0,RATE, np.pi/2)
+NumSigSamples = len(RefSignal)
 
 p = pyaudio.PyAudio()
 
@@ -69,18 +70,28 @@ DCOffset = func.micWarmUp(stream,CHUNK,RATE,FORMAT,warmUpSecond)
 print("DC offset of this Mic is ",DCOffset)
 
 # firstChunk = True
+fulldata = []
+fullTS = []
 counter = 0
+ready2recv_Flag = False
 stream.start_stream()
 while True:
     data = stream.read(CHUNK)
     currentTime = time.time()
-    # if firstChunk:
-    #     firstChunk = False
-    #     continue
+    counter = counter + 1
+        
+    if counter <= NumIgnoredFrame:
+        continue
+    
+    if not ready2recv_Flag:
+        ready2recv_Flag = True
+        print("Mic - Ready to Receive")
+        continue
+
     ndata = func.preProcessingData(data,FORMAT) - DCOffset
     fulldata.append(ndata)
     fullTS.append(currentTime)
-    counter = counter + 1
+    
     if counter == 1000:
         break
 
@@ -99,11 +110,20 @@ plt.ylabel('Output of the Microphone')
 plt.show()
 
 
-# xcorrelation = abs(signal.correlate(rcvSignal, RefSignal, mode = 'valid'))
-xcorrelation = abs(np.correlate(rcvSignal, RefSignal, mode = 'valid'))
 
-plt.figure()
-plt.plot(xcorrelation[10:],'r-o')
-plt.xlabel('Index of Samples')
-plt.ylabel('Output of the cross-correlation')
-plt.show()
+# autoc = func.noncoherence(fulldata,RefSignal,RefSignal2)
+# Index1, peak1 = func.NC_detector(autoc,THRESHOLD, NumSigSamples, th_ratio=TH_ratio_width_50)
+        
+# plt.figure()
+# plt.plot(autoc,'r.')
+# plt.plot(Index1, peak1,'bs')
+# plt.xlabel('Index of Samples')
+# plt.ylabel('Output of the cross-correlation')
+# plt.show()
+
+func.getOutputFig_IQMethod2(fulldata,
+                            RefSignal,
+                            RefSignal2,
+                            THRESHOLD,
+                            NumSigSamples,
+                            th_ratio=TH_ratio_width_50)
