@@ -3,11 +3,11 @@ import twoWayRangingLib as func
 import time
 
 f0 = 25000
-duration = 2000
+duration = 4000
 pin_OUT = 12
 
 numSending = 5
-intervalSending = 5 # seconds
+intervalSending = 3 # seconds
 
 
 
