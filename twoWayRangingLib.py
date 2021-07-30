@@ -51,6 +51,48 @@ def genWaveForm(f0, duration, pin):
     
     return wf
 
+def genWaveForm_2pin(f0, duration, pin1, pin2):
+    # This function genreate wave form for two pins. The wave forms are reversed
+    # for those two pins. By connecting these two pins to the buzzer, it could
+    # provide +3V to -3V wave. 
+    # Example: 
+    # duration = 4000 # microsecond
+    # f0 = 25000 # 10khz signal
+    # pin1 = 12
+    # pin2 = 4
+
+    # Note: with f0=31250 Hz, duration can be 1600, 1920 or 3200 microseconds
+
+    period = 1.0/f0*1e6 # period of the signal
+    NumPeriod_Signal = int(duration/period)
+    bit_time = int(period/2) # bit time in microsecond
+
+    actual_f0 =  1/(bit_time*2)*1e6 # in Hz
+    actual_duration = bit_time*2*NumPeriod_Signal # in microsecond
+
+    if actual_f0 != f0:
+        print("Warning: Actual f0 is ",actual_f0)
+        
+    if actual_duration != duration:
+        print("Warning: Actual duration is ",actual_duration)
+
+    PIN1_MASK = 1<<pin1
+    PIN2_MASK = 1<<pin2
+
+    # generate the wave form for one period
+    pulse_1_period = [(PIN1_MASK,PIN2_MASK,bit_time),(PIN2_MASK,PIN1_MASK,bit_time)]
+    pulse_end_period = (0,PIN2_MASK,bit_time)
+    # repeat
+    pulses = pulse_1_period * NumPeriod_Signal
+    # make sure both pins become low level in the end
+    pulses.append(pulse_end_period)
+    
+    wf = []
+    for p in pulses:
+        wf.append(pigpio.pulse(p[0], p[1], p[2]))   
+    return wf
+
+
 
 def createWave(pi_IO, wf):
     pi_IO.wave_clear()
