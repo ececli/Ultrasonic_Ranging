@@ -29,9 +29,11 @@ else:
 
 
 
-f0 = cp.getint("SIGNAL","f0") 
-duration = cp.getint("SIGNAL","duration") # microseconds
+# f0 = cp.getint("SIGNAL","f0") 
+# duration = cp.getint("SIGNAL","duration") # microseconds
 
+f0 = 25000
+duration = 4000
 
 
 
