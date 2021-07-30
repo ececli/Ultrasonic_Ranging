@@ -31,7 +31,9 @@ else:
     print("Unsupport Format. Have been Changed to Int32.")
 
 ratio = cp.getint("SPEAKER","ratio")
-pin_OUT = cp.getint("SPEAKER","pin_OUT")
+# pin_OUT = cp.getint("SPEAKER","pin_OUT")
+pin1 = cp.getint("SPEAKER","pin_OUT_1")
+pin2 = cp.getint("SPEAKER","pin_OUT_2")
 
 f0 = cp.getint("SIGNAL","f0") 
 duration = cp.getint("SIGNAL","duration") # microseconds
@@ -80,10 +82,12 @@ TH_MaxIndex = lenOutput - NumSigSamples
 
 # init functions
 pi_IO = pigpio.pi()
-pi_IO.set_mode(pin_OUT,pigpio.OUTPUT)
-
+# pi_IO.set_mode(pin_OUT,pigpio.OUTPUT)
+pi_IO.set_mode(pin1, pigpio.OUTPUT)
+pi_IO.set_mode(pin2, pigpio.OUTPUT)
 # generate wave form
-wf = func.genWaveForm(f0, duration, pin_OUT)
+# wf = func.genWaveForm(f0, duration, pin_OUT)
+wf = func.genWaveForm_2pin(f0,duration, pin1, pin2)
 wid = func.createWave(pi_IO, wf)
 
 # setup communication
