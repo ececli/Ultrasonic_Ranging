@@ -262,9 +262,10 @@ def NC_Chirp_detector(autoc,THRESHOLD, mainPeakLength, mainPeakWidth):
 
 
 def peakFilter(Index, Peaks, TH = 0.8):
-    feasiblePeaks = TH*np.max(Peaks)
-    feasibleIndex = Index[Peaks>=feasiblePeaks]
-    return feasibleIndex[0], feasiblePeaks[0]
+    feasiblePeakTH = TH*np.max(Peaks)
+    feasiblePeak = Peaks[Peaks>=feasiblePeakTH]
+    feasibleIndex = Index[Peaks>=feasiblePeakTH]
+    return feasibleIndex[0], feasiblePeak[0]
     
     
     
