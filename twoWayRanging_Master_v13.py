@@ -36,7 +36,7 @@ pin1 = cp.getint("SPEAKER","pin_OUT_1")
 pin2 = cp.getint("SPEAKER","pin_OUT_2")
 
 f0 = cp.getint("SIGNAL","f0")
-f1 = cp.getint("SIGNAL","f0") 
+f1 = cp.getint("SIGNAL","f1") 
 duration = cp.getint("SIGNAL","duration") # microseconds
 THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
 NumRanging = cp.getint("SIGNAL","NumRanging")
@@ -247,7 +247,7 @@ func.getOutputFig_IQMethod2(fulldata[0],
                             RefSignal2,
                             THRESHOLD,
                             NumSigSamples,
-                            th_ratio=TH_ratio_width_50)
+                            th_ratio=0.01)
 
 plt.figure()
 plt.plot(Peaks_record,'.')
