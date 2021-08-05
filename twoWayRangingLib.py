@@ -206,7 +206,7 @@ def getRefChirp(f0,f1,duration,sr, phi=0):
     Ns = duration * sr
     # t = np.r_[0.0:Ns]/sr
     t = np.arange(int(Ns))/sr
-    return signal.chirp(t,f0 = t0,t1 = duration,f1 = f1, phi = phi)
+    return signal.chirp(t,f0 = f0, t1 = duration,f1 = f1, phi = phi)
 
 def matchedFilter(frames,refSignal):
     # simple peak detection

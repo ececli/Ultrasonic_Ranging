@@ -13,7 +13,7 @@ pin1 = 12
 pin2 = 4
 f0=25000
 f1=30000
-duration = 4000
+duration = 0.004
 
 numSending = 1
 intervalSending = 1 # seconds
@@ -24,16 +24,16 @@ pi_IO.set_mode(pin2,pigpio.OUTPUT)
 
 # generate wave form
 wf = func.genChirpWaveForm_2pin(f0, f1, duration, pin1, pin2)
-wid = createWave(pi_IO, wf)
+wid = func.createWave(pi_IO, wf)
 
 
 for k in range(numSending):
-    TS = sendWave(pi_IO, wid)
+    TS = func.sendWave(pi_IO, wid)
     print(TS)
     time.sleep(intervalSending)
 
 
 
-deleteWave(pi_IO, wid)
+func.deleteWave(pi_IO, wid)
 pi_IO.stop()
 
