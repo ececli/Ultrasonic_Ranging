@@ -88,7 +88,7 @@ pi_IO.set_mode(pin1, pigpio.OUTPUT)
 pi_IO.set_mode(pin2, pigpio.OUTPUT)
 # generate wave form
 # wf = func.genWaveForm(f0, duration, pin_OUT)
-wf = func.genChirpWaveForm_2pin(f0, f1, duration, pin1, pin2)
+wf = func.genChirpWaveForm_2pin(f0, f1, duration/1e6, pin1, pin2)
 wid = func.createWave(pi_IO, wf)
 
 # setup communication
@@ -185,16 +185,16 @@ while True:
         autoc = func.noncoherence(frames,RefSignal,RefSignal2)
         Index1, peak1 = func.NC_detector(autoc,
                                          THRESHOLD,
-                                         NumSigSamples,
+                                         int(NumSigSamples/10),
                                          th_ratio=0.01)
-        
         if Index1.size>0: # signal detected
             if Index1.size>1: # multiple signal detected, interesting to see
                 print("At ",counter_NumRanging,counter)
                 print("multiple peaks detected!")
-            peakTS1 = func.index2TS(Index1[0], frameTime, RATE, CHUNK)
+            Index, Peak = func.peakFilter(Index1, peak1, TH = 0.8)
+            peakTS1 = func.index2TS(Index, frameTime, RATE, CHUNK)
             signalDetected1 = True
-            if Index1[0] <= TH_MaxIndex: # claim the peak is detected
+            if Index <= TH_MaxIndex: # claim the peak is detected
                 break
         else: # no peaks detected
             if counter > int(TIMEOUTCOUNTS):
@@ -212,7 +212,7 @@ while True:
     if signalDetected1:
         T4_T1 = func.calDuration(T1, peakTS1, wrapsFix) # version 1
         T4T1Delay[counter_NumRanging] = T4_T1
-        Peaks_record[counter_NumRanging] = peak1[0]
+        Peaks_record[counter_NumRanging] = Peak
         
         while True:
             if mqttc.checkTopicDataLength(topic_t3t2)>=1:

@@ -250,10 +250,26 @@ def noncoherence(frames,refSignal1,refSignal2):
     return autoc
 
 def NC_detector(autoc,THRESHOLD, sigLength, th_ratio=0.7):
-    peaks, _ = signal.find_peaks(autoc, height=THRESHOLD, distance=sigLength, width=th_ratio*sigLength)
-    return peaks, autoc[peaks]
+    Index, _ = signal.find_peaks(autoc, height=THRESHOLD, distance=sigLength, width=th_ratio*sigLength)
+    return Index, autoc[Index]
+
+def NC_Chirp_detector(autoc,THRESHOLD, mainPeakLength, mainPeakWidth):
+    Index, _ = signal.find_peaks(autoc,
+                                 height=THRESHOLD,
+                                 distance=mainPeakLength,
+                                 width=mainPeakWidth)
+    return Index, autoc[Index]
 
 
+def peakFilter(Index, Peaks, TH = 0.8):
+    feasiblePeaks = TH*np.max(Peaks)
+    feasibleIndex = Index[Peaks>=feasiblePeaks]
+    return feasibleIndex[0], feasiblePeaks[0]
+    
+    
+    
+    
+    
 
 def Nader_PeakDetection(frames,refSignal,threshold):
     ## [! DISCARD, NO USE AT ALL !]
