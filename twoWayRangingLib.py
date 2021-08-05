@@ -94,6 +94,48 @@ def genWaveForm_2pin(f0, duration, pin1, pin2):
 
 
 
+def genChirpWaveForm_2pin(f0, f1, duration, pin1, pin2):
+    # This function genreate chirp wave form for two pins. The wave forms are reversed
+    # for those two pins. By connecting these two pins to the buzzer, it could
+    # provide +3V to -3V wave. 
+    # Example: 
+    # duration = 4000 # microsecond
+    # f0 = 25000 # 10khz signal
+    # f1 = 30000
+    # pin1 = 12
+    # pin2 = 4
+
+    # Note: with f0=31250 Hz, duration can be 1600, 1920 or 3200 microseconds
+    sr=1e6
+    bit_time = 1
+    w = getRefChirp(f0,f1,duration,sr)
+    diff_w = np.diff(w)
+    seq = np.zeros(len(w)-1)
+    seq[diff_w>=0] = 1
+
+    PIN1_MASK = 1<<pin1
+    PIN2_MASK = 1<<pin2
+    
+    # seq[k]=1: (PIN1_MASK,PIN2_MASK,bit_time)
+    # seq[k]=0: (PIN2_MASK,PIN1_MASK,bit_time)
+    pulses = []
+    for k in seq:
+        if k:
+            pulses.append((PIN1_MASK,PIN2_MASK,bit_time))
+        else:
+            pulses.append((PIN2_MASK,PIN1_MASK,bit_time))
+    # Ending: Make sure both pins --> 0
+    if seq[-1]:
+        pulses.append((0,PIN1_MASK,bit_time))
+    else:
+        pulses.append((0,PIN2_MASK,bit_time))
+    
+    wf = []
+    for p in pulses:
+        wf.append(pigpio.pulse(p[0], p[1], p[2]))   
+    return wf
+
+
 def createWave(pi_IO, wf):
     pi_IO.wave_clear()
     pi_IO.wave_add_generic(wf)
@@ -128,6 +170,7 @@ def sendWave_v2(pi_IO, wid):
     return startTS
 
 def sendChirp(pi_IO,pin,f0,f1,duration,sr,ratio):
+    ## [! OLD VERSION. PLEASE DO NOT USE IT NOW!]
     # duration is in microsecond
     Ns = int(np.round(duration*sr/1e6))
     f_all = np.linspace(f0,f1,Ns, endpoint = False)
@@ -157,13 +200,13 @@ def getRefSignal(f0,duration,sr, phi=0):
     t = np.arange(int(Ns))/sr
     return np.sin(2*np.pi*f0*t + phi)
 
-def getRefChirp(f0,f1,duration,sr):
+def getRefChirp(f0,f1,duration,sr, phi=0):
     # chirp signal from "f0" to "f1" with duration "duration"
     # "sr" is the sampling rate
     Ns = duration * sr
     # t = np.r_[0.0:Ns]/sr
     t = np.arange(int(Ns))/sr
-    return signal.chirp(t,f0,t[-1],f1)
+    return signal.chirp(t,f0 = t0,t1 = duration,f1 = f1, phi = phi)
 
 def matchedFilter(frames,refSignal):
     # simple peak detection
@@ -213,6 +256,7 @@ def NC_detector(autoc,THRESHOLD, sigLength, th_ratio=0.7):
 
 
 def Nader_PeakDetection(frames,refSignal,threshold):
+    ## [! DISCARD, NO USE AT ALL !]
     # Nader's method: Use all the local peaks from the raising edge to
     # fit a line, and use all the local peaks from the falling edge to
     # fit another line. Then the intersection of two line is the time
@@ -248,6 +292,7 @@ def multi_PeakDetection(frames,refSignal1,refSignal2,LPF_A,LPF_B, threshold):
 
 
 def Nader_Method(autoc,threshold):
+    ## [! DISCARD, NO USE AT ALL !]
     peak = np.max(autoc)
     Index = np.argmax(autoc)
     if np.max(autoc) > threshold:
