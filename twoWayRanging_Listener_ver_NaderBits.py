@@ -32,10 +32,10 @@ ratio = cp.getint("SPEAKER","ratio")
 pin1 = cp.getint("SPEAKER","pin_OUT_1")
 pin2 = cp.getint("SPEAKER","pin_OUT_2")
 
-f0 = cp.getint("SIGNAL","f0") 
-duration = cp.getint("SIGNAL","duration") # microseconds
+
+duration = 2000 # microseconds
 THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
-NumRanging = cp.getint("SIGNAL","NumRanging")
+NumRanging = 1000
 TIMEOUTCOUNTS = cp.getint("SIGNAL","TimeoutCounts")
 IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
 TH_ratio_width_50 = cp.getfloat("SIGNAL","TH_ratio_width_50")
@@ -65,8 +65,27 @@ Peaks_record = []
 
 NumIgnoredFrame = int(np.ceil(IgnoredSamples/CHUNK))
 NumReqFrames = int(np.ceil(RATE / CHUNK * duration/1000000.0) + 1.0)
-RefSignal = func.getRefSignal(f0,duration/1000000.0,RATE, 0)
-RefSignal2 = func.getRefSignal(f0,duration/1000000.0,RATE, np.pi/2)
+########################################################################
+## Nader's reference signal
+gamma = 2.5e6
+f_1 = 25000
+f_s = 64000
+kk = np.arange(128)
+RefSignal = np.sin(np.pi*(f_1+gamma*(2*kk+1)/(2*f_s))*(2*kk+1)/f_s)
+RefSignal2 = np.cos(np.pi*(f_1+gamma*(2*kk+1)/(2*f_s))*(2*kk+1)/f_s)
+## End of Nader's reference signal
+########################################################################
+################################################################################################################################################
+## Nader's reference signal
+gamma = 2.5e6
+f_1 = 25000
+f_s = 64000
+kk = np.arange(128)
+RefSignal = np.sin(np.pi*(f_1+gamma*(2*kk+1)/(2*f_s))*(2*kk+1)/f_s)
+RefSignal2 = np.cos(np.pi*(f_1+gamma*(2*kk+1)/(2*f_s))*(2*kk+1)/f_s)
+## End of Nader's reference signal
+########################################################################
+########################################################################
 
 NumSigSamples = len(RefSignal)
 lenOutput = CHUNK*NumReqFrames-NumSigSamples+1
@@ -80,8 +99,28 @@ pi_IO.set_mode(pin1,pigpio.OUTPUT)
 pi_IO.set_mode(pin2,pigpio.OUTPUT)
 
 # generate wave form
-# wf = func.genWaveForm(f0, duration, pin_OUT)
-wf = func.genWaveForm_2pin(f0, duration, pin1, pin2)
+########################################################################
+## Generate wave form based on Nader's bits seq
+nader_bits = np.loadtxt("nader_bits.csv",delimiter=",")
+bit_time = 1
+PIN1_MASK = 1<<pin1
+PIN2_MASK = 1<<pin2
+pulses = []
+for k in nader_bits:
+    if k:
+        pulses.append((PIN1_MASK,PIN2_MASK,bit_time))
+    else:
+        pulses.append((PIN2_MASK,PIN1_MASK,bit_time))
+# Ending: Make sure both pins --> 0
+if nader_bits[-1]:
+    pulses.append((0,PIN1_MASK,bit_time))
+else:
+    pulses.append((0,PIN2_MASK,bit_time))
+wf = []
+for p in pulses:
+    wf.append(pigpio.pulse(p[0], p[1], p[2]))
+########################################################################
+########################################################################
 wid = func.createWave(pi_IO, wf)
 
 # setup communication
@@ -161,8 +200,8 @@ while True:
         autoc = func.noncoherence(frames,RefSignal,RefSignal2)
         Index1, peak1 = func.NC_detector(autoc,
                                          THRESHOLD,
-                                         int(NumSigSamples/2),
-                                         th_ratio=1)
+                                         int(NumSigSamples/10),
+                                         th_ratio=0.01)
         
         if Index1.size>0: # signal detected
             if Index1.size>1: # multiple signal detected, interesting to see
@@ -229,12 +268,14 @@ func.getOutputFig_IQMethod2(fulldata[0],
                             RefSignal2,
                             THRESHOLD,
                             NumSigSamples,
-                            th_ratio=TH_ratio_width_50)
+                            th_ratio=0.01)
 
 plt.figure()
 plt.plot(Peaks_record,'.')
 plt.xlabel("Index of Trials")
 plt.ylabel("Peak values")
 plt.show()
+
+
 
 
