@@ -38,7 +38,7 @@ pin2 = cp.getint("SPEAKER","pin_OUT_2")
 
 duration = 2000 # microseconds
 THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
-NumRanging = cp.getint("SIGNAL","NumRanging")
+NumRanging = 1000
 TIMEOUTCOUNTS = cp.getint("SIGNAL","TimeoutCounts")
 IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
 TH_ratio_width_50 = cp.getfloat("SIGNAL","TH_ratio_width_50")
