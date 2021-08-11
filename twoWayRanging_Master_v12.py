@@ -44,6 +44,7 @@ IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
 TH_ratio_width_50 = cp.getfloat("SIGNAL","TH_ratio_width_50")
 
 broker_address = cp.get("COMMUNICATION",'broker_address')
+broker_address = "192.168.197.238"
 topic_t3t2 = cp.get("COMMUNICATION",'topic_t3t2')
 topic_ready2recv = cp.get("COMMUNICATION",'topic_ready2recv')
 topic_counter = cp.get("COMMUNICATION",'topic_counter')
@@ -262,4 +263,20 @@ plt.figure()
 plt.hist(valid_Ranging,bins=30)
 plt.show()
 
-func.errorStat(valid_Ranging,GT = 0.64)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+func.errorStat(valid_Ranging,GT = 0.465)
