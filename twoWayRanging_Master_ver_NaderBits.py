@@ -74,7 +74,7 @@ NumReqFrames = int(np.ceil(RATE / CHUNK * duration/1000000.0) + 1.0)
 
 ########################################################################
 ## Nader's reference signal
-gamma = 2.5e6
+gamma = 1250000.0
 f_1 = 25000
 f_s = 64000
 kk = np.arange(128)
@@ -96,7 +96,7 @@ pi_IO.set_mode(pin2, pigpio.OUTPUT)
 # generate wave form
 ########################################################################
 ## Generate wave form based on Nader's bits seq
-nader_bits = np.loadtxt("nader_bits.csv",delimiter=",")
+nader_bits = np.loadtxt("nader_2ms_bits.csv",delimiter=",")
 bit_time = 1
 PIN1_MASK = 1<<pin1
 PIN2_MASK = 1<<pin2
@@ -289,6 +289,6 @@ plt.figure()
 plt.hist(valid_Ranging,bins=30)
 plt.show()
 
-func.errorStat(valid_Ranging,GT = 0.64)
+func.errorStat(valid_Ranging,GT = 1.77)
 
 
