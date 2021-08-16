@@ -28,7 +28,7 @@ else:
     print("Unsupport Format. Have been Changed to Int32.")
 
 ratio = cp.getint("SPEAKER","ratio")
-# pin_OUT = cp.getint("SPEAKER","pin_OUT")
+pin_OUT = cp.getint("SPEAKER","pin_OUT")
 pin1 = cp.getint("SPEAKER","pin_OUT_1")
 pin2 = cp.getint("SPEAKER","pin_OUT_2")
 
@@ -41,6 +41,7 @@ IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
 TH_ratio_width_50 = cp.getfloat("SIGNAL","TH_ratio_width_50")
 
 broker_address = cp.get("COMMUNICATION",'broker_address')
+# broker_address = "192.168.10.238"
 topic_t3t2 = cp.get("COMMUNICATION",'topic_t3t2')
 topic_ready2recv = cp.get("COMMUNICATION",'topic_ready2recv')
 topic_counter = cp.get("COMMUNICATION",'topic_counter')
@@ -205,7 +206,7 @@ while True:
         TimeOutCount = 0 # reset timeout counter
         # time.sleep(0.1)
     else:
-        if TimeOutCount >=2:
+        if TimeOutCount >=3:
             TimeOutFlag = True
         
     counter_NumRanging = counter_NumRanging + 1
