@@ -44,7 +44,7 @@ IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
 TH_ratio_width_50 = cp.getfloat("SIGNAL","TH_ratio_width_50")
 
 broker_address = cp.get("COMMUNICATION",'broker_address')
-# broker_address = "192.168.197.238"
+# broker_address = "192.168.10.238"
 topic_t3t2 = cp.get("COMMUNICATION",'topic_t3t2')
 topic_ready2recv = cp.get("COMMUNICATION",'topic_ready2recv')
 topic_counter = cp.get("COMMUNICATION",'topic_counter')
@@ -132,12 +132,18 @@ print("DC offset of this Mic is ",DCOffset)
 while True:
 
     # time.sleep(0.1)
+    startWaitTime = time.time()
+    # print(startWaitTime)
     while True:
         if mqttc.checkTopicDataLength(topic_ready2recv)>=1:
             ready2recv_Flag = mqttc.readTopicData(topic_ready2recv)
             if ready2recv_Flag[-1] == ListenerID: # only read last msg
                 # print(counter_NumRanging)
                 break
+        currentTime = time.time()
+        if currentTime - startWaitTime >= 10: # second
+            # print("No Ready Signal")
+            break
 
     # Send Signal Out
     T1 = func.sendWave(pi_IO, wid)
@@ -187,11 +193,11 @@ while True:
                                          THRESHOLD,
                                          int(NumSigSamples/2),
                                          th_ratio=1)
-        
+        # print(counter)
         if Index1.size>0: # signal detected
-            if Index1.size>1: # multiple signal detected, interesting to see
-                print("At ",counter_NumRanging,counter)
-                print("multiple peaks detected!")
+            # if Index1.size>1: # multiple signal detected, interesting to see
+                # print("At ",counter_NumRanging,counter)
+                # print("multiple peaks detected!")
             Index, Peak = func.peakFilter(Index1, peak1, TH = 0.8)
             peakTS1 = func.index2TS(Index, frameTime, RATE, CHUNK)
             signalDetected1 = True
@@ -223,6 +229,7 @@ while True:
         Ranging = (T4_T1 - T3_T2)/2/1000.0*SOUNDSPEED
         Ranging_Record[counter_NumRanging] = Ranging
         T3T2Delay[counter_NumRanging] = T3_T2
+        print("(%d) Estimated Distance: %.1f cm" %(counter_NumRanging,(Ranging-Ranging_Offset)*100))
         
     counter_NumRanging = counter_NumRanging + 1
     if counter_NumRanging >= NumRanging:
@@ -239,29 +246,50 @@ mqttc.closeClient()
 
 
 
-np.savetxt("Ranging.csv",Ranging_Record, fmt="%.4f", delimiter = ",")
-func.getStat(Ranging_Record,label = "Distance 1", unit = "m")
+# np.savetxt("Ranging.csv",Ranging_Record, fmt="%.4f", delimiter = ",")
+# func.getStat(Ranging_Record,label = "Distance 1", unit = "m")
 
 # For debug only:
-func.getOutputFig_IQMethod2(fulldata[0],
-                            RefSignal,
-                            RefSignal2,
-                            THRESHOLD,
-                            NumSigSamples,
-                            th_ratio=TH_ratio_width_50)
+# func.getOutputFig_IQMethod2(fulldata[0],
+#                             RefSignal,
+#                             RefSignal2,
+#                             THRESHOLD,
+#                             NumSigSamples,
+#                             th_ratio=TH_ratio_width_50)
 
-plt.figure()
-plt.plot(Peaks_record,'.')
-plt.xlabel("Index of Trials")
-plt.ylabel("Peak values")
-plt.show()
+# plt.figure()
+# plt.plot(Peaks_record,'.')
+# plt.xlabel("Index of Trials")
+# plt.ylabel("Peak values")
+# plt.show()
 
 Ranging_Record = Ranging_Record - Ranging_Offset
 valid_Ranging = Ranging_Record[(Ranging_Record>Ranging_Min) & (Ranging_Record<Ranging_Max)]
 
+# plt.figure()
+# plt.hist(valid_Ranging,bins=30)
+# plt.show()
+
+
+
+
+
+
+
+
 plt.figure()
-plt.hist(valid_Ranging,bins=30)
+plt.plot(valid_Ranging,'b.')
+plt.xlabel('Index of Samples')
+plt.ylabel("Distance (m)")
+plt.grid()
 plt.show()
 
 
-func.errorStat(valid_Ranging,GT = 1.78)
+
+
+
+GroundTruth = float(input("Enter the ground truth (m): "))
+
+
+func.errorStat(valid_Ranging,GT = GroundTruth)
+

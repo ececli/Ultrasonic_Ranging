@@ -464,12 +464,18 @@ def errorStat(data, GT, offset=0, bin=100):
     Error = fixedData - GT
     meanAbsError = np.mean(np.abs(Error))
     meanError = np.mean(Error)
+    
+    sortedMAE = np.sort(np.abs(Error))
+    RE95 = sortedMAE[int(len(fixedData)*0.95)-1]
+    
+    
     print("--------------------------------")
     print("Number of Valid Data is ", len(fixedData))
-    print("Mean Distance = %.3f m" % meanData)
-    print("Std of Distance = %.3f m" % stdData)
-    print("Mean Error = %.3f m" % meanError)
-    print("Mean Absolute Error = %.3f m" % meanAbsError)
+    print("Mean Distance = %.1f cm" % np.multiply(meanData,100))
+    print("Std of Distance = %.1f cm" % np.multiply(stdData,100))
+    print("Mean Error = %.1f cm" % np.multiply(meanError,100))
+    print("Mean Absolute Error = %.1f cm" % np.multiply(meanAbsError,100))
+    print("RE95 = %.1f cm" % np.multiply(RE95,100))
     print("--------------------------------")
     plt.figure()
     plt.plot(fixedData,'b.')
@@ -485,6 +491,8 @@ def errorStat(data, GT, offset=0, bin=100):
     axes = plt.gca()
     axes.set_ylim([0,1])
     plt.plot(bins_count[1:], cdf)
+    plt.axhline(y=0.95,color="r")
+    plt.axvline(x=RE95,color="r")
     plt.grid()
     plt.xlabel("Absolute Error (m)")
     plt.ylabel("Probability")
