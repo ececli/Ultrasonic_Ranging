@@ -38,7 +38,7 @@ pin2 = cp.getint("SPEAKER","pin_OUT_2")
 
 duration = 2000 # microseconds
 THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
-NumRanging = 1000
+NumRanging = 100
 TIMEOUTCOUNTS = cp.getint("SIGNAL","TimeoutCounts")
 IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
 TH_ratio_width_50 = cp.getfloat("SIGNAL","TH_ratio_width_50")
@@ -74,10 +74,10 @@ NumReqFrames = int(np.ceil(RATE / CHUNK * duration/1000000.0) + 1.0)
 
 ########################################################################
 ## Nader's reference signal
-gamma = 1250000.0
+gamma = 625000.0
 f_1 = 25000
 f_s = 64000
-kk = np.arange(128)
+kk = np.arange(256) # 0,1,2,... , 255
 RefSignal = np.sin(np.pi*(f_1+gamma*(2*kk+1)/(2*f_s))*(2*kk+1)/f_s)
 RefSignal2 = np.cos(np.pi*(f_1+gamma*(2*kk+1)/(2*f_s))*(2*kk+1)/f_s)
 ## End of Nader's reference signal
@@ -96,7 +96,7 @@ pi_IO.set_mode(pin2, pigpio.OUTPUT)
 # generate wave form
 ########################################################################
 ## Generate wave form based on Nader's bits seq
-nader_bits = np.loadtxt("nader_2ms_bits.csv",delimiter=",")
+nader_bits = np.loadtxt("nader_4ms_bits.csv",delimiter=",")
 bit_time = 1
 PIN1_MASK = 1<<pin1
 PIN2_MASK = 1<<pin2

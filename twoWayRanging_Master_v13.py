@@ -262,5 +262,5 @@ plt.figure()
 plt.hist(valid_Ranging,bins=30)
 plt.show()
 
-func.errorStat(valid_Ranging,GT = 0.64)
+func.errorStat(valid_Ranging,GT = 1.77)
 
