@@ -208,6 +208,20 @@ def getRefChirp(f0,f1,duration,sr, phi=0):
     t = np.arange(int(Ns))/sr
     return signal.chirp(t,f0 = f0, t1 = duration,f1 = f1, phi = phi)
 
+
+
+def genBPF(order,L,H,fs):
+    l = L/(fs/2)
+    h = H/(fs/2)
+    if h>=1:
+        sos = signal.butter(order, l, btype = 'high',output = 'sos')
+    else:
+        sos = signal.butter(order, [l,h], btype = 'bandpass',output = 'sos')
+    return sos
+
+
+
+
 def matchedFilter(frames,refSignal):
     # simple peak detection
     sig = np.concatenate(frames)
@@ -240,9 +254,11 @@ def sincos_PeakDetection(frames,refSignal1,refSignal2):
     return ave,peak,Index
 
 
-def noncoherence(frames,refSignal1,refSignal2):
+def noncoherence(frames,refSignal1,refSignal2, prefiltering = False, sos = None):
     # sin-cos method: use two phases reference signals
     sig = np.concatenate(frames)
+    if prefiltering:
+        sig = signal.sosfiltfilt(sos, sig)
     autoc1 = np.correlate(sig, refSignal1, mode = 'valid')
     autoc2 = np.correlate(sig, refSignal2, mode = 'valid')
     autoc = np.sqrt((autoc1*autoc1 + autoc2*autoc2)/2)
