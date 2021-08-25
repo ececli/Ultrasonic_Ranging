@@ -217,7 +217,7 @@ def peakDetector(seq,THRESHOLD, peak_interval, peak_width):
                                  height=THRESHOLD,
                                  distance=peak_interval,
                                  width=peak_width)
-    return Index, autoc[Index]
+    return Index, seq[Index]
 
 
 def peakFilter(Index, Peaks, TH = 0.8):
