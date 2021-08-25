@@ -157,9 +157,9 @@ while True:
     ready2recv_Flag = False
     signalDetected1 = False
     
-    # stream.start_stream()
-    if stream.is_stopped():
-        stream.start_stream()
+    stream.start_stream()
+    # if stream.is_stopped():
+    #     stream.start_stream()
     while True:
         data = stream.read(CHUNK)
         currentTime = pi_IO.get_current_tick() # version 1

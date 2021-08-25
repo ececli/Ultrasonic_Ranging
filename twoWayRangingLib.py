@@ -262,7 +262,7 @@ def noncoherence(frames,refSignal1,refSignal2, prefiltering = False, sos = None)
     # sin-cos method: use two phases reference signals
     sig = combineFrames(frames)
     if prefiltering:
-        sig = BPF_sos(sos, data)
+        sig = BPF_sos(sos, sig)
     autoc1 = np.correlate(sig, refSignal1, mode = 'valid')
     autoc2 = np.correlate(sig, refSignal2, mode = 'valid')
     autoc = np.sqrt((autoc1*autoc1 + autoc2*autoc2)/2)
