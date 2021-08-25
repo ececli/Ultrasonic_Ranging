@@ -1,7 +1,4 @@
-# two way ranging - master: first send and then listen
-# v10 - use pigpio wave related functions to generate wave to speaker
-# The algorithm are based on the diagram
-# 
+# two way ranging - listener: first listen and then send
 import configparser
 import pyaudio
 import numpy as np
@@ -44,7 +41,7 @@ IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
 TH_ratio_width_50 = cp.getfloat("SIGNAL","TH_ratio_width_50")
 
 broker_address = cp.get("COMMUNICATION",'broker_address')
-# broker_address = "192.168.197.238"
+# broker_address = "192.168.10.238"
 topic_t3t2 = cp.get("COMMUNICATION",'topic_t3t2')
 topic_ready2recv = cp.get("COMMUNICATION",'topic_ready2recv')
 topic_counter = cp.get("COMMUNICATION",'topic_counter')
@@ -52,9 +49,6 @@ topic_counter = cp.get("COMMUNICATION",'topic_counter')
 MasterID = cp.getint("COMMUNICATION",'MasterID')
 ListenerID = cp.getint("COMMUNICATION",'ListenerID')
 
-Ranging_Offset = cp.getfloat("RANGING","Ranging_Offset")
-Ranging_Max = cp.getint("RANGING",'Ranging_MAX')
-Ranging_Min = cp.getint("RANGING",'Ranging_MIN')
 # init variables
 SOUNDSPEED = 0.343 # m/ms
 wrapsFix = 2**32 # constant
@@ -63,13 +57,12 @@ counter_NumRanging = 0
 
 
 
+
 # for debug purpose, record all the data
-fulldata = np.frompyfunc(list, 0, 1)(np.empty((NumRanging), dtype=object))
-fullTS = np.frompyfunc(list, 0, 1)(np.empty((NumRanging), dtype=object))
-T4T1Delay = np.zeros(NumRanging) # unit: microsecond
-T3T2Delay = np.zeros(NumRanging)
-Ranging_Record = np.zeros(NumRanging)
-Peaks_record = np.zeros(NumRanging)
+fulldata = np.frompyfunc(list, 0, 1)(np.empty((NumRanging*2), dtype=object))
+fullTS = np.frompyfunc(list, 0, 1)(np.empty((NumRanging*2), dtype=object))
+T3T2Delay = []
+Peaks_record = []
 
 NumIgnoredFrame = int(np.ceil(IgnoredSamples/CHUNK))
 NumReqFrames = int(np.ceil(RATE / CHUNK * duration/1000000.0) + 1.0)
@@ -84,35 +77,32 @@ TH_MaxIndex = lenOutput - NumSigSamples
 # init functions
 # generate BPF
 pre_BPfiltering = True
-L = f0-2000
-H = f0 + 2000
 order = 9
-sos = func.genBPF(order, L, H, fs=RATE)
+L = f0-2000
+H = f0+2000
+sos = func.genBPF(order, L, H, fs = RATE)
 
 # GPIO init
 pi_IO = pigpio.pi()
 # pi_IO.set_mode(pin_OUT,pigpio.OUTPUT)
-pi_IO.set_mode(pin1, pigpio.OUTPUT)
-pi_IO.set_mode(pin2, pigpio.OUTPUT)
+pi_IO.set_mode(pin1,pigpio.OUTPUT)
+pi_IO.set_mode(pin2,pigpio.OUTPUT)
+
 # generate wave form
 # wf = func.genWaveForm(f0, duration, pin_OUT)
-wf = func.genWaveForm_2pin(f0,duration, pin1, pin2)
+wf = func.genWaveForm_2pin(f0, duration, pin1, pin2)
 wid = func.createWave(pi_IO, wf)
 
 # setup communication
+# broker_address = "192.168.68.118"
 mqttc = myMQTT(broker_address)
-mqttc.registerTopic(topic_t3t2)
 mqttc.registerTopic(topic_ready2recv)
 
 
-# clear existing msg in topics
-if mqttc.checkTopicDataLength(topic_t3t2)>0:
-    mqttc.readTopicData(topic_t3t2)
 if mqttc.checkTopicDataLength(topic_ready2recv)>0:
     mqttc.readTopicData(topic_ready2recv)
 
 
-# register mic    
 p = pyaudio.PyAudio()
 
 DEV_INDEX = func.findDeviceIndex(p)
@@ -120,7 +110,7 @@ if DEV_INDEX == -1:
     print("Error: No Mic Found!")
     exit(1)
 
-# init Recording
+# start Recording
 stream = p.open(format=FORMAT,
                 channels=CHANNELS,
                 rate=RATE,
@@ -133,24 +123,14 @@ print("Mic - ON")
 DCOffset = func.micWarmUp(stream,CHUNK,RATE,FORMAT,warmUpSecond)
 print("DC offset of this Mic is ",DCOffset)
 
-
-
+TimeOutFlag = False
+TimeOutCount = 0
 while True:
-
-    # time.sleep(0.1)
-    while True:
-        if mqttc.checkTopicDataLength(topic_ready2recv)>=1:
-            ready2recv_Flag = mqttc.readTopicData(topic_ready2recv)
-            if ready2recv_Flag[-1] == ListenerID: # only read last msg
-                # print(counter_NumRanging)
-                break
-
-    # Send Signal Out
-    T1 = func.sendWave(pi_IO, wid)
-    #### End of Sending Part ####
-    # time.sleep(0.1)
-    # Turn on listening mode
+    # print(counter_NumRanging)
+    if TimeOutFlag:
+        break
     
+    # receiving part starts here:
     frames = []
     frameTime = []
     counter = 0
@@ -162,8 +142,7 @@ while True:
         stream.start_stream()
     while True:
         data = stream.read(CHUNK)
-        currentTime = pi_IO.get_current_tick() # version 1
-        # currentTime = time.time() # version 2
+        currentTime = pi_IO.get_current_tick()
         counter = counter + 1
         
         if counter <= NumIgnoredFrame:
@@ -171,9 +150,9 @@ while True:
         
         if not ready2recv_Flag:
             ready2recv_Flag = True
-            mqttc.sendMsg(topic_ready2recv,MasterID)
+            mqttc.sendMsg(topic_ready2recv,ListenerID)
             continue
-        
+
         ndata = func.preProcessingData(data,FORMAT)-DCOffset
         ## for debug purpose:
         fulldata[counter_NumRanging].append(ndata)
@@ -199,46 +178,52 @@ while True:
                                          int(NumSigSamples/2))
         
         if Index1.size>0: # signal detected
-            Index, Peak = func.peakFilter(Index1, peak1, TH = 0.8)
+            Index, Peak = func.peakFilter(Index1, peak1, TH=0.8)
             peakTS1 = func.index2TS(Index, frameTime, RATE, CHUNK)
             signalDetected1 = True
             if Index <= TH_MaxIndex: # claim the peak is detected
                 break
-        else: # no peaks detected
+        else:
             if signalDetected1: # seems impossible to happen in this case
                 print("At ",counter_NumRanging,counter)
                 print("Signal previously detected but disappear!")
                 break
             if counter > int(TIMEOUTCOUNTS):
                 print("Time out at ", counter_NumRanging)
+                TimeOutCount = TimeOutCount + 1
                 break
-        
         frames.pop(0)
         frameTime.pop(0)
-
+        
         
     stream.stop_stream()
-    if signalDetected1 and signalDetected1:
-        T4_T1 = func.calDuration(T1, peakTS1, wrapsFix) # version 1
-        T4T1Delay[counter_NumRanging] = T4_T1
-        Peaks_record[counter_NumRanging] = Peak
-        
+    if signalDetected1:
+        # Send Signal Out
         while True:
-            if mqttc.checkTopicDataLength(topic_t3t2)>=1:
-                break
-        T3_T2 = mqttc.readTopicData(topic_t3t2)[-1]
-        
-        Ranging = (T4_T1 - T3_T2)/2/1000.0*SOUNDSPEED
-        Ranging_Record[counter_NumRanging] = Ranging
-        T3T2Delay[counter_NumRanging] = T3_T2
+            if mqttc.checkTopicDataLength(topic_ready2recv)>=1:
+                ready2recv_Flag = mqttc.readTopicData(topic_ready2recv)
+                if ready2recv_Flag[-1] == MasterID:
+                    # print(counter_NumRanging)
+                    break
+        T3 = func.sendWave(pi_IO, wid)
+
+        T3_T2 = func.calDuration(peakTS1, T3, wrapsFix)
+        T3T2Delay.append(T3_T2)
+        Peaks_record.append(Peak)
+
+        mqttc.sendMsg(topic_t3t2,T3_T2)
+        TimeOutCount = 0 # reset timeout counter
+        # time.sleep(0.1)
+    else:
+        if TimeOutCount >=3:
+            TimeOutFlag = True
         
     counter_NumRanging = counter_NumRanging + 1
-    if counter_NumRanging >= NumRanging:
-        break
+    
 
-############################################################################
+
 print("done")
-# stream.stop_stream()
+
 stream.close()
 p.terminate()
 func.deleteWave(pi_IO, wid)
@@ -247,8 +232,6 @@ mqttc.closeClient()
 
 
 
-np.savetxt("Ranging.csv",Ranging_Record, fmt="%.4f", delimiter = ",")
-func.getStat(Ranging_Record,label = "Distance 1", unit = "m")
 
 # For debug only:
 func.getOutputFig_IQMethod2(fulldata[0],
@@ -264,14 +247,6 @@ plt.xlabel("Index of Trials")
 plt.ylabel("Peak values")
 plt.show()
 
-Ranging_Record = Ranging_Record - Ranging_Offset
-valid_Ranging = Ranging_Record[(Ranging_Record>Ranging_Min) & (Ranging_Record<Ranging_Max)]
 
-plt.figure()
-plt.hist(valid_Ranging,bins=30)
-plt.show()
-
-
-func.errorStat(valid_Ranging,GT = 0.93)
 
 
