@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from scipy import signal
 import time
 import pigpio
-import twoWayRangingLib as func
+import twoWayRangingLib_v2 as func
 from myMQTT_Class import myMQTT
 
 # Load Parameters
@@ -83,6 +83,7 @@ TH_MaxIndex = lenOutput - NumSigSamples
 
 # init functions
 # generate BPF
+pre_BPfiltering = True
 L = f0-2000
 H = f0 + 2000
 order = 9
@@ -99,19 +100,17 @@ wf = func.genWaveForm_2pin(f0,duration, pin1, pin2)
 wid = func.createWave(pi_IO, wf)
 
 # setup communication
-# broker_address = "192.168.68.118"
 mqttc = myMQTT(broker_address)
 mqttc.registerTopic(topic_t3t2)
 mqttc.registerTopic(topic_ready2recv)
-# mqttc.registerTopic(topic_counter)
+
 
 # clear existing msg in topics
 if mqttc.checkTopicDataLength(topic_t3t2)>0:
     mqttc.readTopicData(topic_t3t2)
 if mqttc.checkTopicDataLength(topic_ready2recv)>0:
     mqttc.readTopicData(topic_ready2recv)
-# if mqttc.checkTopicDataLength(topic_counter)>0:
-#     mqttc.readTopicData(topic_counter)
+
 
 # register mic    
 p = pyaudio.PyAudio()
@@ -157,9 +156,10 @@ while True:
     counter = 0
     ready2recv_Flag = False
     signalDetected1 = False
-
     
-    stream.start_stream()
+    # stream.start_stream()
+    if stream.is_stopped():
+        stream.start_stream()
     while True:
         data = stream.read(CHUNK)
         currentTime = pi_IO.get_current_tick() # version 1
@@ -189,35 +189,36 @@ while True:
 
         if len(frames) < NumReqFrames:
             continue
-        autoc = func.noncoherence(frames,RefSignal,RefSignal2,True,sos)
-        Index1, peak1 = func.NC_detector(autoc,
+        sig = func.combineFrames(frames)
+        if pre_BPfiltering:
+            sig_filtered = BPF_sos(sos, sig)
+        autoc = func.noncoherence(sig_filtered,RefSignal,RefSignal2)
+        Index1, peak1 = func.peakDetector(autoc,
                                          THRESHOLD,
-                                         int(NumSigSamples/2),
-                                         th_ratio=1)
+                                         1,
+                                         int(NumSigSamples/2))
         
         if Index1.size>0: # signal detected
-            if Index1.size>1: # multiple signal detected, interesting to see
-                print("At ",counter_NumRanging,counter)
-                print("multiple peaks detected!")
             Index, Peak = func.peakFilter(Index1, peak1, TH = 0.8)
             peakTS1 = func.index2TS(Index, frameTime, RATE, CHUNK)
             signalDetected1 = True
             if Index <= TH_MaxIndex: # claim the peak is detected
                 break
         else: # no peaks detected
-            if counter > int(TIMEOUTCOUNTS):
-                print("Time out at ", counter_NumRanging)
-                break
             if signalDetected1: # seems impossible to happen in this case
                 print("At ",counter_NumRanging,counter)
                 print("Signal previously detected but disappear!")
                 break
+            if counter > int(TIMEOUTCOUNTS):
+                print("Time out at ", counter_NumRanging)
+                break
+        
         frames.pop(0)
         frameTime.pop(0)
 
         
     stream.stop_stream()
-    if signalDetected1:
+    if signalDetected1 and signalDetected1:
         T4_T1 = func.calDuration(T1, peakTS1, wrapsFix) # version 1
         T4T1Delay[counter_NumRanging] = T4_T1
         Peaks_record[counter_NumRanging] = Peak
@@ -272,4 +273,5 @@ plt.show()
 
 
 func.errorStat(valid_Ranging,GT = 0.93)
+
 

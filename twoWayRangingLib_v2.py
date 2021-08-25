@@ -1,3 +1,6 @@
+# Lib version 2: removed some of the functions which are not used in version 15 land later
+# Note that for the version <=14, use twoWayRangingLib.py instead of this one.
+
 # import configparser
 import pyaudio
 import numpy as np
@@ -5,17 +8,7 @@ import matplotlib.pyplot as plt
 from scipy import signal
 import time
 import pigpio
-# from scipy.signal import chirp
 
-
-def sendSingleTone(pi_IO,pin,f0,duration,ratio):
-    # duration is in microsecond
-    pi_IO.hardware_PWM(pin,f0,ratio)
-    startTS = pi_IO.get_current_tick()
-    while (pi_IO.get_current_tick() - startTS) < duration:
-        pass
-    pi_IO.hardware_PWM(pin,0,0)
-    return startTS
 
 
 def genWaveForm(f0, duration, pin):
@@ -169,20 +162,6 @@ def sendWave_v2(pi_IO, wid):
     startTS = time.time() # version 2
     return startTS
 
-def sendChirp(pi_IO,pin,f0,f1,duration,sr,ratio):
-    ## [! OLD VERSION. PLEASE DO NOT USE IT NOW!]
-    # duration is in microsecond
-    Ns = int(np.round(duration*sr/1e6))
-    f_all = np.linspace(f0,f1,Ns, endpoint = False)
-    interval = duration/Ns # in microsecond
-    TS0 = 0
-    startTS = pi_IO.get_current_tick()
-    for f in f_all:
-        pi_IO.hardware_PWM(pin,int(f),ratio)
-        TS0 = pi_IO.get_current_tick()
-        while (pi_IO.get_current_tick() - TS0) < interval:
-            pass
-    return startTS
 
 def findDeviceIndex(p):
     DEV_INDEX = -1
@@ -209,7 +188,6 @@ def getRefChirp(f0,f1,duration,sr, phi=0):
     return signal.chirp(t,f0 = f0, t1 = duration,f1 = f1, phi = phi)
 
 
-
 def genBPF(order,L,H,fs):
     l = L/(fs/2)
     h = H/(fs/2)
@@ -226,58 +204,19 @@ def BPF_sos(sos, data):
     return signal.sosfiltfilt(sos, data)
 
 
-def matchedFilter(frames,refSignal):
-    # simple peak detection
-    sig = combineFrames(frames)
-    autoc = abs(np.correlate(sig, refSignal, mode = 'valid'))
-    ave = np.mean(autoc)
-    peak = np.max(autoc)
-    Index = np.argmax(autoc)
-    return ave,peak,Index
-
-
-def LPF_PeakDetection(frames,refSignal,LPF_A,LPF_B):
-    # low pass filter method: Use a LFP after the matched filter
-    sig = combineFrames(frames)
-    autoc = abs(np.correlate(sig, refSignal, mode = 'valid'))
-    filtered = signal.lfilter(LPF_B, LPF_A, autoc)
-    ave = np.mean(filtered)
-    peak = np.max(filtered)
-    Index = np.argmax(filtered)
-    return ave,peak,Index
-
-def sincos_PeakDetection(frames,refSignal1,refSignal2):
-    # sin-cos method: use two phases reference signals
-    sig = combineFrames(frames)
-    autoc1 = np.correlate(sig, refSignal1, mode = 'valid')
-    autoc2 = np.correlate(sig, refSignal2, mode = 'valid')
-    autoc = np.sqrt((autoc1*autoc1 + autoc2*autoc2)/2)
-    ave = np.mean(autoc)
-    peak = np.max(autoc)
-    Index = np.argmax(autoc)
-    return ave,peak,Index
-
-
-def noncoherence(frames,refSignal1,refSignal2, prefiltering = False, sos = None):
-    # sin-cos method: use two phases reference signals
-    sig = combineFrames(frames)
-    if prefiltering:
-        sig = BPF_sos(sos, data)
+def noncoherence(sig,refSignal1,refSignal2):
+    # non-coherence method: use both sin and cos reference signals
     autoc1 = np.correlate(sig, refSignal1, mode = 'valid')
     autoc2 = np.correlate(sig, refSignal2, mode = 'valid')
     autoc = np.sqrt((autoc1*autoc1 + autoc2*autoc2)/2)
     
     return autoc
 
-def NC_detector(autoc,THRESHOLD, sigLength, th_ratio=0.7):
-    Index, _ = signal.find_peaks(autoc, height=THRESHOLD, distance=sigLength, width=th_ratio*sigLength)
-    return Index, autoc[Index]
-
-def NC_Chirp_detector(autoc,THRESHOLD, mainPeakLength, mainPeakWidth):
-    Index, _ = signal.find_peaks(autoc,
+def peakDetector(seq,THRESHOLD, peak_interval, peak_width):
+    Index, _ = signal.find_peaks(seq,
                                  height=THRESHOLD,
-                                 distance=mainPeakLength,
-                                 width=mainPeakWidth)
+                                 distance=peak_interval,
+                                 width=peak_width)
     return Index, autoc[Index]
 
 
@@ -286,91 +225,8 @@ def peakFilter(Index, Peaks, TH = 0.8):
     feasiblePeak = Peaks[Peaks>=feasiblePeakTH]
     feasibleIndex = Index[Peaks>=feasiblePeakTH]
     return feasibleIndex[0], feasiblePeak[0]
-    
-    
-    
-    
-    
-
-def Nader_PeakDetection(frames,refSignal,threshold):
-    ## [! DISCARD, NO USE AT ALL !]
-    # Nader's method: Use all the local peaks from the raising edge to
-    # fit a line, and use all the local peaks from the falling edge to
-    # fit another line. Then the intersection of two line is the time
-    # of the peak.
-    sig = np.concatenate(frames)
-    autoc = np.abs(np.correlate(sig, refSignal, mode = 'valid'))
-    ave = np.mean(autoc)
-    peak, Index = Nader_Method(autoc,threshold)
-    return ave, peak, Index
 
 
-
-def multi_PeakDetection(frames,refSignal1,refSignal2,LPF_A,LPF_B, threshold):
-    # compare different methods at the same time
-    sig = np.concatenate(frames)
-    autoc1 = np.correlate(sig, refSignal1, mode = 'valid')
-    autoc2 = np.correlate(sig, refSignal2, mode = 'valid')
-    autoc = np.sqrt((autoc1*autoc1 + autoc2*autoc2)/2)
-    abs_autoc1 = np.abs(autoc1)
-    filtered = signal.lfilter(LPF_B, LPF_A, abs_autoc1)
-    
-    peak1 = np.max(abs_autoc1)
-    peak2 = np.max(autoc)
-    peak3 = np.max(filtered)
-    
-    Index1 = np.argmax(abs_autoc1)
-    Index2 = np.argmax(autoc)
-    Index3 = np.argmax(filtered)
-    
-    peak4, Index4 = Nader_Method(abs_autoc1,threshold)
-    
-    return peak1, peak2, peak3, peak4, Index1, Index2, Index3, Index4
-
-
-def Nader_Method(autoc,threshold):
-    ## [! DISCARD, NO USE AT ALL !]
-    peak = np.max(autoc)
-    Index = np.argmax(autoc)
-    if np.max(autoc) > threshold:
-        # fit lines
-        localPeaks = signal.argrelextrema(autoc, np.greater)
-        aaa = autoc[localPeaks[0]]>=threshold
-        goodPeaksIndex = localPeaks[0][aaa]
-        goodPeaks = autoc[goodPeaksIndex]
-        if len(goodPeaksIndex[goodPeaksIndex <= Index])>=2:
-            z1 = np.polyfit(goodPeaksIndex[goodPeaksIndex<=Index], goodPeaks[goodPeaksIndex<=Index], 1)
-        else:
-            return peak,Index
-        
-        if len(goodPeaksIndex[goodPeaksIndex >= Index])>=2:
-            z2 = np.polyfit(goodPeaksIndex[goodPeaksIndex>=Index], goodPeaks[goodPeaksIndex>=Index], 1)
-        else:
-            return peak,Index
-        
-        NaderIndex = int(np.round((z2[1] - z1[1])/(z1[0]-z2[0])))
-        return peak,NaderIndex
-    else:
-        return peak,Index
-
-
-
-
-def lookBack(curPeak, curTS, prePeak, preTS, continueFlag, THRESHOLD):
-    signalDetected = False
-    if curPeak > THRESHOLD or continueFlag == False:
-        if continueFlag:
-            continueFlag = False
-            prePeak = curPeak
-            preTS = curTS
-        else: 
-            # stream.stop_stream()            
-            if curPeak <= prePeak:
-                curTS = preTS
-                curPeak = prePeak
-            signalDetected = True
-            print("Peak Detected: ", curPeak)
-    return curPeak, curTS, prePeak, preTS, continueFlag, signalDetected
 
 def index2TS(Index, frameTime, RATE, CHUNK):
     # frameTime is in microsecond
