@@ -31,11 +31,12 @@ else:
     print("Unsupport Format. Have been Changed to Int32.")
 
 ratio = cp.getint("SPEAKER","ratio")
-pin_OUT = cp.getint("SPEAKER","pin_OUT")
+# pin_OUT = cp.getint("SPEAKER","pin_OUT")
 pin1 = cp.getint("SPEAKER","pin_OUT_1")
 pin2 = cp.getint("SPEAKER","pin_OUT_2")
 
-f0 = cp.getint("SIGNAL","f0") 
+f0 = cp.getint("SIGNAL","f0")
+f1 = cp.getint("SIGNAL","f1") 
 duration = cp.getint("SIGNAL","duration") # microseconds
 THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
 NumRanging = cp.getint("SIGNAL","NumRanging")
@@ -44,7 +45,6 @@ IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
 TH_ratio_width_50 = cp.getfloat("SIGNAL","TH_ratio_width_50")
 
 broker_address = cp.get("COMMUNICATION",'broker_address')
-# broker_address = "192.168.197.238"
 topic_t3t2 = cp.get("COMMUNICATION",'topic_t3t2')
 topic_ready2recv = cp.get("COMMUNICATION",'topic_ready2recv')
 topic_counter = cp.get("COMMUNICATION",'topic_counter')
@@ -73,8 +73,8 @@ Peaks_record = np.zeros(NumRanging)
 
 NumIgnoredFrame = int(np.ceil(IgnoredSamples/CHUNK))
 NumReqFrames = int(np.ceil(RATE / CHUNK * duration/1000000.0) + 1.0)
-RefSignal = func.getRefSignal(f0,duration/1000000.0,RATE, 0)
-RefSignal2 = func.getRefSignal(f0,duration/1000000.0,RATE, np.pi/2)
+RefSignal = func.getRefChirp(f0,f1,duration/1000000.0,RATE, 0)
+RefSignal2 = func.getRefChirp(f0,f1,duration/1000000.0,RATE, 90)
 
 NumSigSamples = len(RefSignal)
 lenOutput = CHUNK*NumReqFrames-NumSigSamples+1
@@ -82,35 +82,39 @@ TH_MaxIndex = lenOutput - NumSigSamples
 
 
 # init functions
+
 # generate BPF
 pre_BPfiltering = True
 L = f0 - 2000
-H = f0 + 2000
+H = f1 + 2000
 order = 9
 sos = func.genBPF(order, L, H, fs=RATE)
 
-# GPIO init
+
+
 pi_IO = pigpio.pi()
 # pi_IO.set_mode(pin_OUT,pigpio.OUTPUT)
 pi_IO.set_mode(pin1, pigpio.OUTPUT)
 pi_IO.set_mode(pin2, pigpio.OUTPUT)
 # generate wave form
 # wf = func.genWaveForm(f0, duration, pin_OUT)
-wf = func.genWaveForm_2pin(f0,duration, pin1, pin2)
+wf = func.genChirpWaveForm_2pin(f0, f1, duration/1e6, pin1, pin2)
 wid = func.createWave(pi_IO, wf)
 
 # setup communication
+# broker_address = "192.168.68.118"
 mqttc = myMQTT(broker_address)
 mqttc.registerTopic(topic_t3t2)
 mqttc.registerTopic(topic_ready2recv)
-
+# mqttc.registerTopic(topic_counter)
 
 # clear existing msg in topics
 if mqttc.checkTopicDataLength(topic_t3t2)>0:
     mqttc.readTopicData(topic_t3t2)
 if mqttc.checkTopicDataLength(topic_ready2recv)>0:
     mqttc.readTopicData(topic_ready2recv)
-
+# if mqttc.checkTopicDataLength(topic_counter)>0:
+#     mqttc.readTopicData(topic_counter)
 
 # register mic    
 p = pyaudio.PyAudio()
@@ -147,7 +151,6 @@ while True:
 
     # Send Signal Out
     T1 = func.sendWave(pi_IO, wid)
-    
     #### End of Sending Part ####
     # time.sleep(0.1)
     # Turn on listening mode
@@ -157,10 +160,9 @@ while True:
     counter = 0
     ready2recv_Flag = False
     signalDetected1 = False
+
     
     stream.start_stream()
-    # if stream.is_stopped():
-    #     stream.start_stream()
     while True:
         data = stream.read(CHUNK)
         currentTime = pi_IO.get_current_tick() # version 1
@@ -190,6 +192,7 @@ while True:
 
         if len(frames) < NumReqFrames:
             continue
+        
         sig = func.combineFrames(frames)
         if pre_BPfiltering:
             sig_filtered = func.BPF_sos(sos, sig)
@@ -198,9 +201,8 @@ while True:
             autoc = func.noncoherence(sig,RefSignal,RefSignal2)
         Index1, peak1 = func.peakDetector(autoc,
                                          THRESHOLD,
-                                         int(NumSigSamples/2),
-                                         int(NumSigSamples/2))
-        
+                                         int(NumSigSamples/10),
+                                         int(NumSigSamples/10))
         if Index1.size>0: # signal detected
             Index, Peak = func.peakFilter(Index1, peak1, TH = 0.8)
             peakTS1 = func.index2TS(Index, frameTime, RATE, CHUNK)
@@ -215,13 +217,12 @@ while True:
             if counter > int(TIMEOUTCOUNTS):
                 print("Time out at ", counter_NumRanging)
                 break
-        
         frames.pop(0)
         frameTime.pop(0)
 
         
     stream.stop_stream()
-    if signalDetected1 and signalDetected1:
+    if signalDetected1:
         T4_T1 = func.calDuration(T1, peakTS1, wrapsFix) # version 1
         T4T1Delay[counter_NumRanging] = T4_T1
         Peaks_record[counter_NumRanging] = Peak
@@ -235,7 +236,6 @@ while True:
         Ranging_Record[counter_NumRanging] = Ranging
         T3T2Delay[counter_NumRanging] = T3_T2
         print("At %d, estimated distance is %.3f meters." % (counter_NumRanging,Ranging))
-        
     counter_NumRanging = counter_NumRanging + 1
     if counter_NumRanging >= NumRanging:
         break
@@ -260,7 +260,7 @@ func.getOutputFig_IQMethod2(fulldata[0],
                             RefSignal2,
                             THRESHOLD,
                             NumSigSamples,
-                            th_ratio=TH_ratio_width_50)
+                            th_ratio=0.01)
 
 plt.figure()
 plt.plot(Peaks_record,'.')
@@ -274,7 +274,6 @@ valid_Ranging = Ranging_Record[(Ranging_Record>Ranging_Min) & (Ranging_Record<Ra
 plt.figure()
 plt.hist(valid_Ranging,bins=30)
 plt.show()
-
 
 func.errorStat(valid_Ranging,GT = 0.93)
 
