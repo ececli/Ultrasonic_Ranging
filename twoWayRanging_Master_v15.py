@@ -84,8 +84,8 @@ TH_MaxIndex = lenOutput - NumSigSamples
 # init functions
 # generate BPF
 pre_BPfiltering = True
-L = f0-2000
-H = f0 + 2000
+L = f0 - 1000
+H = f0 + 1000
 order = 9
 sos = func.genBPF(order, L, H, fs=RATE)
 
@@ -147,6 +147,7 @@ while True:
 
     # Send Signal Out
     T1 = func.sendWave(pi_IO, wid)
+    
     #### End of Sending Part ####
     # time.sleep(0.1)
     # Turn on listening mode
@@ -192,10 +193,12 @@ while True:
         sig = func.combineFrames(frames)
         if pre_BPfiltering:
             sig_filtered = func.BPF_sos(sos, sig)
-        autoc = func.noncoherence(sig_filtered,RefSignal,RefSignal2)
+            autoc = func.noncoherence(sig_filtered,RefSignal,RefSignal2)
+        else:
+            autoc = func.noncoherence(sig,RefSignal,RefSignal2)
         Index1, peak1 = func.peakDetector(autoc,
                                          THRESHOLD,
-                                         1,
+                                         int(NumSigSamples/2),
                                          int(NumSigSamples/2))
         
         if Index1.size>0: # signal detected
@@ -231,6 +234,7 @@ while True:
         Ranging = (T4_T1 - T3_T2)/2/1000.0*SOUNDSPEED
         Ranging_Record[counter_NumRanging] = Ranging
         T3T2Delay[counter_NumRanging] = T3_T2
+        print("At %d, estimated distance is %.3f meters." % (counter_NumRanging,Ranging))
         
     counter_NumRanging = counter_NumRanging + 1
     if counter_NumRanging >= NumRanging:
