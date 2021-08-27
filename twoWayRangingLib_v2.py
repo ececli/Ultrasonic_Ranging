@@ -323,7 +323,7 @@ def checkBPFilteredData(fulldata,sos,showRawData = True):
         plt.plot(rcvSignal,'r-o')
     plt.plot(filtered,'b-*')
     plt.show()
-    return filteredData
+    return filtered
 
 
 def drawFFT(data,fs):
