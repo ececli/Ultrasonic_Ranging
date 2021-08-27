@@ -2,12 +2,15 @@
 import configparser
 import pyaudio
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy import signal
 import time
 import pigpio
 import twoWayRangingLib_v2 as func
 from myMQTT_Class import myMQTT
+
+# import matplotlib
+# matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
 
 # Load Parameters
 confFile = "UR_pyConfig.conf"
