@@ -364,9 +364,13 @@ def getOutputFig_IQMethod2(fulldata,
                            THRESHOLD,
                            peak_interval,
                            peak_width,
-                           recordedPeak=0):
+                           recordedPeak=0
+                           preBPFilter = False
+                           sos = None):
     
     sig = combineFrames(fulldata)
+    if preBPFilter:
+        sig = BPF_sos(sos,sig)
     autoc = noncoherence(sig,RefSignal1,RefSignal2)
 
     peaks, properties = signal.find_peaks(autoc,
@@ -385,7 +389,11 @@ def getOutputFig_IQMethod2(fulldata,
     if recordedPeak>0:
         plt.axhline(y = recordedPeak,color="g")
     plt.show()
-    
+
+
+
+
+
 def errorStat(data, GT, offset=0, bin=100):
     fixedData = data - offset
     meanData = np.mean(fixedData)

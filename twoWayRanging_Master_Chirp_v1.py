@@ -282,7 +282,9 @@ func.getOutputFig_IQMethod2(fulldata[Index_Realization],
                             THRESHOLD,
                             int(NumSigSamples/100),
                             int(NumSigSamples/100),
-                            Peaks_record[Index_Realization])
+                            Peaks_record[Index_Realization],
+                            pre_BPfiltering,
+                            sos)
 
 
 
