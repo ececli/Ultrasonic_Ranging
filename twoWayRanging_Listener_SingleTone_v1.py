@@ -2,16 +2,12 @@
 import configparser
 import pyaudio
 import numpy as np
-from scipy import signal
 import matplotlib.pyplot as plt
+from scipy import signal
 import time
 import pigpio
 import twoWayRangingLib_v2 as func
 from myMQTT_Class import myMQTT
-
-# import matplotlib
-# matplotlib.use('TkAgg')
-
 
 # Load Parameters
 confFile = "UR_pyConfig.conf"
@@ -32,12 +28,11 @@ else:
     print("Unsupport Format. Have been Changed to Int32.")
 
 ratio = cp.getint("SPEAKER","ratio")
-# pin_OUT = cp.getint("SPEAKER","pin_OUT")
+pin_OUT = cp.getint("SPEAKER","pin_OUT")
 pin1 = cp.getint("SPEAKER","pin_OUT_1")
 pin2 = cp.getint("SPEAKER","pin_OUT_2")
 
-f0 = cp.getint("SIGNAL","f0")
-f1 = cp.getint("SIGNAL","f1") 
+f0 = cp.getint("SIGNAL","f0") 
 duration = cp.getint("SIGNAL","duration") # microseconds
 THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
 NumRanging = cp.getint("SIGNAL","NumRanging")
@@ -46,6 +41,7 @@ IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
 TH_ratio_width_50 = cp.getfloat("SIGNAL","TH_ratio_width_50")
 
 broker_address = cp.get("COMMUNICATION",'broker_address')
+# broker_address = "192.168.10.238"
 topic_t3t2 = cp.get("COMMUNICATION",'topic_t3t2')
 topic_ready2recv = cp.get("COMMUNICATION",'topic_ready2recv')
 topic_counter = cp.get("COMMUNICATION",'topic_counter')
@@ -70,8 +66,8 @@ Peaks_record = []
 
 NumIgnoredFrame = int(np.ceil(IgnoredSamples/CHUNK))
 NumReqFrames = int(np.ceil(RATE / CHUNK * duration/1000000.0) + 1.0)
-RefSignal = func.getRefChirp(f0,f1,duration/1000000.0,RATE, 0)
-RefSignal2 = func.getRefChirp(f0,f1,duration/1000000.0,RATE, 90)
+RefSignal = func.getRefSignal(f0,duration/1000000.0,RATE, 0)
+RefSignal2 = func.getRefSignal(f0,duration/1000000.0,RATE, np.pi/2)
 
 NumSigSamples = len(RefSignal)
 lenOutput = CHUNK*NumReqFrames-NumSigSamples+1
@@ -82,11 +78,11 @@ TH_MaxIndex = lenOutput - NumSigSamples
 # generate BPF
 pre_BPfiltering = True
 order = 9
-L = f0 - 2000
-H = f1 + 2000
+L = f0-2000
+H = f0+2000
 sos = func.genBPF(order, L, H, fs = RATE)
 
-
+# GPIO init
 pi_IO = pigpio.pi()
 # pi_IO.set_mode(pin_OUT,pigpio.OUTPUT)
 pi_IO.set_mode(pin1,pigpio.OUTPUT)
@@ -94,10 +90,11 @@ pi_IO.set_mode(pin2,pigpio.OUTPUT)
 
 # generate wave form
 # wf = func.genWaveForm(f0, duration, pin_OUT)
-wf = func.genChirpWaveForm_2pin(f0, f1, duration/1e6, pin1, pin2)
+wf = func.genWaveForm_2pin(f0, duration, pin1, pin2)
 wid = func.createWave(pi_IO, wf)
 
 # setup communication
+# broker_address = "192.168.68.118"
 mqttc = myMQTT(broker_address)
 mqttc.registerTopic(topic_ready2recv)
 
@@ -141,6 +138,8 @@ while True:
     signalDetected1 = False
     
     stream.start_stream()
+    # if stream.is_stopped():
+    #     stream.start_stream()
     while True:
         data = stream.read(CHUNK)
         currentTime = pi_IO.get_current_tick()
@@ -169,16 +168,16 @@ while True:
 
         if len(frames) < NumReqFrames:
             continue
-        
         sig = func.combineFrames(frames)
         if pre_BPfiltering:
-            sig = func.BPF_sos(sos, sig)
-
-        autoc = func.noncoherence(sig,RefSignal,RefSignal2)
+            sig_filtered = func.BPF_sos(sos, sig)
+            autoc = func.noncoherence(sig_filtered,RefSignal,RefSignal2)
+        else:
+            autoc = func.noncoherence(sig,RefSignal,RefSignal2)
         Index1, peak1 = func.peakDetector(autoc,
                                          THRESHOLD,
-                                         int(NumSigSamples/100),
-                                         int(NumSigSamples/100))
+                                         int(NumSigSamples/2),
+                                         int(NumSigSamples/2))
         
         if Index1.size>0: # signal detected
             Index, Peak = func.peakFilter(Index1, peak1, TH=0.8)
@@ -187,13 +186,13 @@ while True:
             if Index <= TH_MaxIndex: # claim the peak is detected
                 break
         else:
-            if counter > int(TIMEOUTCOUNTS):
-                print("Time out at ", counter_NumRanging)
-                TimeOutCount = TimeOutCount + 1
-                break
             if signalDetected1: # seems impossible to happen in this case
                 print("At ",counter_NumRanging,counter)
                 print("Signal previously detected but disappear!")
+                break
+            if counter > int(TIMEOUTCOUNTS):
+                print("Time out at ", counter_NumRanging)
+                TimeOutCount = TimeOutCount + 1
                 break
         frames.pop(0)
         frameTime.pop(0)
@@ -218,7 +217,7 @@ while True:
         TimeOutCount = 0 # reset timeout counter
         # time.sleep(0.1)
     else:
-        if TimeOutCount >=2:
+        if TimeOutCount >=3:
             TimeOutFlag = True
         
     counter_NumRanging = counter_NumRanging + 1
@@ -262,7 +261,6 @@ func.getOutputFig_IQMethod2(fulldata[Index_Realization],
                             Peaks_record[Index_Realization],
                             pre_BPfiltering,
                             sos)
-
 
 
 
