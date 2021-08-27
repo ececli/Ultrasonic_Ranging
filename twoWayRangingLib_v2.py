@@ -6,11 +6,13 @@ import pyaudio
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import signal
+from scipy.fft import fft, fftfreq
 import time
 import pigpio
 
 
-
+#########################################################################################
+#########################################################################################
 def genWaveForm(f0, duration, pin):
     # Example: 
     # duration = 2000 # microsecond
@@ -162,6 +164,8 @@ def sendWave_v2(pi_IO, wid):
     startTS = time.time() # version 2
     return startTS
 
+#########################################################################################
+#########################################################################################
 
 def findDeviceIndex(p):
     DEV_INDEX = -1
@@ -284,6 +288,12 @@ def calDuration(T_start,T_end,wrapsFix):
         print("fixed duration = ",duration)
     return duration    
 
+
+
+#######################################################################################
+#######################################################################################
+
+
 def getStat(a,label = " ", unit = " "):
     meanA = np.mean(a)
     stdA = np.std(a)
@@ -296,40 +306,84 @@ def getStat(a,label = " ", unit = " "):
     plt.show()
     return meanA, stdA
     
-def getOutputFig(fulldata,RefSignal,LPF_B,LPF_A):
-    
+
+
+def checkRawData(fulldata):
     rcvSignal = np.concatenate(fulldata)
-    xcorrelation = abs(np.correlate(rcvSignal, RefSignal, mode = 'valid'))
-    filtered = signal.lfilter(LPF_B,LPF_A,xcorrelation)
     plt.figure()
-    plt.plot(xcorrelation,'r-o')
-    plt.plot(filtered,'b-o')
+    plt.plot(rcvSignal,'r-o')
     plt.show()
+    return rcvSignal
+
+def checkBPFilteredData(fulldata,sos,showRawData = True):
+    rcvSignal = np.concatenate(fulldata)
+    filtered = signal.sosfiltfilt(sos, rcvSignal)
+    plt.figure()
+    if showRawData:
+        plt.plot(rcvSignal,'r-o')
+    plt.plot(filtered,'b-*')
+    plt.show()
+    return filteredData
+
+
+def drawFFT(data,fs):
+    N = len(data)
+    T = 1/fs
+    yf = fft(data)
+    xf = fftfreq(N, T)[:N//2]
+    aaa = 2.0/N * np.abs(yf[0:N//2])
+    plt.figure()
+    plt.plot(xf, aaa)
+    plt.grid()
+    plt.show()
+
+def checkFFT(fulldata,sos,fs,showRawData = True):
+    rcvSignal = np.concatenate(fulldata)
+    filtered = signal.sosfiltfilt(sos, rcvSignal)
+    if showRawData:
+        drawFFT(rcvSignal,fs)
+    drawFFT(filtered,fs)
+        
     
-def getOutputFig_IQMethod(fulldata, RefSignal1, RefSignal2):
+
+def checkMFOutput(fulldata, RefSignal1, RefSignal2):
     
     rcvSignal = np.concatenate(fulldata)
     autoc1 = np.correlate(rcvSignal, RefSignal1, mode = 'valid')
     autoc2 = np.correlate(rcvSignal, RefSignal2, mode = 'valid')
     autoc = np.sqrt((autoc1*autoc1 + autoc2*autoc2)/2)
     plt.figure()
-    plt.plot(autoc,'b-o')
+    plt.plot(autoc,'r-o')
     plt.show()
+    return autoc
     
     
-def getOutputFig_IQMethod2(fulldata, RefSignal1, RefSignal2,THRESHOLD, sigLength, th_ratio=0.7):
+def getOutputFig_IQMethod2(fulldata,
+                           RefSignal1,
+                           RefSignal2,
+                           THRESHOLD,
+                           peak_interval,
+                           peak_width,
+                           recordedPeak=0):
     
-    rcvSignal = np.concatenate(fulldata)
-    autoc1 = np.correlate(rcvSignal, RefSignal1, mode = 'valid')
-    autoc2 = np.correlate(rcvSignal, RefSignal2, mode = 'valid')
-    autoc = np.sqrt((autoc1*autoc1 + autoc2*autoc2)/2)
-    peaks, properties = signal.find_peaks(autoc, height=THRESHOLD, distance=sigLength, width=th_ratio*sigLength)
+    sig = combineFrames(fulldata)
+    autoc = noncoherence(sig,RefSignal1,RefSignal2)
+
+    peaks, properties = signal.find_peaks(autoc,
+                                          height=THRESHOLD,
+                                          distance=peak_interval,
+                                          width=peak_width)
     print("Index of peaks: ", peaks)
     print(properties)
+    
     plt.figure()
     plt.plot(autoc,'b-o')
     plt.plot(peaks, autoc[peaks],'rs')
-    plt.hlines(y=properties["width_heights"],xmin=properties["left_ips"],xmax=properties["right_ips"])
+    plt.hlines(y=properties["width_heights"],
+               xmin=properties["left_ips"],
+               xmax=properties["right_ips"])
+    if recordedPeak>0:
+        plt.axhline(y = recordedPeak,color="g")
     plt.show()
     
 def errorStat(data, GT, offset=0, bin=100):

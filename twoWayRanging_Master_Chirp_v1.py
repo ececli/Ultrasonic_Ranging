@@ -142,12 +142,17 @@ print("DC offset of this Mic is ",DCOffset)
 while True:
 
     # time.sleep(0.1)
+    startWaitTime = time.time()
     while True:
         if mqttc.checkTopicDataLength(topic_ready2recv)>=1:
             ready2recv_Flag = mqttc.readTopicData(topic_ready2recv)
             if ready2recv_Flag[-1] == ListenerID: # only read last msg
                 # print(counter_NumRanging)
                 break
+        currentTime = time.time()
+        if currentTime - startWaitTime >= 10: # second
+            print("At %d No Ready Signal" % counter_NumRanging)
+            break 
 
     # Send Signal Out
     T1 = func.sendWave(pi_IO, wid)
@@ -195,14 +200,13 @@ while True:
         
         sig = func.combineFrames(frames)
         if pre_BPfiltering:
-            sig_filtered = func.BPF_sos(sos, sig)
-            autoc = func.noncoherence(sig_filtered,RefSignal,RefSignal2)
-        else:
-            autoc = func.noncoherence(sig,RefSignal,RefSignal2)
+            sig = func.BPF_sos(sos, sig)
+
+        autoc = func.noncoherence(sig,RefSignal,RefSignal2)
         Index1, peak1 = func.peakDetector(autoc,
                                          THRESHOLD,
-                                         int(NumSigSamples/10),
-                                         int(NumSigSamples/10))
+                                         int(NumSigSamples/100),
+                                         int(NumSigSamples/100))
         if Index1.size>0: # signal detected
             Index, Peak = func.peakFilter(Index1, peak1, TH = 0.8)
             peakTS1 = func.index2TS(Index, frameTime, RATE, CHUNK)
@@ -249,24 +253,38 @@ func.deleteWave(pi_IO, wid)
 pi_IO.stop()
 mqttc.closeClient()
 
+#######################################################
+#################### ANALYSIS PART ####################
 
+# Save Ranging Results to a csv file:
+# np.savetxt("Ranging.csv",Ranging_Record, fmt="%.4f", delimiter = ",")
 
-np.savetxt("Ranging.csv",Ranging_Record, fmt="%.4f", delimiter = ",")
 func.getStat(Ranging_Record,label = "Distance 1", unit = "m")
-
-# For debug only:
-func.getOutputFig_IQMethod2(fulldata[0],
-                            RefSignal,
-                            RefSignal2,
-                            THRESHOLD,
-                            NumSigSamples,
-                            th_ratio=0.01)
 
 plt.figure()
 plt.plot(Peaks_record,'.')
 plt.xlabel("Index of Trials")
 plt.ylabel("Peak values")
 plt.show()
+
+# For debug only:
+
+Index_Realization = 0
+
+rawData = func.checkRawData(fulldata[Index_Realization])
+_ = func.checkBPFilteredData(fulldata[Index_Realization],sos,showRawData = True)
+func.checkFFT(fulldata[Index_Realization],sos,RATE,showRawData = True)
+
+
+func.getOutputFig_IQMethod2(fulldata[Index_Realization],
+                            RefSignal,
+                            RefSignal2,
+                            THRESHOLD,
+                            int(NumSigSamples/100),
+                            int(NumSigSamples/100),
+                            Peaks_record[Index_Realization])
+
+
 
 Ranging_Record = Ranging_Record - Ranging_Offset
 valid_Ranging = Ranging_Record[(Ranging_Record>Ranging_Min) & (Ranging_Record<Ranging_Max)]
