@@ -364,8 +364,8 @@ def getOutputFig_IQMethod2(fulldata,
                            THRESHOLD,
                            peak_interval,
                            peak_width,
-                           recordedPeak=0
-                           preBPFilter = False
+                           recordedPeak=0,
+                           preBPFilter = False,
                            sos = None):
     
     sig = combineFrames(fulldata)
