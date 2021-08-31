@@ -14,7 +14,7 @@ pi_IO = pigpio.pi()
 pi_IO.set_mode(pin_OUT,pigpio.OUTPUT)
 pi_IO.hardware_PWM(pin_OUT,0,0)
 
-NumRealization = 1000000
+NumRealization = 10000
 t_record = np.zeros(NumRealization)
 
 # pi_IO.hardware_PWM(pin,f0,ratio)

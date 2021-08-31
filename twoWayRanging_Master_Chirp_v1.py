@@ -269,7 +269,7 @@ plt.show()
 
 # For debug only:
 
-Index_Realization = 0
+Index_Realization = 1
 
 rawData = func.checkRawData(fulldata[Index_Realization])
 _ = func.checkBPFilteredData(fulldata[Index_Realization],sos,showRawData = True)
