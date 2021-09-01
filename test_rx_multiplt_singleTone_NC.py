@@ -184,6 +184,15 @@ EstiError = aaa*1e-6*SOUNDSPEED
 func.errorStat_inputError(EstiError, bin=100)
 
 
+
+
+# print(np.diff(Index_Peaks)-128000)
+
+"""
+rawData = func.checkRawData(fulldata)
+_ = func.checkBPFilteredData(fulldata,sos,showRawData = True)
+func.checkFFT(fulldata,sos,RATE,showRawData = True)
+
 Index_Peaks = func.getOutputFig_IQMethod2(fulldata,
                             RefSignal,
                             RefSignal2,
@@ -193,15 +202,6 @@ Index_Peaks = func.getOutputFig_IQMethod2(fulldata,
                             0,
                             pre_BPfiltering,
                             sos)
-
-print(np.diff(Index_Peaks)-128000)
-
-"""
-rawData = func.checkRawData(fulldata)
-_ = func.checkBPFilteredData(fulldata,sos,showRawData = True)
-func.checkFFT(fulldata,sos,RATE,showRawData = True)
-
-
 
 """
 
