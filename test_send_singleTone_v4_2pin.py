@@ -74,8 +74,8 @@ pin1 = 12
 pin2 = 4
 f0=25000
 sig_duration = 4000
-int_duration = 80000
-numSignal = 10
+int_duration = 2000000
+numSignal = 21
 
 
 pi_IO = pigpio.pi()
@@ -83,7 +83,7 @@ pi_IO.set_mode(pin1,pigpio.OUTPUT)
 pi_IO.set_mode(pin2,pigpio.OUTPUT)
 
 # generate wave form
-wf = genTestWaveForm_2pin(f0, sig_duration, int_duration, numSignal, pin1, pin2)
+wf = genTestWaveForm_2pin(f0, sig_duration, int_duration-sig_duration, numSignal, pin1, pin2)
 wid = createWave(pi_IO, wf)
 TS = sendWave(pi_IO, wid)
 print(TS)
