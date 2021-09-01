@@ -82,6 +82,10 @@ L = f0-2000
 H = f0+2000
 sos = func.genBPF(order, L, H, fs = RATE)
 
+# Peak Shape:
+peak_interval = int(NumSigSamples/100)
+peak_width = int(NumSigSamples/100)
+
 # GPIO init
 pi_IO = pigpio.pi()
 # pi_IO.set_mode(pin_OUT,pigpio.OUTPUT)
@@ -176,8 +180,8 @@ while True:
             autoc = func.noncoherence(sig,RefSignal,RefSignal2)
         Index1, peak1 = func.peakDetector(autoc,
                                          THRESHOLD,
-                                         int(NumSigSamples/2),
-                                         int(NumSigSamples/2))
+                                         peak_interval,
+                                         peak_width)
         
         if Index1.size>0: # signal detected
             Index, Peak = func.peakFilter(Index1, peak1, TH=0.8)
@@ -244,7 +248,7 @@ plt.show()
 
 
 # For debug only:
-Index_Realization = 0
+Index_Realization = 1
 
 
 rawData = func.checkRawData(fulldata[Index_Realization])
@@ -256,8 +260,8 @@ func.getOutputFig_IQMethod2(fulldata[Index_Realization],
                             RefSignal,
                             RefSignal2,
                             THRESHOLD,
-                            int(NumSigSamples/100),
-                            int(NumSigSamples/100),
+                            peak_interval,
+                            peak_width,
                             Peaks_record[Index_Realization],
                             pre_BPfiltering,
                             sos)
