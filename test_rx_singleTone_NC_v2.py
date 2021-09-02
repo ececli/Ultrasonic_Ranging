@@ -32,7 +32,7 @@ def drawFFT(data,fs):
     xf = fftfreq(N, T)[:N//2]
     aaa = 2.0/N * np.abs(yf[0:N//2])
     plt.figure()
-    plt.plot(xf, aaa)
+    plt.plot(xf, aaa,'r-o')
     plt.grid()
     plt.xlabel("Frequency (Hz)")
     plt.ylabel("Magnitude")
