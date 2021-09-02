@@ -31,6 +31,11 @@ To obtain the microphone data in Python, pyaudio package is needed. The installa
 
 ## Two-Way Ranging Algorithm
 
+
+
+
+
+
 ## To Do List
 
 1. Test Murata Speaker at 40kHz
