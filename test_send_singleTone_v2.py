@@ -15,10 +15,10 @@ cp = configparser.ConfigParser()
 cp.read(confFile)
 
 
-f0 = cp.getint("SIGNAL","f0")
-duration = cp.getint("SIGNAL","duration")
-ratio = cp.getint("SPEAKER","ratio")
-pin_OUT = cp.getint("SPEAKER","pin_OUT")
+f0 = 25000
+duration = 20000000
+ratio = 500000
+pin_OUT = 12
 
 # pin_OUT = 12
 # ratio = 500000
