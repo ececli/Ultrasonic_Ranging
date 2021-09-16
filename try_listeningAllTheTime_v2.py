@@ -119,7 +119,7 @@ pin_OUT = 5
 ## Signal
 f0 = 25000
 duration = 0.004 # seconds
-THRESHOLD = 1500
+THRESHOLD = 700
 NumRanging = 100
 TIMEOUTCOUNTS = 150
 IgnoredSamples = 4096
@@ -210,6 +210,7 @@ while True:
     if Flag_SendOut:
         sendSignal(pin_OUT,0.0001)
         Flag_SendOut = False
+        print("Signal Out Counter: ",counter)
     
     if counter <= NumIgnoredFrame:
         continue
@@ -243,6 +244,7 @@ while True:
                                          NumIgnoredFrame,
                                          NumReqFrames)
             Index_Record.append(absIndex)
+            print("Received Counter: ",counter)
             
     else: # no peaks detected
         if counter > int(TIMEOUTCOUNTS):
