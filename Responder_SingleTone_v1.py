@@ -163,13 +163,16 @@ while True:
     # Ready2Recv Count Down
     if Ready2Recv_CD:
         Ready2Recv_CD = Ready2Recv_CD - 1
+        print("Ready2Recv Count Down: ",Ready2Recv_CD)
     else:
+        print("Ready to Receive")
         Flag_Ready2Recv = True
         Ready2Recv_CD = 9999
     
     
     # Send Ready2Recv Msg to the other device
     if Flag_Ready2Recv:
+        print("Send out Ready-to-Receive to the other device")
         mqttc.sendMsg(topic_ready2recv,ID)
         Flag_Ready2Recv = False
         Flag_ExpRX = True
@@ -177,6 +180,7 @@ while True:
     
     # Send out Single-Tone Signal
     if Flag_Ready2Send:
+        print("Send out single-tone signal")
         func2.sendSignal(pin_OUT,0.0001)
         Flag_Ready2Send = False
         Flag_ExpTX = True
@@ -188,8 +192,10 @@ while True:
 
     # Read Ready2Send Msg
     if mqttc.checkTopicDataLength(topic_ready2recv)>=1:
+        print("Received Msg")
         ready2recv_buffer = mqttc.readTopicData(topic_ready2recv)
         if ready2recv_buffer[-1] == theOtherID: # only read last msg
+            print("Ready to Send")
             Flag_Ready2Send = True
 
     
@@ -214,6 +220,7 @@ while True:
                                      peak_width)
     
     if Index1.size>0: # if signal is detected
+        print("Signal Detected")
         Index, Peak = func.peakFilter(Index1, peak1, TH = 0.8)
         if Index <= TH_MaxIndex: # claim the peak is detected
             absIndex = func2.calAbsSampleIndex(counter,
@@ -227,6 +234,7 @@ while True:
             PeakCounter_Record.append(counter)
             ## End
             if Flag_ExpTX:
+                print("Received own signal")
                 T3 = absIndex
                 Flag_ExpTX = False
                 ## For debug and record purposes:
@@ -236,12 +244,14 @@ while True:
                     T3T2 = T3 - T2
                     T3T2_Record.append(T3T2)
                     mqttc.sendMsg(topic_t3t2,T3T2)
-                    Flag_T2Ready = False   
+                    Flag_T2Ready = False
+                    print("Send out T3-T2")
                 else:
                     print("Missing T2")
                 Ready2Recv_CD = 3
                 
             if Flag_ExpRX:
+                print("Received signal from the other device")
                 T2 = absIndex
                 Flag_ExpRX = False
                 Flag_T2Ready = True
