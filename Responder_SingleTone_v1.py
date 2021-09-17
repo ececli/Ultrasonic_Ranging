@@ -38,7 +38,7 @@ duration = cp.getint("SIGNAL","duration") # microseconds
 duration = 0.004 # seconds
 THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
 NumRanging = cp.getint("SIGNAL","NumRanging")
-NumRanging = 10
+NumRanging = 1000
 TIMEOUTCOUNTS = cp.getint("SIGNAL","TimeoutCounts")
 IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
 TH_ratio_width_50 = cp.getfloat("SIGNAL","TH_ratio_width_50")
@@ -169,15 +169,15 @@ while True:
         Ready2Recv_CD = Ready2Recv_CD - 1
         # print("Ready2Recv Count Down: ",Ready2Recv_CD)
     else:
-        print("---------------------------")
-        print("Ready to Receive")
+        # print("---------------------------")
+        # print("Ready to Receive")
         Flag_Ready2Recv = True
         Ready2Recv_CD = 9999
     
     
     # Send Ready2Recv Msg to the other device
     if Flag_Ready2Recv:
-        print("Send out Ready-to-Receive to the other device")
+        # print("Send out Ready-to-Receive to the other device")
         mqttc.sendMsg(topic_tell_IamReady2Recv,ID)
         Flag_Ready2Recv = False
         Flag_ExpRX = True
@@ -185,28 +185,28 @@ while True:
     
     # Send out Single-Tone Signal
     if Flag_Ready2Send:
-        print("Send out single-tone signal")
+        # print("Send out single-tone signal")
         func2.sendSignal(pin_OUT,0.0001)
         Flag_Ready2Send = False
         Flag_ExpTX = True
 
         ## for debug and record purposes: 
-        sendOut_RecordCounter.append(counter)
+        # sendOut_RecordCounter.append(counter)
         ## End
         
 
     # Read Ready2Send Msg
     if mqttc.checkTopicDataLength(topic_check_ifOtherReady)>=1:
-        print("Received Msg")
+        # print("Received Msg")
         ready2recv_buffer = mqttc.readTopicData(topic_check_ifOtherReady)
         if ready2recv_buffer[-1] == theOtherID: # only read last msg
-            print("Ready to Send")
+            # print("Ready to Send")
             Flag_Ready2Send = True
 
     
     ndata = func.preProcessingData(data,FORMAT)-DCOffset
     ## for debug and record purposes:
-    fulldata.append(ndata)
+    # fulldata.append(ndata)
     ## End
     
     frames.append(ndata)
@@ -225,7 +225,7 @@ while True:
                                      peak_width)
     
     if Index1.size>0: # if signal is detected
-        print("Signal Detected")
+        # print("Signal Detected")
         Index, Peak = func.peakFilter(Index1, peak1, TH = 0.8)
         if Index <= TH_MaxIndex: # claim the peak is detected
             absIndex = func2.calAbsSampleIndex(counter,
@@ -239,29 +239,31 @@ while True:
             PeakCounter_Record.append(counter)
             ## End
             if Flag_ExpTX:
-                print("Received own signal")
+                # print("Received own signal")
                 T3 = absIndex
                 Flag_ExpTX = False
                 ## For debug and record purposes:
-                RecvTX_RecordCounter.append(counter)
+                # RecvTX_RecordCounter.append(counter)
                 ## End
                 if Flag_T2Ready:
                     T3T2 = T3 - T2
-                    T3T2_Record.append(T3T2)
+                    ## For debug and record purposes:
+                    # T3T2_Record.append(T3T2)
+                    ## End
                     mqttc.sendMsg(topic_t3t2,T3T2)
                     Flag_T2Ready = False
-                    print("Send out T3-T2")
+                    # print("Send out T3-T2")
                 else:
-                    print("Missing T2")
+                    print("WARNING: Missing T2")
                 Ready2Recv_CD = 3
                 
             if Flag_ExpRX:
-                print("Received signal from the other device")
+                # print("Received signal from the other device")
                 T2 = absIndex
                 Flag_ExpRX = False
                 Flag_T2Ready = True
                 ## For debug and record purposes:
-                RecvRX_RecordCounter.append(counter)
+                # RecvRX_RecordCounter.append(counter)
                 ## End
     
     frames.pop(0)
@@ -287,7 +289,7 @@ mqttc.closeClient()
 '''
 recvSig = np.concatenate(fulldata)
 filteredSig = signal.sosfiltfilt(sos, recvSig)
-autocSig = noncoherence(filteredSig,RefSignal,RefSignal2)
+autocSig = func.noncoherence(filteredSig,RefSignal,RefSignal2)
 
 plt.figure()
 plt.plot(recvSig,'r-o')
