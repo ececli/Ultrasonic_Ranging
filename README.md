@@ -19,4 +19,11 @@ To obtain the microphone data in Python, pyaudio package is needed. The installa
 
 
 
+## To Do List
 
+1. Measure multiple distances to get the constant to be substacted. 
+2. Change different orientations to see if multi-path distortion affects much. May need to change the position of the speaker on the breadboard. 
+
+## Known Issues
+1. OverFlow at counter_NumRanging 198 when chunk size is 2048. Note that it works fine when increasing chunk size to 4096. 
+2. Large outliers may happen. Need to know why. 
