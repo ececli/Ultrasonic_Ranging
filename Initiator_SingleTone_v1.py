@@ -38,7 +38,7 @@ duration = cp.getint("SIGNAL","duration") # microseconds
 duration = 0.004 # seconds
 THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
 NumRanging = cp.getint("SIGNAL","NumRanging")
-NumRanging = 10
+# NumRanging = 10
 TIMEOUTCOUNTS = cp.getint("SIGNAL","TimeoutCounts")
 IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
 TH_ratio_width_50 = cp.getfloat("SIGNAL","TH_ratio_width_50")
@@ -172,7 +172,7 @@ while True:
         ## End
     else:
         ## For debug purpose, print out progress:
-        print("Ready to Receive")
+        # print("Ready to Receive")
         ## End
         Flag_Ready2Recv = True
         Ready2Recv_CD = 9999
@@ -181,7 +181,7 @@ while True:
     # Send Ready2Recv Msg to the other device
     if Flag_Ready2Recv:
         ## For debug purpose, print out progress:
-        print("Send out Ready-to-Receive to the other device")
+        # print("Send out Ready-to-Receive to the other device")
         ## End
         mqttc.sendMsg(topic_tell_IamReady2Recv,ID)
         Flag_Ready2Recv = False
@@ -191,7 +191,7 @@ while True:
     # Send out Single-Tone Signal
     if Flag_Ready2Send:
         ## For debug purpose, print out progress:
-        print("Send out single-tone signal")
+        # print("Send out single-tone signal")
         ## End
         func2.sendSignal(pin_OUT,0.0001)
         Flag_Ready2Send = False
@@ -207,20 +207,20 @@ while True:
     # Read Ready2Send Msg
     if mqttc.checkTopicDataLength(topic_check_ifOtherReady)>=1:
         ## For debug purpose, print out progress:
-        print("-----------------------------")
-        print("Received Msg")
+        # print("-----------------------------")
+        # print("Received Msg")
         ## End
         ready2recv_buffer = mqttc.readTopicData(topic_check_ifOtherReady)
         if ready2recv_buffer[-1] == theOtherID: # only read last msg
             ## For debug purpose, print out progress:
-            print("Ready to Send")
+            # print("Ready to Send")
             ## End
             Flag_Ready2Send = True
 
     
     ndata = func.preProcessingData(data,FORMAT)-DCOffset
     ## for debug and record purposes:
-    fulldata.append(ndata)
+    # fulldata.append(ndata)
     ## End
     
     frames.append(ndata)
@@ -240,7 +240,7 @@ while True:
     
     if Index1.size>0: # if signal is detected
         ## For debug purpose, print out progress:
-        print("Signal Detected")
+        # print("Signal Detected")
         ## End
         Index, Peak = func.peakFilter(Index1, peak1, TH = 0.8)
         if Index <= TH_MaxIndex: # claim the peak is detected
@@ -256,7 +256,7 @@ while True:
             ## End
             if Flag_ExpTX:
                 ## For debug purpose, print out progress:
-                print("Received own signal")
+                # print("Received own signal")
                 ## End
                 T1 = absIndex
                 Flag_ExpTX = False
@@ -267,7 +267,7 @@ while True:
                 ## End
             if Flag_ExpRX:
                 ## For debug purpose, print out progress:
-                print("Received signal from the other device")
+                # print("Received signal from the other device")
                 ## End
                 T4 = absIndex
                 Flag_ExpRX = False
@@ -287,7 +287,7 @@ while True:
     if Flag_T4T1Ready:
         if mqttc.checkTopicDataLength(topic_t3t2)>=1:
             ## For debug purpose, print out progress:
-            print("Received T3-T2")
+            # print("Received T3-T2")
             ## End
             T3T2 = mqttc.readTopicData(topic_t3t2)[-1]
             Flag_T4T1Ready = False
@@ -297,7 +297,7 @@ while True:
             counter_NumRanging = counter_NumRanging + 1
         else:
             ## For debug purpose, print out progress:
-            print("Waiting for T3-T2 from the other device")
+            # print("Waiting for T3-T2 from the other device")
             ## End
             if T4T1Ready_CD:
                 T4T1Ready_CD = T4T1Ready_CD - 1
@@ -307,6 +307,9 @@ while True:
                 counter_NumRanging = counter_NumRanging + 1
     
     frames.pop(0)
+    
+    if counter_NumRanging%10 == 0:
+        print("Current Number of Ranging is ",counter_NumRanging)
     
     if counter_NumRanging >= NumRanging:
         break
