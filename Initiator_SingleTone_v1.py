@@ -67,6 +67,9 @@ SOUNDSPEED = 343 # m/s
 ID = MasterID
 theOtherID = ListenerID
 
+topic_tell_IamReady2Recv = topic_ready2recv+"/"+str(ID)
+topic_check_ifOtherReady = topic_ready2recv+"/"+str(theOtherID)
+
 
 NumIgnoredFrame = int(np.ceil(IgnoredSamples/CHUNK))
 NumReqFrames = int(np.ceil(RATE / CHUNK * duration) + 1.0)
@@ -98,12 +101,13 @@ GPIO.output(pin_OUT,False)
 # setup communication
 mqttc = myMQTT(broker_address)
 mqttc.registerTopic(topic_t3t2)
-mqttc.registerTopic(topic_ready2recv)
+mqttc.registerTopic(topic_tell_IamReady2Recv)
+mqttc.registerTopic(topic_check_ifOtherReady)
 # clear existing msg in topics
 if mqttc.checkTopicDataLength(topic_t3t2)>0:
     mqttc.readTopicData(topic_t3t2)
-if mqttc.checkTopicDataLength(topic_ready2recv)>0:
-    mqttc.readTopicData(topic_ready2recv)
+if mqttc.checkTopicDataLength(topic_check_ifOtherReady)>0:
+    mqttc.readTopicData(topic_check_ifOtherReady)
 
 # register mic    
 p = pyaudio.PyAudio()
@@ -163,24 +167,32 @@ while True:
     # Ready2Recv Count Down
     if Ready2Recv_CD:
         Ready2Recv_CD = Ready2Recv_CD - 1
-        print("Ready2Recv Count Down: ",Ready2Recv_CD)
+        ## For debug purpose, print out progress:
+        # print("Ready2Recv Count Down: ",Ready2Recv_CD)
+        ## End
     else:
+        ## For debug purpose, print out progress:
         print("Ready to Receive")
+        ## End
         Flag_Ready2Recv = True
         Ready2Recv_CD = 9999
     
     
     # Send Ready2Recv Msg to the other device
     if Flag_Ready2Recv:
+        ## For debug purpose, print out progress:
         print("Send out Ready-to-Receive to the other device")
-        mqttc.sendMsg(topic_ready2recv,ID)
+        ## End
+        mqttc.sendMsg(topic_tell_IamReady2Recv,ID)
         Flag_Ready2Recv = False
         Flag_ExpRX = True
         
     
     # Send out Single-Tone Signal
     if Flag_Ready2Send:
+        ## For debug purpose, print out progress:
         print("Send out single-tone signal")
+        ## End
         func2.sendSignal(pin_OUT,0.0001)
         Flag_Ready2Send = False
         Flag_ExpTX = True
@@ -193,11 +205,16 @@ while True:
         
 
     # Read Ready2Send Msg
-    if mqttc.checkTopicDataLength(topic_ready2recv)>=1:
+    if mqttc.checkTopicDataLength(topic_check_ifOtherReady)>=1:
+        ## For debug purpose, print out progress:
+        print("-----------------------------")
         print("Received Msg")
-        ready2recv_buffer = mqttc.readTopicData(topic_ready2recv)
+        ## End
+        ready2recv_buffer = mqttc.readTopicData(topic_check_ifOtherReady)
         if ready2recv_buffer[-1] == theOtherID: # only read last msg
+            ## For debug purpose, print out progress:
             print("Ready to Send")
+            ## End
             Flag_Ready2Send = True
 
     
@@ -222,7 +239,9 @@ while True:
                                      peak_width)
     
     if Index1.size>0: # if signal is detected
+        ## For debug purpose, print out progress:
         print("Signal Detected")
+        ## End
         Index, Peak = func.peakFilter(Index1, peak1, TH = 0.8)
         if Index <= TH_MaxIndex: # claim the peak is detected
             absIndex = func2.calAbsSampleIndex(counter,
@@ -236,7 +255,9 @@ while True:
             PeakCounter_Record.append(counter)
             ## End
             if Flag_ExpTX:
+                ## For debug purpose, print out progress:
                 print("Received own signal")
+                ## End
                 T1 = absIndex
                 Flag_ExpTX = False
                 Flag_T1Ready = True
@@ -245,7 +266,9 @@ while True:
                 RecvTX_RecordCounter[counter_NumRanging] = counter
                 ## End
             if Flag_ExpRX:
+                ## For debug purpose, print out progress:
                 print("Received signal from the other device")
+                ## End
                 T4 = absIndex
                 Flag_ExpRX = False
                 ## For debug and record purposes:
@@ -255,15 +278,17 @@ while True:
                     T4T1 = T4-T1
                     Flag_T1Ready = False
                     Flag_T4T1Ready = True
-                    T4T1Ready_CD = 3
+                    T4T1Ready_CD = 5
                 else:
-                    print("Missing T1")
+                    print("WARNING: Missing T1")
             
  
     
     if Flag_T4T1Ready:
         if mqttc.checkTopicDataLength(topic_t3t2)>=1:
+            ## For debug purpose, print out progress:
             print("Received T3-T2")
+            ## End
             T3T2 = mqttc.readTopicData(topic_t3t2)[-1]
             Flag_T4T1Ready = False
         
@@ -271,12 +296,14 @@ while True:
             Ranging_Record[counter_NumRanging] = Ranging
             counter_NumRanging = counter_NumRanging + 1
         else:
+            ## For debug purpose, print out progress:
             print("Waiting for T3-T2 from the other device")
+            ## End
             if T4T1Ready_CD:
                 T4T1Ready_CD = T4T1Ready_CD - 1
             else:
                 Flag_T4T1Ready = False
-                print("Missing T3-T2")
+                print("WARNING: Missing T3-T2")
                 counter_NumRanging = counter_NumRanging + 1
     
     frames.pop(0)
@@ -295,16 +322,16 @@ p.terminate()
 GPIO.cleanup()
 mqttc.closeClient()
 
-
+print(Ranging_Record)
    
-print(Index_Record)
+# print(Index_Record)
 
-print(np.diff(np.unique(Index_Record)))
+# print(np.diff(np.unique(Index_Record)))
 
-'''
+
 recvSig = np.concatenate(fulldata)
 filteredSig = signal.sosfiltfilt(sos, recvSig)
-autocSig = noncoherence(filteredSig,RefSignal,RefSignal2)
+autocSig = func.noncoherence(filteredSig,RefSignal,RefSignal2)
 
 plt.figure()
 plt.plot(recvSig,'r-o')
@@ -315,7 +342,7 @@ plt.figure()
 plt.plot(autocSig,'r-o')
 plt.plot(Index_Record,autocSig[Index_Record],'bs')
 plt.show()
-'''
+
 
     
 
