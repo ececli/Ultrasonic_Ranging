@@ -38,7 +38,7 @@ duration = cp.getint("SIGNAL","duration") # microseconds
 duration = 0.004 # seconds
 THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
 NumRanging = cp.getint("SIGNAL","NumRanging")
-# NumRanging = 10
+NumRanging = 1000
 TIMEOUTCOUNTS = cp.getint("SIGNAL","TimeoutCounts")
 IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
 TH_ratio_width_50 = cp.getfloat("SIGNAL","TH_ratio_width_50")
@@ -251,8 +251,8 @@ while True:
                                               NumReqFrames)
             
             ## For debug and record purposes:
-            Index_Record.append(absIndex)
-            PeakCounter_Record.append(counter)
+            # Index_Record.append(absIndex)
+            # PeakCounter_Record.append(counter)
             ## End
             if Flag_ExpTX:
                 ## For debug purpose, print out progress:
@@ -280,7 +280,7 @@ while True:
                     Flag_T4T1Ready = True
                     T4T1Ready_CD = 5
                 else:
-                    print("WARNING: Missing T1")
+                    print("WARNING: Missing T1 at ",counter_NumRanging)
             
  
     
@@ -303,13 +303,10 @@ while True:
                 T4T1Ready_CD = T4T1Ready_CD - 1
             else:
                 Flag_T4T1Ready = False
-                print("WARNING: Missing T3-T2")
+                print("WARNING: Missing T3-T2 at ",counter_NumRanging)
                 counter_NumRanging = counter_NumRanging + 1
     
     frames.pop(0)
-    
-    if counter_NumRanging%10 == 0:
-        print("Current Number of Ranging is ",counter_NumRanging)
     
     if counter_NumRanging >= NumRanging:
         break
@@ -326,12 +323,14 @@ GPIO.cleanup()
 mqttc.closeClient()
 
 print(Ranging_Record)
-   
+
+func.errorStat(Ranging_Record, 0.54, offset=0, bin=100)
+
 # print(Index_Record)
 
 # print(np.diff(np.unique(Index_Record)))
 
-
+'''
 recvSig = np.concatenate(fulldata)
 filteredSig = signal.sosfiltfilt(sos, recvSig)
 autocSig = func.noncoherence(filteredSig,RefSignal,RefSignal2)
@@ -344,8 +343,9 @@ plt.show()
 plt.figure()
 plt.plot(autocSig,'r-o')
 plt.plot(Index_Record,autocSig[Index_Record],'bs')
+plt.grid()
 plt.show()
-
+'''
 
     
 
