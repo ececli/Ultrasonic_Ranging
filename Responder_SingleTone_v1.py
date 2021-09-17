@@ -68,6 +68,9 @@ SOUNDSPEED = 343 # m/s
 ID = ListenerID
 theOtherID = MasterID
 
+topic_tell_IamReady2Recv = topic_ready2recv+"/"+str(ID)
+topic_check_ifOtherReady = topic_ready2recv+"/"+str(theOtherID)
+
 
 NumIgnoredFrame = int(np.ceil(IgnoredSamples/CHUNK))
 NumReqFrames = int(np.ceil(RATE / CHUNK * duration) + 1.0)
@@ -99,12 +102,13 @@ GPIO.output(pin_OUT,False)
 # setup communication
 mqttc = myMQTT(broker_address)
 mqttc.registerTopic(topic_t3t2)
-mqttc.registerTopic(topic_ready2recv)
+mqttc.registerTopic(topic_tell_IamReady2Recv)
+mqttc.registerTopic(topic_check_ifOtherReady)
 # clear existing msg in topics
 if mqttc.checkTopicDataLength(topic_t3t2)>0:
     mqttc.readTopicData(topic_t3t2)
-if mqttc.checkTopicDataLength(topic_ready2recv)>0:
-    mqttc.readTopicData(topic_ready2recv)
+if mqttc.checkTopicDataLength(topic_check_ifOtherReady)>0:
+    mqttc.readTopicData(topic_check_ifOtherReady)
 
 # register mic    
 p = pyaudio.PyAudio()
@@ -138,7 +142,7 @@ Flag_ExpRX = False
 Flag_T2Ready = False
 
 
-Ready2Recv_CD = 9999 # Count Down
+Ready2Recv_CD = 3 # Count Down
 
 
 sendOut_RecordCounter = []
@@ -163,8 +167,9 @@ while True:
     # Ready2Recv Count Down
     if Ready2Recv_CD:
         Ready2Recv_CD = Ready2Recv_CD - 1
-        print("Ready2Recv Count Down: ",Ready2Recv_CD)
+        # print("Ready2Recv Count Down: ",Ready2Recv_CD)
     else:
+        print("---------------------------")
         print("Ready to Receive")
         Flag_Ready2Recv = True
         Ready2Recv_CD = 9999
@@ -173,7 +178,7 @@ while True:
     # Send Ready2Recv Msg to the other device
     if Flag_Ready2Recv:
         print("Send out Ready-to-Receive to the other device")
-        mqttc.sendMsg(topic_ready2recv,ID)
+        mqttc.sendMsg(topic_tell_IamReady2Recv,ID)
         Flag_Ready2Recv = False
         Flag_ExpRX = True
         
@@ -191,9 +196,9 @@ while True:
         
 
     # Read Ready2Send Msg
-    if mqttc.checkTopicDataLength(topic_ready2recv)>=1:
+    if mqttc.checkTopicDataLength(topic_check_ifOtherReady)>=1:
         print("Received Msg")
-        ready2recv_buffer = mqttc.readTopicData(topic_ready2recv)
+        ready2recv_buffer = mqttc.readTopicData(topic_check_ifOtherReady)
         if ready2recv_buffer[-1] == theOtherID: # only read last msg
             print("Ready to Send")
             Flag_Ready2Send = True
@@ -277,9 +282,7 @@ mqttc.closeClient()
 
 
    
-print(Index_Record)
 
-print(np.diff(np.unique(Index_Record)))
 
 '''
 recvSig = np.concatenate(fulldata)
