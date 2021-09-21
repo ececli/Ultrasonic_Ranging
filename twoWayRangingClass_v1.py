@@ -311,7 +311,7 @@ class TWR:
         if self.Flag_T_RX_Ready:
             T3T2 = self.T_TX - self.T_RX
             self.T3T2_Record.append(T3T2)
-            self.mqttc.sendMsg(self.topic_t3_t2, T3T2)
+            self.mqttc.sendMsg(self.topic_t3t2, T3T2)
             self.Flag_T_RX_Ready = False
             # print("Send out T3-T2")
         else:
