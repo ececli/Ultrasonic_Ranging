@@ -326,6 +326,8 @@ print(Ranging_Record)
 
 func.errorStat(Ranging_Record, 0.54, offset=0, bin=100)
 
+func.errorStat(Ranging_Record[(Ranging_Record>0) & (Ranging_Record<5)], 0.54)
+
 # print(Index_Record)
 
 # print(np.diff(np.unique(Index_Record)))
