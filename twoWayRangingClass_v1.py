@@ -432,7 +432,7 @@ class TWR:
 
             self.frames.pop(0)
             
-            if self.counter_NumRanging or len(self.T3T3_Record) >= self.NumRanging:
+            if self.counter_NumRanging or len(self.T3T2_Record) >= self.NumRanging:
                 break
 
         print("Ranging Finished!")
