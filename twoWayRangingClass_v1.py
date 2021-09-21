@@ -430,7 +430,7 @@ class TWR:
                  self.calRange_Initiator()
                  
 
-            frames.pop(0)
+            self.frames.pop(0)
             
             if self.counter_NumRanging or len(self.T3T3_Record) >= self.NumRanging:
                 break
