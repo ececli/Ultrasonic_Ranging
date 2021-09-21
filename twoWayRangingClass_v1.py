@@ -63,7 +63,7 @@ class TWR:
         self.duration = 0.004 # seconds
         self.THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
         self.NumRanging = cp.getint("SIGNAL","NumRanging")
-        self.NumRanging = 1000
+        self.NumRanging = 100
         self.IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
 
 
