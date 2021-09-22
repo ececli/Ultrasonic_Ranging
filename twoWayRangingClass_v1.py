@@ -141,6 +141,7 @@ class TWR:
         self.RecvTX_RecordCounter = []
         self.RecvRX_RecordCounter = []
         self.T3T2_Record = []
+        self.T4T1_Record = []
         
 
         self.Index_Record = []
@@ -336,6 +337,7 @@ class TWR:
     def procRX_InitoatorAdditional(self):
         if self.Flag_T_TX_Ready:
             self.T4T1 = self.T_RX - self.T_TX
+            self.T4T1_Record.append(self.T4T1)
             self.Flag_T_TX_Ready = False
             self.Flag_T4T1Ready = True
             self.T4T1Ready_CD = self.T4T1Ready_CD_SET
@@ -443,6 +445,7 @@ class TWR:
         
         self.stop()
 ############################################################################
+
 
     
 
