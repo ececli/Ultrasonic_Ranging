@@ -146,8 +146,8 @@ class TWR:
 
         self.Index_Record = []
         self.PeakCounter_Record = []
-        self.fulldata = []
-
+        self.fulldata = np.frompyfunc(list, 0, 1)(np.empty((NumRanging), dtype=object))
+        self.fulldata_temp = []
         self.counter_NumRanging = 0
 
 
@@ -319,6 +319,10 @@ class TWR:
             # print("Send out T3-T2")
         else:
             print("WARNING: Missing T2")
+        ## For debug and record purposes
+        self.fulldata[self.counter_NumRanging] = self.fulldata_temp
+        self.fulldata_temp = []
+        ## End
     
     def procRX(self):
         ## For debug purpose, print out progress:
@@ -359,6 +363,10 @@ class TWR:
         
             Ranging = TWR.SOUNDSPEED*(self.T4T1 - self.T3T2)/2/self.RATE
             self.Ranging_Record[self.counter_NumRanging] = Ranging
+            ## For debug and record purposes
+            self.fulldata[self.counter_NumRanging] = self.fulldata_temp
+            self.fulldata_temp = []
+            ## End
             print("%d: Ranging = %.3f m" % (self.counter_NumRanging, Ranging))
             self.counter_NumRanging = self.counter_NumRanging + 1
             
@@ -371,6 +379,10 @@ class TWR:
             else:
                 self.Flag_T4T1Ready = False
                 print("WARNING: Missing T3-T2 at ", self.counter_NumRanging)
+                ## For debug and record purposes
+                self.fulldata[self.counter_NumRanging] = self.fulldata_temp
+                self.fulldata_temp = []
+                ## End
                 self.counter_NumRanging = self.counter_NumRanging + 1
     
     def stop(self):
@@ -400,7 +412,7 @@ class TWR:
             
             ndata = func.preProcessingData(data,self.FORMAT)-self.DCOffset
             ## for debug and record purposes:
-            self.fulldata.append(ndata)
+            self.fulldata_temp.append(ndata)
             ## End
             
             self.frames.append(ndata)

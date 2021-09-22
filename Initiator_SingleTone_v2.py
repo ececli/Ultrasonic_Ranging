@@ -12,9 +12,4 @@ duration = time.time() - startTime
 print(duration)
 
 
-# plt.figure()
-# plt.plot(initiator.Ranging_Record,'b.')
-# plt.grid()
-# plt.show()
-
 evalu.errorStat(initiator.Ranging_Record, GT = 0.53)
