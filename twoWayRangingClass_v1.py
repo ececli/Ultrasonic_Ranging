@@ -81,8 +81,10 @@ class TWR:
         self.order = cp.getint("FILTER", 'ORDER')
         self.pre_BPfiltering = cp.getboolean("FILTER", 'DO_BPF')
         self.safeBW = cp.getint("FILTER", 'SAFE_BW')
-
-
+        
+        # system
+        self.Ready2Recv_CD_SET = cp.getint("SYSTEM", 'Ready2Recv_CD')
+        self.T4T1Ready_CD_SET = cp.getint("SYSTEM", 'T4T1Ready_CD')
 
 
 
@@ -129,7 +131,7 @@ class TWR:
         if self.ID == TWR.initiatorID:
             self.Ready2Recv_CD = 9999 # Count Down for initiator
         else:
-            self.Ready2Recv_CD = 3 # Count Down for responder 
+            self.Ready2Recv_CD = self.Ready2Recv_CD_SET # Count Down for responder 
 
         self.Ranging_Record = np.zeros(self.NumRanging)
         # self.sendOut_RecordCounter = np.zeros(self.NumRanging)
@@ -297,7 +299,7 @@ class TWR:
         self.T_TX = self.absIndex
         self.Flag_ExpTX = False
         self.Flag_T_TX_Ready = True
-        self.Ready2Recv_CD = 3
+        self.Ready2Recv_CD = self.Ready2Recv_CD_SET
         ## For debug and record purposes:
         self.RecvTX_RecordCounter.append(self.counter)
         ## End
@@ -336,7 +338,7 @@ class TWR:
             self.T4T1 = self.T_RX - self.T_TX
             self.Flag_T_TX_Ready = False
             self.Flag_T4T1Ready = True
-            self.T4T1Ready_CD = 5
+            self.T4T1Ready_CD = self.T4T1Ready_CD_SET
         else:
             print("WARNING: Missing T1 at ",self.counter_NumRanging)
             
@@ -355,7 +357,9 @@ class TWR:
         
             Ranging = TWR.SOUNDSPEED*(self.T4T1 - self.T3T2)/2/self.RATE
             self.Ranging_Record[self.counter_NumRanging] = Ranging
+            print("%d: Ranging = %3f" % (self.counter_NumRanging, Ranging))
             self.counter_NumRanging = self.counter_NumRanging + 1
+            
         else:
             ## For debug purpose, print out progress:
             # print("Waiting for T3-T2 from the other device")
