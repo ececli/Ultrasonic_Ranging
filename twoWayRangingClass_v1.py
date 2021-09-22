@@ -357,12 +357,12 @@ class TWR:
         
             Ranging = TWR.SOUNDSPEED*(self.T4T1 - self.T3T2)/2/self.RATE
             self.Ranging_Record[self.counter_NumRanging] = Ranging
-            print("%d: Ranging = %3f" % (self.counter_NumRanging, Ranging))
+            print("%d: Ranging = %.3f m" % (self.counter_NumRanging, Ranging))
             self.counter_NumRanging = self.counter_NumRanging + 1
             
         else:
             ## For debug purpose, print out progress:
-            # print("Waiting for T3-T2 from the other device")
+            print("Waiting for T3-T2 from the other device")
             ## End
             if self.T4T1Ready_CD:
                 self.T4T1Ready_CD = self.T4T1Ready_CD - 1
