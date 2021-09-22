@@ -59,11 +59,11 @@ class TWR:
         self.pin_OUT = 5
 
         self.f0 = cp.getint("SIGNAL","f0") 
-        self.duration = cp.getint("SIGNAL","duration") # microseconds
-        self.duration = 0.004 # seconds
+        self.duration = cp.getfloat("SIGNAL","duration") # microseconds
+        # self.duration = 0.004 # seconds
         self.THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
         self.NumRanging = cp.getint("SIGNAL","NumRanging")
-        self.NumRanging = 100
+        # self.NumRanging = 100
         self.IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
 
 
@@ -394,7 +394,7 @@ class TWR:
             
             ndata = func.preProcessingData(data,self.FORMAT)-self.DCOffset
             ## for debug and record purposes:
-            # self.fulldata.append(ndata)
+            self.fulldata.append(ndata)
             ## End
             
             self.frames.append(ndata)
