@@ -146,7 +146,7 @@ class TWR:
 
         self.Index_Record = []
         self.PeakCounter_Record = []
-        self.fulldata = np.frompyfunc(list, 0, 1)(np.empty((NumRanging), dtype=object))
+        self.fulldata = np.frompyfunc(list, 0, 1)(np.empty((self.NumRanging), dtype=object))
         self.fulldata_temp = []
         self.counter_NumRanging = 0
 
