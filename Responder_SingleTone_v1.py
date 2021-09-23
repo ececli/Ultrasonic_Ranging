@@ -248,7 +248,7 @@ while True:
                 if Flag_T2Ready:
                     T3T2 = T3 - T2
                     ## For debug and record purposes:
-                    # T3T2_Record.append(T3T2)
+                    T3T2_Record.append(T3T2)
                     ## End
                     mqttc.sendMsg(topic_t3t2,T3T2)
                     Flag_T2Ready = False
