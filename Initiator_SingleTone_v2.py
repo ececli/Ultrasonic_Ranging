@@ -12,12 +12,13 @@ duration = time.time() - startTime
 print(duration)
 
 
+data_to_check = initiator.fulldata[16]
 
-func.checkFFT(initiator.fulldata[0],initiator.sos,initiator.RATE)
+func.checkFFT(data_to_check,initiator.sos,initiator.RATE)
 
-func.checkBPFilteredData(initiator.fulldata[0],initiator.sos)
+func.checkBPFilteredData(data_to_check,initiator.sos)
 
-func.getOutputFig_IQMethod2(initiator.fulldata[0],
+func.getOutputFig_IQMethod2(data_to_check,
                             initiator.RefSignal,
                             initiator.RefSignal2,
                             initiator.THRESHOLD,
@@ -28,4 +29,4 @@ func.getOutputFig_IQMethod2(initiator.fulldata[0],
                             sos = initiator.sos)
     
 
-func.errorStat(initiator.Ranging_Record, GT = 0.53)
+func.errorStat(initiator.Ranging_Record, GT = 0.715)

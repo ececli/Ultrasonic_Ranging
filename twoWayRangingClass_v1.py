@@ -373,7 +373,7 @@ class TWR:
             
         else:
             ## For debug purpose, print out progress:
-            # print("Waiting for T3-T2 from the other device")
+            print("Waiting for T3-T2 from the other device")
             ## End
             if self.T4T1Ready_CD:
                 self.T4T1Ready_CD = self.T4T1Ready_CD - 1
