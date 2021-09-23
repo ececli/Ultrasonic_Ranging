@@ -322,6 +322,7 @@ class TWR:
         ## For debug and record purposes
         self.fulldata[self.counter_NumRanging] = self.fulldata_temp
         self.fulldata_temp = []
+        self.counter_NumRanging = self.counter_NumRanging + 1
         ## End
     
     def procRX(self):
