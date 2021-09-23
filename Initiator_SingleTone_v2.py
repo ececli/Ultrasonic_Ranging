@@ -1,7 +1,7 @@
 from twoWayRangingClass_v1 import TWR
 import matplotlib.pyplot as plt
-import evaluationLib_v1 as evalu
 import time
+import twoWayRangingLib_v2 as func
 
 
 initiator = TWR('initiator','UR_pyConfig_v2.conf')
@@ -12,4 +12,9 @@ duration = time.time() - startTime
 print(duration)
 
 
-evalu.errorStat(initiator.Ranging_Record, GT = 0.53)
+
+func.checkFFT(initiator.fulldata[0],initiator.sos,initiator.RATE)
+
+func.checkBPFilteredData(initiator.fulldata[0],initiator.sos)
+
+func.errorStat(initiator.Ranging_Record, GT = 0.53)
