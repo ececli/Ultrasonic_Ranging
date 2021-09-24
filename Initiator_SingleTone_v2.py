@@ -1,4 +1,4 @@
-from twoWayRangingClass_v1 import TWR
+from twoWayRangingClass_v2 import TWR
 # import matplotlib.pyplot as plt
 import time
 import twoWayRangingLib_v2 as func

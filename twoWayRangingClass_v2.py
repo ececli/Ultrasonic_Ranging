@@ -420,7 +420,9 @@ class TWR:
                 break
 
         if self.ID == TWR.initiatorID:
+            print("Wait for T3-T2 data")
             while True:
+                print(self.mqttc.checkTopicDataLength(self.topic_t3t2))
                 if self.mqttc.checkTopicDataLength(self.topic_t3t2) == self.NumRanging:
                     break
                 
@@ -434,6 +436,7 @@ class TWR:
  
         if self.ID == TWR.responderID:
             self.mqttc.sendMsg(self.topic_t3t2, self.T3T2_Record)
+            print("T3-T2 Message Sent")
         self.stop()
 ############################################################################
 
