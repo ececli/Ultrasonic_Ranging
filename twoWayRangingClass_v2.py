@@ -453,7 +453,7 @@ class TWR:
             counter3 = 0
             while True:
                 self.mqttc.sendMsg(self.topic_t3t2, self.T3T2_Record[counter3])
-                print(counter3,T3T2)
+                print(counter3,self.T3T2_Record[counter3])
                 counter3 = counter3 + 1
                 if counter3 == self.NumRanging:
                     break
