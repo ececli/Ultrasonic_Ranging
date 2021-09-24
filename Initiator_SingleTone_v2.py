@@ -10,6 +10,8 @@ startTime = time.time()
 initiator.start()
 duration = time.time() - startTime
 print(duration)
+initiator.getRanging()
+initiator.stop()
 
 
 data_to_check = initiator.fulldata[16]
