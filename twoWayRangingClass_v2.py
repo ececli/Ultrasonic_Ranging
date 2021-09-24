@@ -429,11 +429,13 @@ class TWR:
             while True:
                 while True:
                     if self.mqttc.checkTopicDataLength(self.topic_t3t2) > 1:
-                        print(counter2, self.mqttc.checkTopicDataLength(self.topic_t3t2))
+                        print("Wrong: ",counter2, self.mqttc.checkTopicDataLength(self.topic_t3t2))
                         break
                     if self.mqttc.checkTopicDataLength(self.topic_t3t2) == 1:
                         break
-                self.T3T2_Record[counter2] = self.mqttc.readTopicData(self.topic_t3t2)[-1]
+                T3T2 = self.mqttc.readTopicData(self.topic_t3t2)
+                print(counter2,T3T2)
+                self.T3T2_Record[counter2] = T3T2[-1]
                 counter2 = counter2 + 1
                 if counter2 == self.NumRanging:
                     break
@@ -446,8 +448,12 @@ class TWR:
             
  
         if self.ID == TWR.responderID:
+            counter2 = 0
             for T3T2 in self.T3T2_Record:
                 self.mqttc.sendMsg(self.topic_t3t2, T3T2)
+                print(counter2,T3T2)
+                counter2 = counter2 + 1
+                time.sleep(1)
                 while True:
                     if self.mqttc.checkTopicDataLength(self.topic_t3t2) ==0 :
                         break
