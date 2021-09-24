@@ -260,7 +260,7 @@ class TWR:
             self.Flag_T_TX_Ready = False # not sure if necessary
             self.Flag_T4T1Ready = False # not sure if necessary
             ## for debug and record purposes: 
-            self.sendOut_RecordCounter.append(self.counter)
+            # self.sendOut_RecordCounter.append(self.counter)
             ## End
     
     
@@ -302,7 +302,7 @@ class TWR:
         self.Flag_T_TX_Ready = True
         self.Ready2Recv_CD = self.Ready2Recv_CD_SET
         ## For debug and record purposes:
-        self.RecvTX_RecordCounter.append(self.counter)
+        # self.RecvTX_RecordCounter.append(self.counter)
         ## End
         # 2. For responder only:
         if self.ID == TWR.responderID:
@@ -319,8 +319,8 @@ class TWR:
         else:
             print("WARNING: Missing T2 at ",self.counter_NumRanging)
         ## For debug and record purposes
-        self.fulldata[self.counter_NumRanging] = self.fulldata_temp
-        self.fulldata_temp = []
+        # self.fulldata[self.counter_NumRanging] = self.fulldata_temp
+        # self.fulldata_temp = []
         self.counter_NumRanging = self.counter_NumRanging + 1
         ## End
     
@@ -332,7 +332,7 @@ class TWR:
         self.Flag_ExpRX = False
         self.Flag_T_RX_Ready = True
         ## For debug and record purposes:
-        self.RecvRX_RecordCounter.append(self.counter)
+        # self.RecvRX_RecordCounter.append(self.counter)
         ## End
         if self.ID == TWR.initiatorID:
             self.procRX_InitoatorAdditional()
@@ -347,8 +347,8 @@ class TWR:
         else:
             print("WARNING: Missing T1 at ",self.counter_NumRanging)
         ## For debug and record purposes
-        self.fulldata[self.counter_NumRanging] = self.fulldata_temp
-        self.fulldata_temp = []
+        # self.fulldata[self.counter_NumRanging] = self.fulldata_temp
+        # self.fulldata_temp = []
         ## End         
         self.counter_NumRanging = self.counter_NumRanging + 1    
 
@@ -382,7 +382,7 @@ class TWR:
             
             ndata = func.preProcessingData(data,self.FORMAT)-self.DCOffset
             ## for debug and record purposes:
-            self.fulldata_temp.append(ndata)
+            # self.fulldata_temp.append(ndata)
             ## End
             
             self.frames.append(ndata)
