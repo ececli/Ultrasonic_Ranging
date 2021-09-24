@@ -1,4 +1,4 @@
-from twoWayRangingClass_v2 import TWR
+from twoWayRangingClass_v1 import TWR
 # import matplotlib.pyplot as plt
 import time
 import twoWayRangingLib_v2 as func
@@ -10,8 +10,8 @@ startTime = time.time()
 initiator.start()
 duration = time.time() - startTime
 print(duration)
-initiator.getRanging()
-initiator.stop()
+# initiator.getRanging()
+# initiator.stop()
 
 
 data_to_check = initiator.fulldata[16]
