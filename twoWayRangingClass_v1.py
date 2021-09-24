@@ -149,6 +149,7 @@ class TWR:
         self.fulldata = np.frompyfunc(list, 0, 1)(np.empty((self.NumRanging), dtype=object))
         self.fulldata_temp = []
         self.counter_NumRanging = 0
+        self.oneLoopTime = []
 
 
 
@@ -399,6 +400,7 @@ class TWR:
         self.stream.start_stream()
         while True:
             data = self.stream.read(self.CHUNK)
+            startTime = time.time()
             self.counter = self.counter + 1
             
             if self.counter <= self.NumIgnoredFrame:
@@ -454,7 +456,7 @@ class TWR:
             if (self.counter_NumRanging or len(self.T3T2_Record)) >= self.NumRanging:
                 print("Ranging Finished!")
                 break
-
+            self.oneLoopTime.append(time.time() - startTime)
         
         self.stop()
 ############################################################################
