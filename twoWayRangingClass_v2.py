@@ -424,7 +424,7 @@ class TWR:
 
     def getRanging(self):
         if self.ID == TWR.initiatorID:
-            time.sleep(5)
+            time.sleep(10)
             print("Wait for T3-T2 data")
             while True:
                 print(self.mqttc.checkTopicDataLength(self.topic_t3t2))
