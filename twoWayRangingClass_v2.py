@@ -424,23 +424,34 @@ class TWR:
 
     def getRanging(self):
         if self.ID == TWR.initiatorID:
-            time.sleep(10)
             print("Wait for T3-T2 data")
+            counter2 = 0
             while True:
-                print(self.mqttc.checkTopicDataLength(self.topic_t3t2))
-                if self.mqttc.checkTopicDataLength(self.topic_t3t2) == self.NumRanging:
+                while True:
+                    if self.mqttc.checkTopicDataLength(self.topic_t3t2) > 1:
+                        print(counter2, self.mqttc.checkTopicDataLength(self.topic_t3t2))
+                        break
+                    if self.mqttc.checkTopicDataLength(self.topic_t3t2) == 1:
+                        break
+                self.T3T2_Record[counter2] = self.mqttc.readTopicData(self.topic_t3t2)[-1]
+                counter2 = counter2 + 1
+                if counter2 == self.NumRanging:
                     break
-                
                 ## For debug purpose, print out progress:
                 # print("Received T3-T2")
                 ## End
-            self.T3T2_Record = self.mqttc.readTopicData(self.topic_t3t2)
+            
             self.Ranging_Record = TWR.SOUNDSPEED*(self.T4T1_Record - self.T3T2_Record)/2/self.RATE
             print("Got the ranges.")
             
  
         if self.ID == TWR.responderID:
-            self.mqttc.sendMsg(self.topic_t3t2, self.T3T2_Record)
+            for T3T2 in self.T3T2_Record:
+                self.mqttc.sendMsg(self.topic_t3t2, T3T2)
+                while True:
+                    if self.mqttc.checkTopicDataLength(self.topic_t3t2) ==0 :
+                        break
+                
             print("T3-T2 Message Sent")
 
     
