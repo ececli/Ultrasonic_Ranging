@@ -110,7 +110,7 @@ def calAbsSampleIndex(counter, Index, CHUNK, NumIgnoredFrame = 0, NumReqFrames=0
 warmUpSecond = 5
 CHANNELS = 1
 RATE = 64000
-CHUNK = 2048
+CHUNK = 1024
 FORMAT = pyaudio.paInt32
 
 ## Speaker
@@ -121,7 +121,7 @@ f0 = 25000
 duration = 0.004 # seconds
 THRESHOLD = 700
 NumRanging = 100
-TIMEOUTCOUNTS = 150
+TIMEOUTCOUNTS = 1500
 IgnoredSamples = 4096
 TH_ratio_width_50 = 0.5
 
