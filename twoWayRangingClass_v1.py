@@ -113,8 +113,8 @@ class TWR:
         self.TH_MaxIndex = (self.CHUNK*self.NumReqFrames-self.NumSigSamples+1)- self.NumSigSamples
 
         # Peak Shape:
-        self.peak_interval = int(self.NumSigSamples/100)
-        self.peak_width = int(self.NumSigSamples/100)
+        self.peak_interval = 10
+        self.peak_width = int(self.NumSigSamples/20)
         
         # Value changes in the loop
         self.frames = []
