@@ -62,6 +62,7 @@ class TWR:
         self.duration = cp.getfloat("SIGNAL","duration") # microseconds
         # self.duration = 0.004 # seconds
         self.THRESHOLD = cp.getfloat("SIGNAL","THRESHOLD")
+        self.THRESHOLD_TX = cp.getfloat("SIGNAL","THRESHOLD_TX")
         self.NumRanging = cp.getint("SIGNAL","NumRanging")
         # self.NumRanging = 100
         self.IgnoredSamples = cp.getint("SIGNAL","IgnoredSamples")
@@ -281,13 +282,17 @@ class TWR:
 
     def peak_detection_algorithm(self):
         # Peak Detection Algorithm
+        if self.Flag_ExpTX:
+            TH = self.THRESHOLD_TX
+        else:
+            TH = self.THRESHOLD
         sig = np.concatenate(self.frames)
         if self.pre_BPfiltering:
             sig = signal.sosfiltfilt(self.sos, sig)
 
         autoc = func.noncoherence(sig, self.RefSignal, self.RefSignal2)
         Index1, peak1 = func.peakDetector(autoc,
-                                         self.THRESHOLD,
+                                         TH,
                                          self.peak_interval,
                                          self.peak_width)
         return Index1, peak1     
