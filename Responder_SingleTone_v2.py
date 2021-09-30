@@ -8,6 +8,8 @@ startTime = time.time()
 responder.start()
 duration = time.time() - startTime
 print(duration)
+# responder.getRanging()
+# responder.stop()
 
 data_to_check = responder.fulldata[16]
 
