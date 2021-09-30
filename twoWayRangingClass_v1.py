@@ -255,7 +255,7 @@ class TWR:
             ## For debug purpose, print out progress:
             # print("Send out single-tone signal")
             ## End
-            func2.sendSignal(self.pin_OUT,0.0001)
+            func2.sendSignal(self.pin_OUT,0.000001)
             self.Flag_Ready2Send = False
             self.Flag_ExpTX = True
             # TBD: everytime initiator sends out, count as a new counter and reset all the flags

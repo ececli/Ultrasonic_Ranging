@@ -119,9 +119,9 @@ pin_OUT = 5
 ## Signal
 f0 = 25000
 duration = 0.004 # seconds
-THRESHOLD = 700
+THRESHOLD = 10000
 NumRanging = 100
-TIMEOUTCOUNTS = 1500
+TIMEOUTCOUNTS = 15000
 IgnoredSamples = 4096
 TH_ratio_width_50 = 0.5
 
@@ -218,7 +218,7 @@ while True:
     
     ndata = preProcessingData(data,FORMAT)-DCOffset
     ## for debug purpose:
-    fulldata.append(ndata)
+    # fulldata.append(ndata)
     ## End
     
     frames.append(ndata)
@@ -273,7 +273,7 @@ print(Index_Record)
 
 print(np.diff(np.unique(Index_Record)))
 
-
+'''
 recvSig = np.concatenate(fulldata)
 filteredSig = signal.sosfiltfilt(sos, recvSig)
 autocSig = noncoherence(filteredSig,RefSignal,RefSignal2)
@@ -287,6 +287,6 @@ plt.figure()
 plt.plot(autocSig,'r-o')
 plt.plot(Index_Record,autocSig[Index_Record],'bs')
 plt.show()
-
+'''
 
     
