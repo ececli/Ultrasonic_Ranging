@@ -298,7 +298,10 @@ class TWR:
         while True:
             data = self.stream.read(self.CHUNK)
             self.counter = self.counter + 1
-            
+            ## Debug:
+            print("START ",self.counter_NumRanging,self.counter,len(self.frames),
+                  self.Flag_ExpRX, self.Flag_SendSig, self.Flag_jumpOneFrame,
+                  len(ndata))
             if self.counter <= self.NumIgnoredFrame:
                 continue
             if self.counter == self.NumIgnoredFrame+1:
@@ -350,7 +353,7 @@ class TWR:
             else: # No signal detected
                 self.frames.pop(0)
             ## Debug:
-            print(self.counter_NumRanging,self.counter,len(self.frames),
+            print("END ",self.counter_NumRanging,self.counter,len(self.frames),
                   self.Flag_ExpRX, self.Flag_SendSig, self.Flag_jumpOneFrame,
                   len(ndata))
             if len(self.frames)>=2:
