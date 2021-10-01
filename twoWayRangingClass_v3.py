@@ -219,7 +219,7 @@ class TWR:
         ## For debug purpose, print out progress:
         # print("Send out single-tone signal")
         ## End
-        func2.sendSignal(self.pin_OUT,1e-6)
+        func2.sendSignal(self.pin_OUT,1e-4)
         self.Flag_SendSig = False
         ## for debug and record purposes: 
         # self.sendOut_RecordCounter.append(self.counter)
@@ -358,14 +358,14 @@ class TWR:
 ############################################################################
     def sendT3T2(self):
         self.init_communications()
-        time.sleep(0.5)
+        # time.sleep(0.5)
 
         self.mqttc.sendMsg(self.topic_t3t2, self.T3T2_Record)
         print("Sending T3-T2 Status: Done")
         
     def recvT3T2(self):
         self.init_communications()
-        time.sleep(0.5)
+        # time.sleep(0.5)
         while True:
             if self.mqttc.checkTopicDataLength(self.topic_t3t2)>=self.NumRanging:
                 break
