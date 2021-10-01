@@ -121,7 +121,7 @@ f0 = 25000
 duration = 0.004 # seconds
 THRESHOLD = 10000
 NumRanging = 100
-TIMEOUTCOUNTS = 15000
+TIMEOUTCOUNTS = 100050
 IgnoredSamples = 4096
 TH_ratio_width_50 = 0.5
 
@@ -208,7 +208,7 @@ while True:
     counter = counter + 1
     
     if Flag_SendOut:
-        sendSignal(pin_OUT,0.0001)
+        sendSignal(pin_OUT,1e-4)
         Flag_SendOut = False
         print("Signal Out Counter: ",counter)
     
@@ -271,7 +271,10 @@ GPIO.cleanup()
    
 print(Index_Record)
 
-print(np.diff(np.unique(Index_Record)))
+timeDiff = np.diff(np.unique(Index_Record))
+print(timeDiff)
+
+print(np.mean(timeDiff),np.std(timeDiff))
 
 '''
 recvSig = np.concatenate(fulldata)
