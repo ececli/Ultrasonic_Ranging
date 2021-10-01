@@ -1,4 +1,4 @@
-from twoWayRangingClass_v1 import TWR
+from twoWayRangingClass_v3 import TWR
 # import matplotlib.pyplot as plt
 import time
 import twoWayRangingLib_v2 as func
@@ -14,7 +14,7 @@ print(duration)
 # initiator.stop()
 
 
-data_to_check = initiator.fulldata[16]
+data_to_check = initiator.fulldata[4]
 
 func.checkFFT(data_to_check,initiator.sos,initiator.RATE)
 
@@ -31,5 +31,5 @@ func.getOutputFig_IQMethod2(data_to_check,
                             sos = initiator.sos)
     
 
-func.errorStat(initiator.Ranging_Record[(initiator.Ranging_Record>0) & (initiator.Ranging_Record<5)],
-               GT = 1.45)
+# func.errorStat(initiator.Ranging_Record[(initiator.Ranging_Record>0) & (initiator.Ranging_Record<5)],
+#                GT = 1.45)

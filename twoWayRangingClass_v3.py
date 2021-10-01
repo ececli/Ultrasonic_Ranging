@@ -124,10 +124,10 @@ class TWR:
 
         if self.ID == TWR.initiatorID:
             self.Flag_ExpRX = False
-            self.Flag_sendSig = True
+            self.Flag_SendSig = True
         else:
             self.Flag_ExpRX = True
-            self.Flag_sendSig = False
+            self.Flag_SendSig = False
 
         self.Ranging_Record = np.zeros(self.NumRanging)
         self.T3T2_Record = np.zeros(self.NumRanging)
@@ -272,7 +272,7 @@ class TWR:
         ## End
         self.T_RX = self.absIndex
         self.Flag_ExpRX = False
-        self.Flag_sendSig = True
+        self.Flag_SendSig = True
         ## For debug and record purposes:
         # self.RecvRX_RecordCounter.append(self.counter)
         ## End
