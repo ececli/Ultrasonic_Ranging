@@ -349,7 +349,7 @@ class TWR:
                     self.Flag_jumpOneFrame = True
             else: # No signal detected
                 self.frames.pop(0)
-            
+            print(self.counter,len(self.frames))
             if self.counter_NumRanging >= self.NumRanging:
                 print("Ranging Finished!")
                 break
