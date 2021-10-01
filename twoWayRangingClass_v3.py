@@ -219,7 +219,7 @@ class TWR:
         ## For debug purpose, print out progress:
         # print("Send out single-tone signal")
         ## End
-        func2.sendSignal(self.pin_OUT,1e-5)
+        func2.sendSignal(self.pin_OUT,1e-4)
         self.Flag_SendSig = False
         ## for debug and record purposes: 
         # self.sendOut_RecordCounter.append(self.counter)
@@ -327,7 +327,7 @@ class TWR:
             
             if Index1.size>0: # if signal is detected
                 ## For debug purpose, print out progress:
-                # print("Signal Detected")
+                print("%d, Signal Detected" % self.counter)
                 ## End
                 self.Index, self.Peak = func.peakFilter(Index1, peak1, TH = 0.8)
                 if self.Index <= self.TH_MaxIndex: # claim the peak is detected
@@ -343,16 +343,16 @@ class TWR:
                     ## End
                         
                     if self.Flag_ExpRX:
-                        # print("Process procRX")
+                        print("%d, Process procRX" % self.counter)
                         self.procRX()
                     else:
-                        # print("Process procTX")
+                        print("%d, Process procTX" % self.counter)
                         self.procTX()
                     
                     self.frames = []
                     self.Flag_jumpOneFrame = True
             else: # No signal detected
-                # print("No signal Detected")
+                print("%d, No signal Detected" % self.counter)
                 self.frames.pop(0)
             ## Debug:
             # print("E N D ",self.counter_NumRanging,self.counter,len(self.frames),
