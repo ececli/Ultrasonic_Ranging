@@ -322,6 +322,7 @@ class TWR:
             
             if self.Flag_SendSig:
                 self.send_singleTone() # send out single-tone signal via Pico
+                continue
             
             Index1, peak1 = self.peak_detection_algorithm()
             
