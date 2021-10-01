@@ -343,16 +343,19 @@ class TWR:
                     ## End
                         
                     if self.Flag_ExpRX:
+                        print("Process procRX")
                         self.procRX()
                     else:
+                        print("Process procTX")
                         self.procTX()
                     
                     self.frames = []
                     self.Flag_jumpOneFrame = True
             else: # No signal detected
+                print("No signal Detected")
                 self.frames.pop(0)
             ## Debug:
-            print("END ",self.counter_NumRanging,self.counter,len(self.frames),
+            print("E N D ",self.counter_NumRanging,self.counter,len(self.frames),
                   self.Flag_ExpRX, self.Flag_SendSig, self.Flag_jumpOneFrame,
                   len(ndata))
             if len(self.frames)>=2:
