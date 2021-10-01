@@ -14,7 +14,7 @@ initiator.recvT3T2()
 
 
 
-data_to_check = initiator.fulldata[4]
+data_to_check = initiator.fulldata[0]
 
 func.checkFFT(data_to_check,initiator.sos,initiator.RATE)
 
