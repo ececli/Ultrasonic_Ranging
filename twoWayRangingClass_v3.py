@@ -358,7 +358,7 @@ class TWR:
 ############################################################################
     def sendT3T2(self):
         self.init_communications()
-        time.sleep(1)
+        time.sleep(3)
 
         self.mqttc.sendMsg(self.topic_t3t2, self.T3T2_Record)
         print("Sending T3-T2 Status: Done")
