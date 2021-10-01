@@ -364,7 +364,7 @@ class TWR:
             
         if self.ID == TWR.initiatorID:
             while True:
-                if self.mqttc.checkTopicDataLength(self.topic_t3t2)>=1:
+                if self.mqttc.checkTopicDataLength(self.topic_t3t2)>=self.NumRanging:
                     break
             ## For debug purpose, print out progress:
             # print("Received T3-T2")
