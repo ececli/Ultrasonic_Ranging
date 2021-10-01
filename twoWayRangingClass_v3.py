@@ -208,7 +208,7 @@ class TWR:
         self.load_parameters()
         self.init_parameters()
         self.init_GPIO()
-        # self.init_communications()
+        self.init_communications()
         self.init_BPF()
         self.init_mic()
         
@@ -357,16 +357,16 @@ class TWR:
         self.stop()
 ############################################################################
     def sendT3T2(self):
-        self.init_communications()
-        time.sleep(3)
+        # self.init_communications()
+        # time.sleep(3)
 
         self.mqttc.sendMsg(self.topic_t3t2, self.T3T2_Record)
         print("Sending T3-T2 Status: Done")
         self.mqttc.closeClient()
         
     def recvT3T2(self):
-        self.init_communications()
-        time.sleep(1)
+        # self.init_communications()
+        # time.sleep(1)
         while True:
             if self.mqttc.checkTopicDataLength(self.topic_t3t2)>=self.NumRanging:
                 break
