@@ -9,8 +9,7 @@ initiator.initialize()
 startTime = time.time()
 initiator.start()
 duration = time.time() - startTime
-print(duration)
-
+print("Running Time is ", duration)
 initiator.recvT3T2()
 
 
@@ -33,4 +32,4 @@ func.getOutputFig_IQMethod2(data_to_check,
     
 
 func.errorStat(initiator.Ranging_Record[(initiator.Ranging_Record>0) & (initiator.Ranging_Record<5)],
-               GT = 1.45)
+               GT = 1.48)

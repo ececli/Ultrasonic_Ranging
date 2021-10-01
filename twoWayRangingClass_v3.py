@@ -354,7 +354,7 @@ class TWR:
                 print("BUG APPEAR!")
                 print(self.counter_NumRanging,self.counter,len(self.frames))
                 print(self.Flag_ExpRX, self.Flag_SendSig, self.Flag_jumpOneFrame)
-                print(ndata)
+                print(len(ndata))
                 break
             ## END
             if self.counter_NumRanging >= self.NumRanging:
