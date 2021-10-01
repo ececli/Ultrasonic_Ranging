@@ -354,18 +354,19 @@ class TWR:
                 print("Ranging Finished!")
                 break
 
-
+        self.stop()
 ############################################################################
     def sendT3T2(self):
         self.init_communications()
-        time.sleep(0.5)
+        time.sleep(1)
 
         self.mqttc.sendMsg(self.topic_t3t2, self.T3T2_Record)
         print("Sending T3-T2 Status: Done")
+        self.mqttc.closeClient()
         
     def recvT3T2(self):
         self.init_communications()
-        time.sleep(0.5)
+        time.sleep(1)
         while True:
             if self.mqttc.checkTopicDataLength(self.topic_t3t2)>=self.NumRanging:
                 break
@@ -377,7 +378,7 @@ class TWR:
         print(self.T3T2)            
         self.Ranging_Record = TWR.SOUNDSPEED*(self.T4T1_Record - self.T3T2)/2/self.RATE
         print(self.Ranging_Record)
-        
+        self.mqttc.closeClient()
 
 
     

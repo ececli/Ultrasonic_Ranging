@@ -11,7 +11,7 @@ initiator.start()
 # initiator.stop()
 duration = time.time() - startTime
 print(duration)
-# time.sleep(1)
+
 # initiator.recvT3T2()
 
 
