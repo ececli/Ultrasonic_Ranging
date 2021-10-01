@@ -329,7 +329,7 @@ class TWR:
             
             if Index1.size>0: # if signal is detected
                 ## For debug purpose, print out progress:
-                # print("%d, Signal Detected" % self.counter)
+                print("%d, %d, Signal Detected" % (self.counter_NumRanging, self.counter))
                 ## End
                 self.Index, self.Peak = func.peakFilter(Index1, peak1, TH = 0.8)
                 if self.Index <= self.TH_MaxIndex: # claim the peak is detected
@@ -345,10 +345,10 @@ class TWR:
                     ## End
                         
                     if self.Flag_ExpRX:
-                        # print("%d, Process procRX" % self.counter)
+                        print("%d, %d, ProcRX" % (self.counter_NumRanging, self.counter))
                         self.procRX()
                     else:
-                        # print("%d, Process procTX" % self.counter)
+                        print("%d, %d, ProcTX" % (self.counter_NumRanging, self.counter))
                         self.procTX()
                     
                     self.frames = []
