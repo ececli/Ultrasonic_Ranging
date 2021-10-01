@@ -8,11 +8,12 @@ initiator = TWR('initiator','UR_pyConfig_v2.conf')
 initiator.initialize()
 startTime = time.time()
 initiator.start()
+initiator.stop()
 duration = time.time() - startTime
 print(duration)
 time.sleep(1)
 initiator.getRanging()
-initiator.stop()
+
 
 
 data_to_check = initiator.fulldata[4]

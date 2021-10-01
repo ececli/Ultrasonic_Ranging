@@ -356,24 +356,27 @@ class TWR:
 
 
 ############################################################################
-    def getRanging(self):
+    def sendT3T2(self):
         self.init_communications()
-        if self.ID == TWR.responderID:
-            self.mqttc.sendMsg(self.topic_t3t2, self.T3T2_Record)
-            print("Sending T3-T2 Status: Done")
-            
-        if self.ID == TWR.initiatorID:
-            while True:
-                if self.mqttc.checkTopicDataLength(self.topic_t3t2)>=self.NumRanging:
-                    break
-            ## For debug purpose, print out progress:
-            # print("Received T3-T2")
-            ## End
-            self.T3T2 = self.mqttc.readTopicData(self.topic_t3t2)
-            print("Read all T3-T2")
-            print(self.T3T2)            
-            self.Ranging_Record = TWR.SOUNDSPEED*(self.T4T1_Record - self.T3T2)/2/self.RATE
-            print(self.Ranging_Record)
+        time.sleep(0.5)
+
+        self.mqttc.sendMsg(self.topic_t3t2, self.T3T2_Record)
+        print("Sending T3-T2 Status: Done")
+        
+    def recvT3T2(self):
+        self.init_communications()
+        time.sleep(0.5)
+        while True:
+            if self.mqttc.checkTopicDataLength(self.topic_t3t2)>=self.NumRanging:
+                break
+        ## For debug purpose, print out progress:
+        # print("Received T3-T2")
+        ## End
+        self.T3T2 = self.mqttc.readTopicData(self.topic_t3t2)
+        print("Read all T3-T2")
+        print(self.T3T2)            
+        self.Ranging_Record = TWR.SOUNDSPEED*(self.T4T1_Record - self.T3T2)/2/self.RATE
+        print(self.Ranging_Record)
         
 
 
