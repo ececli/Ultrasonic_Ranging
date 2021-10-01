@@ -12,7 +12,7 @@ initiator.stop()
 duration = time.time() - startTime
 print(duration)
 time.sleep(1)
-initiator.getRanging()
+initiator.recvT3T2()
 
 
 
@@ -33,5 +33,5 @@ func.getOutputFig_IQMethod2(data_to_check,
                             sos = initiator.sos)
     
 
-# func.errorStat(initiator.Ranging_Record[(initiator.Ranging_Record>0) & (initiator.Ranging_Record<5)],
-#                GT = 1.45)
+func.errorStat(initiator.Ranging_Record[(initiator.Ranging_Record>0) & (initiator.Ranging_Record<5)],
+               GT = 1.45)
