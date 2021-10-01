@@ -219,7 +219,7 @@ class TWR:
         ## For debug purpose, print out progress:
         # print("Send out single-tone signal")
         ## End
-        func2.sendSignal(self.pin_OUT,1e-4)
+        func2.sendSignal(self.pin_OUT,1e-5)
         self.Flag_SendSig = False
         ## for debug and record purposes: 
         # self.sendOut_RecordCounter.append(self.counter)
@@ -343,16 +343,16 @@ class TWR:
                     ## End
                         
                     if self.Flag_ExpRX:
-                        print("Process procRX")
+                        # print("Process procRX")
                         self.procRX()
                     else:
-                        print("Process procTX")
+                        # print("Process procTX")
                         self.procTX()
                     
                     self.frames = []
                     self.Flag_jumpOneFrame = True
             else: # No signal detected
-                print("No signal Detected")
+                # print("No signal Detected")
                 self.frames.pop(0)
             ## Debug:
             # print("E N D ",self.counter_NumRanging,self.counter,len(self.frames),
