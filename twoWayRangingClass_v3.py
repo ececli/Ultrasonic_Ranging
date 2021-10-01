@@ -350,6 +350,8 @@ class TWR:
             else: # No signal detected
                 self.frames.pop(0)
             print(self.counter,len(self.frames))
+            if len(self.frames)>=2:
+                break
             if self.counter_NumRanging >= self.NumRanging:
                 print("Ranging Finished!")
                 break
