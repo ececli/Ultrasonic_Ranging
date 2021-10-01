@@ -362,7 +362,7 @@ class TWR:
 
         self.mqttc.sendMsg(self.topic_t3t2, self.T3T2_Record)
         print("Sending T3-T2 Status: Done")
-        self.mqttc.closeClient()
+        # self.mqttc.closeClient()
         
     def recvT3T2(self):
         # self.init_communications()
@@ -378,7 +378,7 @@ class TWR:
         print(self.T3T2)            
         self.Ranging_Record = TWR.SOUNDSPEED*(self.T4T1_Record - self.T3T2)/2/self.RATE
         print(self.Ranging_Record)
-        self.mqttc.closeClient()
+        # self.mqttc.closeClient()
 
 
     
