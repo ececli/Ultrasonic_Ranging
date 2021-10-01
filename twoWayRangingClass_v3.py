@@ -298,9 +298,7 @@ class TWR:
         while True:
             data = self.stream.read(self.CHUNK)
             self.counter = self.counter + 1
-            ## Debug:
-            # print("START ",self.counter_NumRanging,self.counter,len(self.frames),
-            #       self.Flag_ExpRX, self.Flag_SendSig, self.Flag_jumpOneFrame)
+
             if self.counter <= self.NumIgnoredFrame:
                 continue
             if self.counter == self.NumIgnoredFrame+1:
@@ -329,7 +327,7 @@ class TWR:
             
             if Index1.size>0: # if signal is detected
                 ## For debug purpose, print out progress:
-                print("%d, %d, Signal Detected" % (self.counter_NumRanging, self.counter))
+                # print("%d, %d, Signal Detected" % (self.counter_NumRanging, self.counter))
                 ## End
                 self.Index, self.Peak = func.peakFilter(Index1, peak1, TH = 0.8)
                 if self.Index <= self.TH_MaxIndex: # claim the peak is detected
