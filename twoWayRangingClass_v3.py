@@ -300,8 +300,7 @@ class TWR:
             self.counter = self.counter + 1
             ## Debug:
             print("START ",self.counter_NumRanging,self.counter,len(self.frames),
-                  self.Flag_ExpRX, self.Flag_SendSig, self.Flag_jumpOneFrame,
-                  len(ndata))
+                  self.Flag_ExpRX, self.Flag_SendSig, self.Flag_jumpOneFrame)
             if self.counter <= self.NumIgnoredFrame:
                 continue
             if self.counter == self.NumIgnoredFrame+1:
