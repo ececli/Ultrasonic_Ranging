@@ -350,6 +350,7 @@ class TWR:
             else: # No signal detected
                 self.frames.pop(0)
             ## Debug:
+            print(self.counter_NumRanging,self.counter,len(self.frames))
             if len(self.frames)>=2:
                 print("BUG APPEAR!")
                 print(self.counter_NumRanging,self.counter,len(self.frames))
