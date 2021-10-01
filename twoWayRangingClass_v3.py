@@ -113,8 +113,8 @@ class TWR:
         self.TH_MaxIndex = (self.CHUNK*self.NumReqFrames-self.NumSigSamples+1)- self.NumSigSamples
 
         # Peak Shape:
-        self.peak_interval = int(self.NumSigSamples/100)
-        self.peak_width = int(self.NumSigSamples/100)
+        self.peak_interval = 10 # int(self.NumSigSamples/100)
+        self.peak_width = int(self.NumSigSamples/20) # int(self.NumSigSamples/100)
         
         # Value changes in the loop
         self.frames = []
@@ -382,9 +382,9 @@ class TWR:
         ## End
         self.T3T2 = self.mqttc.readTopicData(self.topic_t3t2)
         print("Read all T3-T2")
-        print(self.T3T2)            
+        # print(self.T3T2)            
         self.Ranging_Record = TWR.SOUNDSPEED*(self.T4T1_Record - self.T3T2)/2/self.RATE
-        print(self.Ranging_Record)
+        # print(self.Ranging_Record)
         # self.mqttc.closeClient()
 
 
