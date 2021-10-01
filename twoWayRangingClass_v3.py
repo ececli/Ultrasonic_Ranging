@@ -339,11 +339,11 @@ class TWR:
                     # Index_Record.append(absIndex)
                     # PeakCounter_Record.append(counter)
                     ## End
-                    if self.Flag_ExpTX:
-                        self.procTX()
                         
                     if self.Flag_ExpRX:
                         self.procRX()
+                    else:
+                        self.procTX()
                     
                     self.frames = []
                     self.Flag_jumpOneFrame = True
