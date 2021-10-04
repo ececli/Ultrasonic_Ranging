@@ -1,4 +1,4 @@
-from twoWayRangingClass_v1 import TWR
+from twoWayRangingClass_v3 import TWR
 # import matplotlib.pyplot as plt
 import time
 import twoWayRangingLib_v2 as func
@@ -11,11 +11,11 @@ startTime = time.time()
 initiator.start()
 duration = time.time() - startTime
 print("Running Time is ", duration)
-# initiator.recvT3T2()
+initiator.recvT3T2()
 
 
 a = initiator.Ranging_Record[(initiator.Ranging_Record>0) & (initiator.Ranging_Record<5)]
-print(np.mean(a),np.std(a))
+print(len(a),np.mean(a),np.std(a))
 
 
 '''

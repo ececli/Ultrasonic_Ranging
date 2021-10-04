@@ -343,10 +343,10 @@ class TWR:
                     ## End
                         
                     if self.Flag_ExpRX:
-                        print("%d, %d, ProcRX" % (self.counter_NumRanging, self.counter))
+                        # print("%d, %d, ProcRX" % (self.counter_NumRanging, self.counter))
                         self.procRX()
                     else:
-                        print("%d, %d, ProcTX" % (self.counter_NumRanging, self.counter))
+                        # print("%d, %d, ProcTX" % (self.counter_NumRanging, self.counter))
                         self.procTX()
                     
                     self.frames = []
