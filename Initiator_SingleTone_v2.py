@@ -2,6 +2,7 @@ from twoWayRangingClass_v3 import TWR
 # import matplotlib.pyplot as plt
 import time
 import twoWayRangingLib_v2 as func
+import numpy as np
 
 
 initiator = TWR('initiator','UR_pyConfig_v2.conf')
@@ -13,7 +14,11 @@ print("Running Time is ", duration)
 initiator.recvT3T2()
 
 
+a = initiator.Ranging_Record[(initiator.Ranging_Record>0) & (initiator.Ranging_Record<5)]
+print(np.mean(a),np.std(a))
 
+
+'''
 data_to_check = initiator.fulldata[0]
 
 func.checkFFT(data_to_check,initiator.sos,initiator.RATE)
@@ -33,3 +38,4 @@ func.getOutputFig_IQMethod2(data_to_check,
 
 func.errorStat(initiator.Ranging_Record[(initiator.Ranging_Record>0) & (initiator.Ranging_Record<5)],
                GT = 1.48)
+'''
