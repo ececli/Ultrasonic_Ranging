@@ -1,0 +1,58 @@
+Tue Oct  5 21:49:09 2021    result.out
+
+         940870 function calls (927273 primitive calls) in 68.678 seconds
+
+   Ordered by: call count
+   List reduced from 4262 to 50 due to restriction <50>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+115777/114619    0.074    0.000    0.075    0.000 {built-in method builtins.len}
+    97322    0.062    0.000    0.062    0.000 {method 'append' of 'list' objects}
+    57324    0.043    0.000    0.043    0.000 {method 'lstrip' of 'str' objects}
+    49921    0.048    0.000    0.049    0.000 {built-in method builtins.isinstance}
+    43294    0.048    0.000    0.048    0.000 {built-in method builtins.min}
+    23858    0.022    0.000    0.022    0.000 {method 'startswith' of 'str' objects}
+    22564    0.036    0.000    0.038    0.000 {built-in method builtins.getattr}
+19347/19343    0.039    0.000    0.053    0.000 {method 'join' of 'str' objects}
+    15154    0.011    0.000    0.011    0.000 {method 'rstrip' of 'str' objects}
+    11641    0.021    0.000    0.021    0.000 {built-in method builtins.hasattr}
+    11493    0.029    0.000    0.029    0.000 {method 'expandtabs' of 'str' objects}
+    10761    0.015    0.000    0.023    0.000 _mathtext.py:2507(<genexpr>)
+    10209    0.009    0.000    0.009    0.000 {method 'get' of 'dict' objects}
+     8855    0.006    0.000    0.006    0.000 inspect.py:2529(kind)
+     8753    0.038    0.000    0.038    0.000 {method 'splitlines' of 'str' objects}
+     7869    0.009    0.000    0.011    0.000 {built-in method builtins.setattr}
+     7804    0.013    0.000    0.013    0.000 sre_parse.py:233(__next)
+7666/7221    0.175    0.000   14.194    0.002 {built-in method numpy.core._multiarray_umath.implement_array_function}
+     7580    0.005    0.000    0.005    0.000 inspect.py:2517(name)
+     7300    0.014    0.000    0.021    0.000 sre_parse.py:164(__getitem__)
+     6592    0.014    0.000    0.014    0.000 {method 'replace' of 'str' objects}
+     6569    0.016    0.000    0.016    0.000 {method 'split' of 'str' objects}
+     6506    0.011    0.000    0.022    0.000 sre_parse.py:254(get)
+     6147    0.009    0.000    0.009    0.000 <frozen importlib._bootstrap>:222(_verbose_message)
+     6126    0.005    0.000    0.005    0.000 {method 'strip' of 'str' objects}
+     6067    0.008    0.000    0.008    0.000 {method 'rpartition' of 'str' objects}
+     5550    0.018    0.000    0.027    0.000 <frozen importlib._bootstrap_external>:58(<listcomp>)
+     5550    0.019    0.000    0.053    0.000 <frozen importlib._bootstrap_external>:56(_path_join)
+     5285    0.009    0.000    0.012    0.000 inspect.py:2799(<genexpr>)
+     4852    0.010    0.000    0.010    0.000 {method 'pop' of 'list' objects}
+     4671    0.004    0.000    0.004    0.000 {method 'isidentifier' of 'str' objects}
+     4643    0.014    0.000    0.039    0.000 enum.py:284(__call__)
+     4629    0.006    0.000    0.007    0.000 enum.py:526(__new__)
+     4474    0.003    0.000    0.003    0.000 {built-in method builtins.callable}
+     4283    0.004    0.000    0.004    0.000 {built-in method _imp.acquire_lock}
+     4283    0.004    0.000    0.004    0.000 {built-in method _imp.release_lock}
+     4163    0.028    0.000    0.052    0.000 inspect.py:2467(__init__)
+     4113    0.006    0.000    0.006    0.000 {method 'items' of 'dict' objects}
+     4091    0.003    0.000    0.003    0.000 inspect.py:2835(parameters)
+     3909    0.017    0.000    0.017    0.000 {method 'update' of 'dict' objects}
+     3346    0.004    0.000    0.004    0.000 {method 'values' of 'mappingproxy' objects}
+     3252    0.002    0.000    0.002    0.000 inspect.py:2521(default)
+     3012    0.004    0.000    0.005    0.000 sre_parse.py:249(match)
+     2914    0.002    0.000    0.002    0.000 <frozen importlib._bootstrap>:321(<genexpr>)
+     2834    0.005    0.000    0.007    0.000 inspect.py:158(isfunction)
+     2827    0.031    0.000    0.031    0.000 {built-in method numpy.empty}
+     2786    0.022    0.000    0.089    0.000 <__array_function__ internals>:2(copyto)
+     2786    0.004    0.000    0.004    0.000 multiarray.py:1071(copyto)
+     2785    0.027    0.000    0.147    0.000 numeric.py:149(ones)
+     2771    0.135    0.000    0.251    0.000 inspect.py:613(cleandoc)
