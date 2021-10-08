@@ -323,6 +323,7 @@ def dataProcessing_process(role,q):
     else:
         mqttc.sendMsg(topic_t3t2, T3T2_Record)
         print("Sending T3-T2 Status: Done")
+        time.sleep(5)
         
 
         
