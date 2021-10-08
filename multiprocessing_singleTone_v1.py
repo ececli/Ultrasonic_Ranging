@@ -189,7 +189,7 @@ def dataProcessing_process(role,q):
     fulldata = np.frompyfunc(list, 0, 1)(np.empty((NumRanging), dtype=object))
     fulldata_temp = []
     
-
+    startTime = time.time()
     while True:
         ndata = q.get()
         counter = counter + 1
@@ -305,7 +305,8 @@ def dataProcessing_process(role,q):
             break
        
     GPIO.cleanup()
-    
+    Duration = time.time()-startTime
+    print("Duration is ", Duration)
     if ID == 1:
         while True:
             if mqttc.checkTopicDataLength(topic_t3t2)>=NumRanging:
