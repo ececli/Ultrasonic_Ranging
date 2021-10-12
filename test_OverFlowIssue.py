@@ -7,7 +7,7 @@ from scipy import signal
 from scipy.fft import fft, fftfreq
 import time
 import os
-import twoWayRangingLib as func
+import twoWayRangingLib_v2 as func
 
 # Load Parameters
 confFile = "UR_pyConfig.conf"
