@@ -42,10 +42,30 @@ Please follow this [link](https://learn.adafruit.com/adafruit-i2s-mems-microphon
 sudo apt update
 sudo apt upgrade
 ```
-
+After the system is rebooted, install the pip if the system didn't pre-install it. 
+```
+sudo apt install python3-pip
+```
+Then, install the script:
+```
+cd ~
+sudo pip3 install --upgrade adafruit-python-shell
+wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/i2smic.py
+sudo python3 i2smic.py
+```
+After the system is rebooted again, check if the microphone driver is successfully installed or not by 
+```
+arecord -l
+```
 
 
 ## Install Necessary Packages
+
+The Raspberry Pi OS Lite didn't pre-install packages like numpy, scipy, etc. We need to install them one by one. To install some basic Python packages, use:
+```
+sudo pip3 install numpy
+sudo pip3 install scipy
+```
 
 To obtain the microphone data in Python, pyaudio package is needed. The installation instruction can be found [here](http://people.csail.mit.edu/hubert/pyaudio/). 
 
