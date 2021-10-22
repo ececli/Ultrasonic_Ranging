@@ -12,6 +12,41 @@ It is simple to drive the buzzer. If you want the buzzer to generate a certain f
 
 ## Setup
 
+### 1. Install Raspberry Pi OS Lite
+
+To install Raspberr Pi OS Lite headless, we need to first flash the OS image to the SD card. Here I used balenaEtcher to complete this step. Next, we need to enable SSH and setup Wi-Fi connections before putting the SD card to the Raspberry Pi. To do so, remove the SD card from the computer and inset it agian. 
+
+To enable SSH, create an empty file named "ssh" without any extension. 
+
+To setup Wi-Fi, create a text file. Then add the following information into the text file. Note that the ssid and psk is the name and password of the Wi-Fi. 
+
+```
+country=US
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev 
+update_config=1
+network={
+    ssid="YourNetworkSSID"
+    psk="Your Network's Passphrase"
+}
+```
+
+Then, rename this file as "wpa_supplicant.conf". 
+
+Now, we can remove the SD card from the computer and put it in the Raspberry Pi. 
+
+### Install Microphone Driver
+
+Please follow this [link](https://learn.adafruit.com/adafruit-i2s-mems-microphone-breakout/raspberry-pi-wiring-test) to install the i2s microphone driver. **Remember** to reboot the Raspberry Pi after updating the system:
+
+```
+sudo apt update
+sudo apt upgrade
+```
+
+
+
+## Install Necessary Packages
+
 To obtain the microphone data in Python, pyaudio package is needed. The installation instruction can be found [here](http://people.csail.mit.edu/hubert/pyaudio/). 
 
 
