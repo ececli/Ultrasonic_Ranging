@@ -63,6 +63,7 @@ $ arecord -l
 
 The Raspberry Pi OS Lite didn't pre-install packages like numpy, scipy, etc. We need to install them one by one. To install some basic Python packages, use:
 ```
+$ sudo apt install libatlas3-base 
 $ sudo pip3 install numpy
 $ sudo pip3 install scipy
 ```
