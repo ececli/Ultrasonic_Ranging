@@ -39,36 +39,55 @@ Now, we can remove the SD card from the computer and put it in the Raspberry Pi.
 Please follow this [link](https://learn.adafruit.com/adafruit-i2s-mems-microphone-breakout/raspberry-pi-wiring-test) to install the i2s microphone driver. **Remember** to reboot the Raspberry Pi after updating the system:
 
 ```
-sudo apt update
-sudo apt upgrade
+$ sudo apt update
+$ sudo apt upgrade
 ```
 After the system is rebooted, install the pip if the system didn't pre-install it. 
 ```
-sudo apt install python3-pip
+$ sudo apt install python3-pip
 ```
 Then, install the script:
 ```
-cd ~
-sudo pip3 install --upgrade adafruit-python-shell
-wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/i2smic.py
-sudo python3 i2smic.py
+$ cd ~
+$ sudo pip3 install --upgrade adafruit-python-shell
+$ wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/i2smic.py
+$ sudo python3 i2smic.py
 ```
 After the system is rebooted again, check if the microphone driver is successfully installed or not by 
 ```
-arecord -l
+$ arecord -l
 ```
 
 
-## Install Necessary Packages
+### Install Necessary Packages
 
 The Raspberry Pi OS Lite didn't pre-install packages like numpy, scipy, etc. We need to install them one by one. To install some basic Python packages, use:
 ```
-sudo pip3 install numpy
-sudo pip3 install scipy
+$ sudo pip3 install numpy
+$ sudo pip3 install scipy
 ```
 
 To obtain the microphone data in Python, pyaudio package is needed. The installation instruction can be found [here](http://people.csail.mit.edu/hubert/pyaudio/). 
 
+
+### Connect to GitHub
+
+To use an SSH key to connect to the GitHub, we need to generate an SSH key first. Please refer to this [link](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) for details. In short, use the following commands:
+```
+$ ssh-keygen -t ed25519 -C "your_email@example.com"
+```
+And when it is prompted to "Enter a file in which to save the key," press Enter. This accepts the default file location. Then, it will be prompted to enter a passphrase. 
+
+Next, add the SSH key to the ssh-agent. 
+```
+$ eval "$(ssh-agent -s)"
+$ ssh-add ~/.ssh/id_ed25519
+```
+Finally, we need to add the SSH key to your account on GitHub. To copy the public key, use
+```
+$ cat ~/.ssh/id_ed25519.pub
+```
+Then, copy the string to the GitHub's [SSH Keys](https://github.com/settings/keys) Setting. 
 
 ## Two-Way Ranging Algorithm
 
