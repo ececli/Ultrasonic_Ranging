@@ -121,7 +121,7 @@ f0 = 25000
 duration = 0.004 # seconds
 THRESHOLD = 10000
 NumRanging = 100
-TIMEOUTCOUNTS = 100050
+TIMEOUTCOUNTS = 10050
 IgnoredSamples = 4096
 TH_ratio_width_50 = 0.5
 
