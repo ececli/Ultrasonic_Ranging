@@ -30,8 +30,6 @@ else:
     print("Unsupport Format. Have been Changed to Int32.")
 
 
-CHUNK = 512 
-
 
 
 COUNT = 0
