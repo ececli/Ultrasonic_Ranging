@@ -328,6 +328,7 @@ def dataProcessing_process(role,q):
         # print(T3T2)            
         Ranging_Record = SOUNDSPEED*(T4T1_Record - T3T2)/2/RATE
         a = Ranging_Record[(Ranging_Record>0) & (Ranging_Record<5)]
+        print(T4T1_Record)
         print(a)
         print(len(a),np.mean(a),np.std(a))
         mqttc.closeClient()
