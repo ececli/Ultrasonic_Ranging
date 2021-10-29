@@ -1,4 +1,4 @@
-from twoWayRangingClass_v3 import TWR
+from twoWayRangingClass_v1 import TWR
 import time
 import twoWayRangingLib_v2 as func
 
