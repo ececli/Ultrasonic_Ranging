@@ -8,6 +8,7 @@ import configparser
 from scipy import signal
 import RPi.GPIO as GPIO
 from myMQTT_Class import myMQTT
+import pyaudio
 
 
 
