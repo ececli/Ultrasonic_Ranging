@@ -217,16 +217,19 @@ def dataProcessing_process(role,q):
             Flag_jumpOneFrame = False
             continue
             
-        frames.append(ndata)
-        if len(frames) < NumReqFrames:
-            continue
+        
         
         if Flag_SendSig:
             func2.sendSignal(pin_OUT,1e-4)
             Flag_SendSig = False
-            frames.pop(0)
+            # frames.pop(0)
             continue
-            
+
+        frames.append(ndata)
+        if len(frames) < NumReqFrames:
+            continue
+
+
         
         # Peak Detection Algorithm
         if Flag_ExpRX:
