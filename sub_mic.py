@@ -188,7 +188,7 @@ def dataProcessing_process(role):
         # print(type(data), data )
         TS = data['input_buffer_adc_time'];
         COUNT = data['count']
-        # print(COUNT, counter, data['status'], TS, mic.mean())
+        print(COUNT, counter, data['status'], TS, mic.mean())
 
 
         
