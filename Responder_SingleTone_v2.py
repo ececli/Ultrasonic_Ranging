@@ -1,4 +1,4 @@
-from twoWayRangingClass_v1 import TWR
+from twoWayRangingClass_v3 import TWR
 import time
 import twoWayRangingLib_v2 as func
 
@@ -7,11 +7,12 @@ responder.initialize()
 startTime = time.time()
 responder.start()
 duration = time.time() - startTime
-print(duration)
-# responder.getRanging()
-# responder.stop()
+print("Running Time is ", duration)
+responder.sendT3T2()
+time.sleep(5)
 
-data_to_check = responder.fulldata[16]
+'''
+data_to_check = responder.fulldata[4]
 
 func.checkFFT(data_to_check,responder.sos,responder.RATE)
 
@@ -26,3 +27,4 @@ func.getOutputFig_IQMethod2(data_to_check,
                             recordedPeak=0,
                             preBPFilter = True,
                             sos = responder.sos)
+'''
