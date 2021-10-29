@@ -328,10 +328,12 @@ def dataProcessing_process(role,q):
         # print(T3T2)            
         Ranging_Record = SOUNDSPEED*(T4T1_Record - T3T2)/2/RATE
         a = Ranging_Record[(Ranging_Record>0) & (Ranging_Record<5)]
+        print(a)
         print(len(a),np.mean(a),np.std(a))
         mqttc.closeClient()
     else:
         mqttc.sendMsg(topic_t3t2, T3T2_Record)
+        print(T3T2_Record)
         print("Sending T3-T2 Status: Done")
         time.sleep(5)
         
