@@ -213,9 +213,9 @@ def dataProcessing_process(role,q):
         fulldata_temp.append(ndata)
         ## End
 
-        # if Flag_jumpOneFrame:
-        #     Flag_jumpOneFrame = False
-        #     continue
+        if Flag_jumpOneFrame:
+            Flag_jumpOneFrame = False
+            continue
             
         frames.append(ndata)
         if len(frames) < NumReqFrames:
