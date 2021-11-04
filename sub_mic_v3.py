@@ -350,7 +350,7 @@ def dataProcessing_process(role):
                         counter_NumRanging = counter_NumRanging + 1
 
                 Flag_jump = True
-                jumpCount = 10  
+                jumpCount = 30  
                 # previousData = np.empty(0)
                 # previousAutoc = np.empty(0)
 
@@ -394,7 +394,7 @@ def dataProcessing_process(role):
         print("T4T1:")
         print(T4T1_Record)
         print(a)
-        if a:
+        if a.size>0:
             print(len(a),np.mean(a),np.std(a))
         mqttc.closeClient()
     else:
