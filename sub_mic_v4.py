@@ -370,7 +370,7 @@ def dataProcessing_process(role):
     
     Duration = time.time()-startTime
     GPIO.cleanup()
-    print("Duration is ", Duration)
+    
     if ID == 1:
         while True:
             if mqttc.checkTopicDataLength(topic_t3t2)>=NumRanging:
@@ -396,6 +396,7 @@ def dataProcessing_process(role):
         print("Sending T3-T2 Status: Done")
         time.sleep(5)
 
+    print("Duration is ", Duration)
 
 
 
