@@ -259,6 +259,7 @@ def dataProcessing_process(role):
         if Flag_jump:
             if jumpCount:
                 jumpCount = jumpCount -1
+                print("jumpCount=", jumpCount)
 
 
                 if len(wholeAutoc) <= 2*NumSigSamples:
