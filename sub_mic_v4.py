@@ -108,7 +108,7 @@ def dataProcessing_process(role):
     NumSigSamples = len(RefSignal)
     NumReqFrames = int(np.ceil(NumSigSamples/CHUNK))
 
-    maxJumpCount = int(np.ceil(0.015/ (CHUNK/RATE)))
+    maxJumpCount = int(np.ceil(0.01/ (CHUNK/RATE)))
 
 
     # init functions
