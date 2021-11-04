@@ -228,6 +228,7 @@ def dataProcessing_process(role):
                 continue
             else:
                 Flag_jump = False
+                print("[Finished delay] ",counter_NumRanging,counter)
             
         
         
@@ -235,6 +236,7 @@ def dataProcessing_process(role):
         if Flag_SendSig:
             func2.sendSignal(pin_OUT,1e-4)
             Flag_SendSig = False
+            print('[Signal Sent] ',counter_NumRanging,counter)
             continue
 
         # frames.append(mic - DCOffset)
@@ -290,10 +292,12 @@ def dataProcessing_process(role):
 
 
 
+
                 if Flag_ExpRX:
                     ## For debug purpose, print out progress:
                     # print("Received signal from the other device")
                     ## End
+                    print("[RX Peak Detected] ",counter_NumRanging,counter,absIndex,Peak)
                     T_RX = absIndex
                     Flag_ExpRX = False
                     Flag_SendSig = True
@@ -312,6 +316,7 @@ def dataProcessing_process(role):
                     # print("Received own signal")
                     ## End
                     # 1. General process after receiving its own signal
+                    print("[TX Peak Detected] ",counter_NumRanging,counter,absIndex,Peak)
                     T_TX = absIndex
                     Flag_ExpRX = True
                     ## For debug and record purposes:
