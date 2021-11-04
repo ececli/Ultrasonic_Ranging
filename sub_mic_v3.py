@@ -255,14 +255,13 @@ def dataProcessing_process(role):
         if Flag_jump:
             if jumpCount:
                 jumpCount = jumpCount -1
-                print("jumpCount=", jumpCount)
-
 
                 if len(wholeAutoc) <= 2*NumSigSamples:
                     previousAutoc = wholeAutoc
                 else:
                     previousAutoc = wholeAutoc[CHUNK:]
                 continue
+
             else:
                 Flag_jump = False
                 # print("[Finished delay] ",counter_NumRanging,counter)
@@ -317,6 +316,9 @@ def dataProcessing_process(role):
                     ## For debug and record purposes:
                     # RecvRX_RecordCounter.append(counter)
                     ## End
+
+                    jumpCount = 15
+
                     if ID == 1:
                         T4T1_Record[counter_NumRanging] =T_RX - T_TX
                         ## For debug and record purposes
@@ -335,6 +337,9 @@ def dataProcessing_process(role):
                     ## For debug and record purposes:
                     # RecvTX_RecordCounter.append(self.counter)
                     ## End
+
+                    jumpCount = 10  
+
                     # 2. For responder only:
                     if ID == 2:
                         T3T2_Record[counter_NumRanging] = T_TX - T_RX
@@ -345,7 +350,7 @@ def dataProcessing_process(role):
                         counter_NumRanging = counter_NumRanging + 1
 
                 Flag_jump = True
-                jumpCount = 10
+                
                 # previousData = np.empty(0)
                 # previousAutoc = np.empty(0)
 
