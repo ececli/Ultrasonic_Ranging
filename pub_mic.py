@@ -51,7 +51,7 @@ def callback(in_data, frame_count, time_info, status):
 
     mic = np.frombuffer(in_data, dtype=np.int32)
     mic = mic>>14
-    print(COUNT, mic.mean())
+    # print(COUNT, mic.mean())
 
     dt = time_info['input_buffer_adc_time']-prev1
     # TS.append(dt)
