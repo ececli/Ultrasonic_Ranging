@@ -259,15 +259,15 @@ def dataProcessing_process(role):
         else:
             TH = THRESHOLD_TX
 
-        Index1, peak1 = peakDetector(wholeAutoc,
-                                     TH,
-                                     peak_interval,
-                                     peak_width)
+        Index1, peak1 = func.peakDetector(wholeAutoc,
+                                          TH,
+                                          peak_interval,
+                                          peak_width)
         if Index1.size>0: # if signal is detected
             ## For debug purpose, print out progress:
             # print("Signal Detected")
             ## End
-            Index, Peak = peakFilter(Index1, peak1, TH = 1)
+            Index, Peak = func.peakFilter(Index1, peak1, TH = 1)
             # If the Index is not at the edges of the matched filter, then claim the signal is detected
             if (Index >= (NumSigSamples/2)) and (Index <= (len(wholeAutoc)-(NumSigSamples/2))):
                 # Calculate absolute Index
@@ -323,7 +323,7 @@ def dataProcessing_process(role):
 
                 Flag_jumpOneFrame = True
 
-                print(counter, len(wholeAutoc),Index1,absIndex[-1])
+                print(counter, len(wholeAutoc),Index1,absIndex)
                 # Remove most part of the wholeAutoc data 
                 # So that it won't detect the same peak multiple times
                 # And it would speed up a little bit
