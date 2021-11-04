@@ -163,8 +163,8 @@ def dataProcessing_process(role):
 
     Index_Record = []
     PeakCounter_Record = []
-    fulldata = np.frompyfunc(list, 0, 1)(np.empty((NumRanging), dtype=object))
-    fulldata_temp = []
+    # fulldata = np.frompyfunc(list, 0, 1)(np.empty((NumRanging), dtype=object))
+    # fulldata_temp = []
 
 
 
@@ -216,7 +216,7 @@ def dataProcessing_process(role):
 
 
         ## for debug and record purposes:
-        fulldata_temp.append(mic - DCOffset)
+        # fulldata_temp.append(mic - DCOffset)
         if counter == 1:
             startTime = time.time()
             print('Start Time is ',startTime)
@@ -323,8 +323,8 @@ def dataProcessing_process(role):
                     if ID == 1:
                         T4T1_Record[counter_NumRanging] =T_RX - T_TX
                         ## For debug and record purposes
-                        fulldata[counter_NumRanging] = fulldata_temp
-                        fulldata_temp = []
+                        # fulldata[counter_NumRanging] = fulldata_temp
+                        # fulldata_temp = []
                         ## END
                         counter_NumRanging = counter_NumRanging + 1
                 else:
@@ -345,8 +345,8 @@ def dataProcessing_process(role):
                     if ID == 2:
                         T3T2_Record[counter_NumRanging] = T_TX - T_RX
                         ## For debug and record purposes
-                        fulldata[counter_NumRanging] = fulldata_temp
-                        fulldata_temp = []
+                        # fulldata[counter_NumRanging] = fulldata_temp
+                        # fulldata_temp = []
                         ## End
                         counter_NumRanging = counter_NumRanging + 1
 
