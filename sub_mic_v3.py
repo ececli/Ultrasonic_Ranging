@@ -228,7 +228,7 @@ def dataProcessing_process(role):
                 continue
             else:
                 Flag_jump = False
-                print("[Finished delay] ",counter_NumRanging,counter)
+                # print("[Finished delay] ",counter_NumRanging,counter)
             
         
         
