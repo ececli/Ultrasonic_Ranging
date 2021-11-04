@@ -252,7 +252,7 @@ def dataProcessing_process(role):
         if Flag_SendSig:
             func2.sendSignal(pin_OUT,1e-4)
             Flag_SendSig = False
-            print('[Signal Sent] ',counter_NumRanging,counter)
+            # print('[Signal Sent] ',counter_NumRanging,counter)
             # continue
         
         # Peak Detection Algorithm
@@ -302,7 +302,7 @@ def dataProcessing_process(role):
                     ## For debug purpose, print out progress:
                     # print("Received signal from the other device")
                     ## End
-                    print("[RX Peak Detected] ",counter_NumRanging,counter,absIndex,Peak)
+                    # print("[RX Peak Detected] ",counter_NumRanging,counter,absIndex,Peak)
                     T_RX = absIndex
                     Flag_ExpRX = False
                     Flag_SendSig = True
@@ -324,7 +324,7 @@ def dataProcessing_process(role):
                     # print("Received own signal")
                     ## End
                     # 1. General process after receiving its own signal
-                    print("[TX Peak Detected] ",counter_NumRanging,counter,absIndex,Peak)
+                    # print("[TX Peak Detected] ",counter_NumRanging,counter,absIndex,Peak)
                     T_TX = absIndex
                     Flag_ExpRX = True
                     ## For debug and record purposes:
