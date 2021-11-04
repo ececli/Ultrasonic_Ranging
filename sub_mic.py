@@ -185,7 +185,7 @@ def dataProcessing_process(role):
 
         mic = np.frombuffer(data['mic'], dtype=np.int32)
         mic = mic >> 14
-        # print(type(data), data )
+        # print(mic.shape)
         TS = data['input_buffer_adc_time'];
         COUNT = data['count']
         print(COUNT, counter, data['status'], TS, mic.mean())
