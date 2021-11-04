@@ -227,11 +227,7 @@ def dataProcessing_process(role):
         
         
         
-        if Flag_SendSig:
-            func2.sendSignal(pin_OUT,1e-4)
-            Flag_SendSig = False
-            print('[Signal Sent] ',counter_NumRanging,counter)
-            continue
+        
 
         # frames.append(mic - DCOffset)
         currentData = mic - DCOffset
@@ -271,7 +267,11 @@ def dataProcessing_process(role):
                 Flag_jump = False
                 # print("[Finished delay] ",counter_NumRanging,counter)
 
-
+        if Flag_SendSig:
+            func2.sendSignal(pin_OUT,1e-4)
+            Flag_SendSig = False
+            print('[Signal Sent] ',counter_NumRanging,counter)
+            continue
 
 
         if Flag_ExpRX:
