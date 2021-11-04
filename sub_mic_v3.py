@@ -336,7 +336,7 @@ def dataProcessing_process(role):
                 previousData = np.empty(0)
                 previousAutoc = np.empty(0)
 
-                print(counter, len(wholeAutoc),Index1,absIndex)
+                # print(counter, len(wholeAutoc),Index1,absIndex)
                 # Remove most part of the wholeAutoc data 
                 # So that it won't detect the same peak multiple times
                 # And it would speed up a little bit
