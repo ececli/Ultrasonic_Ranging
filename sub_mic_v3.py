@@ -222,13 +222,7 @@ def dataProcessing_process(role):
         ## End
 
         
-        if Flag_jump:
-            if jumpCount:
-                jumpCount = jumpCount -1
-                continue
-            else:
-                Flag_jump = False
-                # print("[Finished delay] ",counter_NumRanging,counter)
+        
             
         
         
@@ -259,6 +253,24 @@ def dataProcessing_process(role):
         autoc = func.noncoherence(wholeData, RefSignal, RefSignal2)
 
         wholeAutoc = np.concatenate((previousAutoc, autoc))
+
+
+
+        if Flag_jump:
+            if jumpCount:
+                jumpCount = jumpCount -1
+
+
+                if len(wholeAutoc) <= 2*NumSigSamples:
+                    previousAutoc = wholeAutoc
+                else:
+                    previousAutoc = wholeAutoc[CHUNK:]
+                continue
+            else:
+                Flag_jump = False
+                # print("[Finished delay] ",counter_NumRanging,counter)
+
+
 
 
         if Flag_ExpRX:
@@ -332,15 +344,15 @@ def dataProcessing_process(role):
                         counter_NumRanging = counter_NumRanging + 1
 
                 Flag_jump = True
-                jumpCount = 50
-                previousData = np.empty(0)
-                previousAutoc = np.empty(0)
+                jumpCount = 10
+                # previousData = np.empty(0)
+                # previousAutoc = np.empty(0)
 
                 # print(counter, len(wholeAutoc),Index1,absIndex)
                 # Remove most part of the wholeAutoc data 
                 # So that it won't detect the same peak multiple times
                 # And it would speed up a little bit
-                # previousAutoc = wholeAutoc[int(len(wholeAutoc)/CHUNK)*CHUNK:]
+                previousAutoc = wholeAutoc[int(len(wholeAutoc)/CHUNK)*CHUNK:]
                 continue
 
 
