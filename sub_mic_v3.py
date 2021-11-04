@@ -317,7 +317,7 @@ def dataProcessing_process(role):
                     # RecvRX_RecordCounter.append(counter)
                     ## End
 
-                    jumpCount = 15
+                    # jumpCount = 15
 
                     if ID == 1:
                         T4T1_Record[counter_NumRanging] =T_RX - T_TX
@@ -338,7 +338,7 @@ def dataProcessing_process(role):
                     # RecvTX_RecordCounter.append(self.counter)
                     ## End
 
-                    jumpCount = 10  
+                    # jumpCount = 10  
 
                     # 2. For responder only:
                     if ID == 2:
@@ -350,7 +350,7 @@ def dataProcessing_process(role):
                         counter_NumRanging = counter_NumRanging + 1
 
                 Flag_jump = True
-                
+                jumpCount = 10  
                 # previousData = np.empty(0)
                 # previousAutoc = np.empty(0)
 
@@ -394,7 +394,8 @@ def dataProcessing_process(role):
         print("T4T1:")
         print(T4T1_Record)
         print(a)
-        print(len(a),np.mean(a),np.std(a))
+        if not isempty(a):
+            print(len(a),np.mean(a),np.std(a))
         mqttc.closeClient()
     else:
         mqttc.sendMsg(topic_t3t2, T3T2_Record)
