@@ -394,7 +394,7 @@ def dataProcessing_process(role):
         print("T4T1:")
         print(T4T1_Record)
         print(a)
-        if not isempty(a):
+        if a:
             print(len(a),np.mean(a),np.std(a))
         mqttc.closeClient()
     else:
