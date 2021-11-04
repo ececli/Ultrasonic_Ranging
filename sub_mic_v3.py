@@ -141,7 +141,8 @@ def dataProcessing_process(role):
     previousAutoc = np.empty(0)
     counter = 0
     counter_NumRanging = 0
-    Flag_jumpOneFrame = False
+    Flag_jump = False
+    jumpCount = 0
 
     if ID == 1:
         Flag_ExpRX = False
