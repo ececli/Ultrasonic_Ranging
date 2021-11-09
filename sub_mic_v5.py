@@ -399,8 +399,11 @@ def dataProcessing_process(role):
     print("Duration is ", Duration)
 
     allFullData = np.concatenate(fulldata)
-    np.savetxt('Fulldata_'+role+'.dat', allFullData, fmt='%d', delimiter=',')
-
+    a_file = open('Fulldata_'+role+'.dat', "w")
+    np.savetxt(a_file, allFullData, fmt='%d', delimiter=',')
+    a_file.close()
+    print('Data written to file.')
+    
 
 
 if __name__ == '__main__':
