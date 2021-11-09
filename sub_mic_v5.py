@@ -363,7 +363,7 @@ def dataProcessing_process(role):
 
 
         if counter_NumRanging>=NumRanging:
-            print("Ranging Finished!")
+            print("Ranging Finished! Total counter=",counter)
             break
 
 
@@ -403,7 +403,7 @@ def dataProcessing_process(role):
     np.savetxt(a_file, allFullData, fmt='%d', delimiter=',')
     a_file.close()
     print('Data written to file.')
-    
+
 
 
 if __name__ == '__main__':
