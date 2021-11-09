@@ -108,7 +108,7 @@ def dataProcessing_process(role):
     NumSigSamples = len(RefSignal)
     NumReqFrames = int(np.ceil(NumSigSamples/CHUNK))
 
-    maxJumpCount = int(np.ceil(0.040/ (CHUNK/RATE)))
+    maxJumpCount = int(np.ceil(0.015/ (CHUNK/RATE)))
 
 
     # init functions
@@ -399,7 +399,7 @@ def dataProcessing_process(role):
     print("Duration is ", Duration)
 
     allFullData = np.concatenate(fulldata)
-    np.savetxt('Fulldata.dat', allFullData, fmt='%d', delimiter=',')
+    np.savetxt('Fulldata_'+role+'.dat', allFullData, fmt='%d', delimiter=',')
 
 
 
