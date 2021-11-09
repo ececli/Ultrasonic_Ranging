@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 
 
-fulldata = np.loadtxt('Fulldata_initiator_19delay.dat',delimiter=',')
+fulldata = np.loadtxt('Fulldata_responder_19delay.dat',delimiter=',')
 print(len(fulldata))
 print(fulldata.shape)
 

@@ -175,6 +175,7 @@ def dataProcessing_process(role):
     pre_BPfiltering = False
     Data_warmUp = []
     COUNT = []
+    rawData = []
     while True:
         data = socket.recv_pyobj()
         counter = counter + 1
@@ -190,6 +191,7 @@ def dataProcessing_process(role):
 
 
         mic = np.frombuffer(data['mic'], dtype=np.int32)
+        rawData.append(data['mic'])
         mic = mic >> 14
         # print(type(data), data )
         TS = data['input_buffer_adc_time'];
@@ -403,6 +405,18 @@ def dataProcessing_process(role):
     np.savetxt(a_file, allFullData, fmt='%d', delimiter=',')
     a_file.close()
     print('Data written to file.')
+    logData = open('RawData_'+role+'.dat','wb')
+
+    print("Length of the raw data is ",len(rawData))
+    for d in rawData:
+        buf = bytes(d)
+        logData.write(buf)
+        mic = np.frombuffer(d, dtype=np.int32)
+        np.savetxt(logInt, mic, fmt = "%d")
+    
+    logData.close()
+
+    print('Finished Writing Raw Data to Files')
 
 
 
