@@ -69,6 +69,7 @@ Index1, peak1 = func.peakDetector(autoc,
 
 plt.figure()
 plt.plot(autoc,'r-o')
+plt.plot(Index1,autoc[Index1],'bs')
 plt.show()
 
 
