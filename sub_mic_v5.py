@@ -252,7 +252,7 @@ def dataProcessing_process(role):
         if Flag_SendSig:
             func2.sendSignal(pin_OUT,1e-4)
             Flag_SendSig = False
-            print('[Signal Sent] ',counter_NumRanging,counter)
+            # print('[Signal Sent] ',counter_NumRanging,counter)
             # continue
         
         # Peak Detection Algorithm
