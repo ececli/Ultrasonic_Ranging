@@ -412,7 +412,6 @@ def dataProcessing_process(role):
         buf = bytes(d)
         logData.write(buf)
         mic = np.frombuffer(d, dtype=np.int32)
-        np.savetxt(logInt, mic, fmt = "%d")
     
     logData.close()
 
