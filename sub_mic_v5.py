@@ -10,7 +10,7 @@ import RPi.GPIO as GPIO
 from myMQTT_Class import myMQTT
 import pyaudio
 
-
+# version 5 is the debugging version which write data to files.
 
 def dataProcessing_process(role):
 
