@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 
 
-fulldata = np.loadtxt('Fulldata_responder_19delay.dat',delimiter=',')
+fulldata = np.loadtxt('Fulldata_initiatorOnly.dat',delimiter=',')
 print(len(fulldata))
 print(fulldata.shape)
 
@@ -44,7 +44,7 @@ NumSigSamples = len(RefSignal)
 
 # Peak Shape:
 peak_interval = int(NumSigSamples/100)
-peak_width = int(NumSigSamples/100)
+peak_width = int(NumSigSamples/10)
 
 '''
 wholeData = []
