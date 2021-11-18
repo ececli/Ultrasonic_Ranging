@@ -66,6 +66,7 @@ The Raspberry Pi OS Lite didn't pre-install packages like numpy, scipy, etc. We 
 $ sudo apt install libatlas3-base 
 $ sudo pip3 install numpy
 $ sudo pip3 install scipy
+$ sudo pip3 install cffi
 ```
 
 To obtain the microphone data in Python, pyaudio package is needed. The installation instruction can be found [here](http://people.csail.mit.edu/hubert/pyaudio/). 
