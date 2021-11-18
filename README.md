@@ -34,6 +34,16 @@ Then, rename this file as "wpa_supplicant.conf".
 
 Now, we can remove the SD card from the computer and put it in the Raspberry Pi. 
 
+Wait a while after the Raspberry Pi is powered up. Find the IP address of the Raspberry Pi from your Wi-Fi router. Then, use SSH to connect to the Raspberry Pi. Note that the default username is "pi" and the password is "raspberry". 
+
+After logging into the system, update the system first by
+```
+$ sudo apt update
+$ sudo apt upgrade
+```
+**Remember** to reboot the Raspberry Pi after updating the system. Then, the password can be changed by using `sudo raspi-config`. 
+
+
 ### Install Microphone Driver
 
 Please follow this [link](https://learn.adafruit.com/adafruit-i2s-mems-microphone-breakout/raspberry-pi-wiring-test) to install the i2s microphone driver. **Remember** to reboot the Raspberry Pi after updating the system:
