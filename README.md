@@ -79,6 +79,12 @@ $ sudo pip3 install scipy
 $ sudo pip3 install cffi
 ```
 
+```
+sudo apt install python3-pyaudio
+sudo apt install python3-numpy
+pip3 install pyzmq
+```
+
 To obtain the microphone data in Python, pyaudio package is needed. The installation instruction can be found [here](http://people.csail.mit.edu/hubert/pyaudio/). 
 
 
