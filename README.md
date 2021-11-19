@@ -72,22 +72,16 @@ $ arecord -l
 ### Install Necessary Packages
 
 The Raspberry Pi OS Lite didn't pre-install packages like numpy, scipy, etc. We need to install them one by one. To install some basic Python packages, use:
-```
-$ sudo apt install libatlas3-base 
-$ sudo pip3 install numpy
-$ sudo pip3 install scipy
-$ sudo pip3 install cffi
-```
 
 ```
-sudo apt install python3-pyaudio
-sudo apt install python3-numpy
-pip3 install pyzmq
-sudo apt install tmux
+$ sudo apt install python3-pyaudio
+$ sudo apt install python3-numpy
+$ sudo apt install python3-scipy
+$ sudo apt install python3-numba
+$ pip3 install pyzmq
+$ pip3 install cffi
+$ sudo apt install tmux
 ```
-
-To obtain the microphone data in Python, pyaudio package is needed. The installation instruction can be found [here](http://people.csail.mit.edu/hubert/pyaudio/). 
-
 
 ### Connect to GitHub
 
