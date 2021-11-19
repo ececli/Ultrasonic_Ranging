@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from scipy import signal
 from scipy.fft import fft, fftfreq
 import time
-import pigpio
+# import pigpio
 
 
 #########################################################################################

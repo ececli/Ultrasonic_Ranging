@@ -1,14 +1,8 @@
-import time
 import zmq
-import sys
 import pyaudio
-import psutil
-import os
 import numpy as np
+import time
 
-
-
-# import numpy as np
 
 # pub mic data out.
 
