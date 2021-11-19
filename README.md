@@ -77,6 +77,7 @@ The Raspberry Pi OS Lite didn't pre-install packages like numpy, scipy, etc. We 
 $ sudo apt install python3-pyaudio
 $ sudo apt install python3-numpy
 $ sudo apt install python3-scipy
+sudo apt install python3-matplotlib
 $ sudo apt install python3-numba
 $ pip3 install pyzmq
 $ pip3 install cffi
