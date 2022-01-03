@@ -255,7 +255,14 @@ if __name__ == '__main__':
     counter_NumRanging = 0
 
 
-    Flag_SendSig = False
+    if ID == 1:
+        Flag_ExpRX = False
+        Flag_SendSig = True
+    else:
+        Flag_ExpRX = True
+        Flag_SendSig = False
+
+
     Flag_abnormal = False
     Flag_initial = True
     Flag_warmUp = True
