@@ -161,6 +161,8 @@ if __name__ == '__main__':
     f0 = 25000 # Hz
     duration = 0.004 # second
 
+    NumRanging = 1
+
     settings_np = np.recarray(1, dtype=dt_settings)[0]
     settings_np.mph = 800
     settings_np.lag = 400
