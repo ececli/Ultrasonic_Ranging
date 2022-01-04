@@ -4,7 +4,6 @@ import sys
 import numpy as np
 import RPi.GPIO as GPIO
 from scipy import signal
-# from myMQTT_Class import myMQTT
 import socket
 from numba import jit
 
@@ -184,7 +183,7 @@ if __name__ == '__main__':
     settings_np.influence = 7e-3
     #print('settings', settings_np)
 
-    broker_address = "192.168.68.131"
+    # broker_address = "192.168.68.131"
     port = 5556
     # topic_t3t2 = "ranging/delay/t3t2_delay_ms"
 
@@ -208,23 +207,12 @@ if __name__ == '__main__':
     if ID == 2: 
         server = context.socket(zmq.REP)
         server.bind("tcp://*:" + str(port))
-        print("Responder Side gets ready of Sending T3-T2")
+        print("Responder acts as a server. ")
 
 
 
 
-    '''
-    # setup communication
-    mqttc = myMQTT(broker_address)
-    mqttc.registerTopic(topic_t3t2)
-    # mqttc.registerTopic(topic_tell_IamReady2Recv)
-    # mqttc.registerTopic(topic_check_ifOtherReady)
-    # clear existing msg in topics
-    if mqttc.checkTopicDataLength(topic_t3t2)>0:
-        mqttc.readTopicData(topic_t3t2)
-    # if mqttc.checkTopicDataLength(topic_check_ifOtherReady)>0:
-    #     mqttc.readTopicData(topic_check_ifOtherReady)
-    '''
+
 
 
     
@@ -238,6 +226,7 @@ if __name__ == '__main__':
 
     w = 2*np.pi*k/NumSigSamples
     c = 2*np.cos(w)
+
     z = np.zeros(2)
     ring = np.zeros(512, np.int32)
     write_addr = 0
@@ -259,11 +248,28 @@ if __name__ == '__main__':
 
     settings = settings_np
     filteredY = np.zeros(settings.lag)
-    packet_s = np.zeros(CHUNK)
     pks_blocks = []
 
 
+    
+    sg_block_v2(np.zeros(512, np.int32), 0, np.zeros(2), np.zeros(CHUNK), c, CHUNK, NumSigSamples)
+    peak_marking_block(np.zeros(CHUNK), len(np.zeros(CHUNK)), filteredY, settings, state)
 
+    state = np.recarray(1, dtype=dt_state)[0]
+    state.avgFilter = 0
+    state.std2 = 0
+    state.write_addr = -1
+    state.length = 0
+    state.pk_idx = -1
+    state.pk = -1
+    state.time_between = -1
+    state.pk_time = -1
+
+
+    settings = settings_np
+    filteredY = np.zeros(settings.lag)
+
+    
 
     fulldata_temp = []
     fulldata = np.frompyfunc(list, 0, 1)(np.empty((NumRanging), dtype=object))
@@ -288,6 +294,8 @@ if __name__ == '__main__':
 
     Flag_jump = False
     jumpCount = 0
+
+    Flag_speedUpJit = True
 
     T3T2_Record = np.zeros(NumRanging)
     T4T1_Record = np.zeros(NumRanging)
@@ -320,7 +328,9 @@ if __name__ == '__main__':
             status = header[0][1]
             TS = header[0][2] # no use so far
 
-            # logFile.write("%d,%d,%d,%r,%r,%r,%r \n" % (counter,COUNT,status,Flag_initial,Flag_warmUp,Flag_SendSig,Flag_ExpRX))
+
+
+            
 
             
             # Warm up period: Collect data to calculate DC offset
