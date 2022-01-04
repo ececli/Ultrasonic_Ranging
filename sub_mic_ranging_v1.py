@@ -164,6 +164,9 @@ if __name__ == '__main__':
 
 
     # constant
+
+    SOUNDSPEED = 343
+
     pin_OUT = 5
 
     CHUNK = 64 # buffer size
@@ -283,6 +286,9 @@ if __name__ == '__main__':
     Flag_warmUp = True
     Data_warmUp = []
 
+    Flag_jump = False
+    jumpCount = 0
+
     T3T2_Record = np.zeros(NumRanging)
     T4T1_Record = np.zeros(NumRanging)
 
@@ -354,8 +360,15 @@ if __name__ == '__main__':
             COUNT_PRE = COUNT
             ## End of checking abnormal input data
 
-            if counter <=2100:
-                continue
+            if Flag_jump:
+                if jumpCount:
+                    jumpCount = jumpCount -1
+
+                    continue
+
+                else:
+                    Flag_jump = False
+                    # print("[Finished delay] ",counter_NumRanging,counter)
 
 
 
@@ -413,7 +426,8 @@ if __name__ == '__main__':
                     # RecvTX_RecordCounter.append(self.counter)
                     ## End
 
-                    # jumpCount = 10  
+                    jumpCount = 20
+                    Flag_jump = True
 
                     # 2. For responder only:
                     if ID == 2:
