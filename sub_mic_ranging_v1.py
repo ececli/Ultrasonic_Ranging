@@ -171,7 +171,7 @@ if __name__ == '__main__':
     f0 = 25000 # Hz
     duration = 0.004 # second
 
-    NumRanging = 1
+    NumRanging = 10
 
     settings_np = np.recarray(1, dtype=dt_settings)[0]
     settings_np.mph = 800
@@ -375,8 +375,8 @@ if __name__ == '__main__':
 
                     ## For debug purpose, print out progress:
                     # print("Received signal from the other device")
+                    print("[RX Peak Detected] ",counter_NumRanging,counter,result)
                     ## End
-                    # print("[RX Peak Detected] ",counter_NumRanging,counter,absIndex,Peak)
                     # T_RX = absIndex
                     Flag_ExpRX = False
                     Flag_SendSig = True
@@ -398,7 +398,7 @@ if __name__ == '__main__':
                     # print("Received own signal")
                     ## End
                     # 1. General process after receiving its own signal
-                    # print("[TX Peak Detected] ",counter_NumRanging,counter,absIndex,Peak)
+                    print("[TX Peak Detected] ",counter_NumRanging,counter,result)
                     # T_TX = absIndex
                     Flag_ExpRX = True
                     ## For debug and record purposes:
