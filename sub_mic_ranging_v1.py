@@ -4,7 +4,8 @@ import sys
 import numpy as np
 import RPi.GPIO as GPIO
 from scipy import signal
-from myMQTT_Class import myMQTT
+# from myMQTT_Class import myMQTT
+import socket
 from numba import jit
 
 dt = np.dtype([('counter', 'i4'),
@@ -34,6 +35,15 @@ def sendSignal(PIN,Duration):
     time.sleep(Duration)
     GPIO.output(PIN,False)
     return
+
+
+def get_ip_address():
+    ip_address = '';
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8",80))
+    ip_address = s.getsockname()[0]
+    s.close()
+    return ip_address
 
 @jit
 def sg_block_v2(x, offset, z, Pxx, c, block_size, window_size):
@@ -189,7 +199,8 @@ if __name__ == '__main__':
 
     if ID == 2: 
         publisher = context.socket(zmq.PUB)
-        publisher.bind("tcp://"+broker_address+":"+str(port))
+        publisher.bind("tcp://"+get_ip_address()+":"+str(port))
+        print("Responder Side gets ready of Sending T3-T2")
 
 
 
@@ -206,15 +217,6 @@ if __name__ == '__main__':
     # if mqttc.checkTopicDataLength(topic_check_ifOtherReady)>0:
     #     mqttc.readTopicData(topic_check_ifOtherReady)
     '''
-
-
-
-
-
-
-
-
-
 
 
     
@@ -428,6 +430,7 @@ if __name__ == '__main__':
     GPIO.cleanup()
 
     if ID == 1:
+        '''
         while True:
             if mqttc.checkTopicDataLength(topic_t3t2)>=NumRanging:
                 break
@@ -435,6 +438,22 @@ if __name__ == '__main__':
         # print("Received T3-T2")
         ## End
         T3T2 = mqttc.readTopicData(topic_t3t2)
+        '''
+        IP_Address = get_ip_address()
+        if IP_Address[-1] == '1':
+            hostIP_Address = IP_Address[:-1]+'0'
+        else:
+            hostIP_Address = IP_Address[:-1]+'1'
+        print("HOST IP is "+hostIP_Address)
+
+        subscriber = context.socket(zmq.SUB)
+        subscriber.connect("tcp://"+hostIP_Address+":"+str(port))
+        T3T2 = []
+        while True:
+            T3T2 = subscriber.recv_pyobj()
+            if len(T3T2) == NumRanging:
+                break
+
         print("Read all T3-T2")
         # print("T3T2:")
         # print(T3T2)            
@@ -447,7 +466,8 @@ if __name__ == '__main__':
             print(len(a),np.mean(a),np.std(a))
         mqttc.closeClient()
     else:
-        mqttc.sendMsg(topic_t3t2, T3T2_Record)
+        # mqttc.sendMsg(topic_t3t2, T3T2_Record)
+        publisher.send_pyobj(T3T2_Record)
         print(T3T2_Record)
         print("Sending T3-T2 Status: Done")
         time.sleep(5)
