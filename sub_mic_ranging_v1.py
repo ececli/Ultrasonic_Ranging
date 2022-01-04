@@ -286,7 +286,7 @@ if __name__ == '__main__':
     T3T2_Record = np.zeros(NumRanging)
     T4T1_Record = np.zeros(NumRanging)
 
-    logFile = open('log_ranging.txt','w+')
+    # logFile = open('log_ranging.txt','w+')
 
     try:
         # start loop 
@@ -314,7 +314,7 @@ if __name__ == '__main__':
             status = header[0][1]
             TS = header[0][2] # no use so far
 
-            logFile.write("%d,%d,%d,%r,%r,%r,%r \n" % (counter,COUNT,status,Flag_initial,Flag_warmUp,Flag_SendSig,Flag_ExpRX))
+            # logFile.write("%d,%d,%d,%r,%r,%r,%r \n" % (counter,COUNT,status,Flag_initial,Flag_warmUp,Flag_SendSig,Flag_ExpRX))
 
             
             # Warm up period: Collect data to calculate DC offset
@@ -353,6 +353,9 @@ if __name__ == '__main__':
                 print('[Abnormal Mic Data] Missing a Buffer at Subscriber: ',counter,COUNT,COUNT_PRE)
             COUNT_PRE = COUNT
             ## End of checking abnormal input data
+
+            if counter <=2100:
+                continue
 
 
 
@@ -426,7 +429,7 @@ if __name__ == '__main__':
             if counter_NumRanging>=NumRanging:
                 print("Ranging Finished! Total counter=",counter)
                 GPIO.cleanup()
-                logFile.close()
+                # logFile.close()
                 break
             
 
@@ -439,7 +442,7 @@ if __name__ == '__main__':
 
     except KeyboardInterrupt:
         GPIO.cleanup()
-        logFile.close()
+        # logFile.close()
         print("Terminated by User")
 
     Duration = time.time()-startTime
@@ -486,6 +489,7 @@ if __name__ == '__main__':
         mqttc.closeClient()
     else:
         # mqttc.sendMsg(topic_t3t2, T3T2_Record)
+        time.sleep(5)
         publisher.send_pyobj(T3T2_Record)
         print("T3T2:")
         print(T3T2_Record)
