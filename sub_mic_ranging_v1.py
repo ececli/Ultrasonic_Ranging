@@ -283,6 +283,9 @@ if __name__ == '__main__':
     Flag_warmUp = True
     Data_warmUp = []
 
+    T3T2_Record = np.zeros(NumRanging)
+    T4T1_Record = np.zeros(NumRanging)
+
     try:
         # start loop 
         while True:
