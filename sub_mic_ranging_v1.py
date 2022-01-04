@@ -189,6 +189,11 @@ if __name__ == '__main__':
     initialStage_Duration = 5 # seconds
     warmUpStage_Duration = 5 # seconds
 
+    # GPIO init
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(pin_OUT,GPIO.OUT)
+    GPIO.output(pin_OUT,False)
+
 
     
     # initialize ZMQ
@@ -199,7 +204,7 @@ if __name__ == '__main__':
 
     if ID == 2: 
         publisher = context.socket(zmq.PUB)
-        publisher.bind("tcp://"+get_ip_address()+":"+str(port))
+        publisher.bind("tcp://*:" + str(port))
         print("Responder Side gets ready of Sending T3-T2")
 
 

@@ -37,7 +37,7 @@ while True:
 
 
 # Prepare our context and publisher
-string = "tcp://192.168.68.130:5563"
+string = "tcp://192.168.68.131:5563"
 subscriber = context.socket(zmq.SUB)
 subscriber.connect(string)
 
