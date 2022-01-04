@@ -484,10 +484,11 @@ if __name__ == '__main__':
         time.sleep(5)
 
     print("Duration is ", Duration)
-
+    print("FullData: ")
+    print(fulldata)
+    
     allFullData = np.concatenate(fulldata)
-    print("All FullData: ")
-    print(allFullData)
+
     a_file = open('Fulldata_'+role+'.dat', "w")
     np.savetxt(a_file, allFullData, fmt='%d', delimiter=',')
     a_file.close()
