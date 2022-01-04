@@ -2,7 +2,7 @@ import zmq
 import numpy as np
 import time
 
-'''
+
 dt = np.dtype([('counter', 'i4'),
                ('status', 'i4'),
                ('timestamp', 'f8')
@@ -14,6 +14,8 @@ context = zmq.Context()
 socket = context.socket(zmq.SUB)
 socket.connect("ipc:///dev/shm/mic_data")
 socket.setsockopt(zmq.SUBSCRIBE, b'')
+
+
 
 counter = 0
 while True:
@@ -29,15 +31,14 @@ while True:
     if counter == 10:
         break
 
-'''
 
-a = np.int32(np.floor(np.random.rand(10)*10000))
-print(a)
-string = "tcp://192.168.68.131:5563"
+
+
+
 
 # Prepare our context and publisher
-context2 = zmq.Context()
-subscriber = context2.socket(zmq.SUB)
+string = "tcp://192.168.68.131:5563"
+subscriber = context.socket(zmq.SUB)
 subscriber.connect(string)
 
 subscriber.setsockopt(zmq.SUBSCRIBE, b'')
