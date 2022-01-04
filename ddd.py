@@ -42,5 +42,5 @@ client = context.socket(zmq.REQ)
 client.connect(string)
 
 client.send_string("Chang")
-a = subscriber.recv_pyobj()
+a = client.recv_pyobj()
 print(a)

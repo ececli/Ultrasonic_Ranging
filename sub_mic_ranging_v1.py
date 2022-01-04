@@ -182,7 +182,7 @@ if __name__ == '__main__':
     #print('settings', settings_np)
 
     broker_address = "192.168.68.131"
-    port = 5563
+    port = 5556
     # topic_t3t2 = "ranging/delay/t3t2_delay_ms"
 
 
@@ -203,8 +203,8 @@ if __name__ == '__main__':
     mic_subscriber.setsockopt(zmq.SUBSCRIBE, b'')
 
     if ID == 2: 
-        publisher = context.socket(zmq.PUB)
-        publisher.bind("tcp://*:" + str(port))
+        server = context.socket(zmq.REP)
+        server.bind("tcp://*:" + str(port))
         print("Responder Side gets ready of Sending T3-T2")
 
 
@@ -467,19 +467,23 @@ if __name__ == '__main__':
             hostIP_Address = IP_Address[:-1]+'1'
         print("HOST IP is "+hostIP_Address)
         hostFullAddress = "tcp://"+hostIP_Address+":"+str(port)
-        subscriber = context.socket(zmq.SUB)
-        subscriber.connect(hostFullAddress)
+        client = context.socket(zmq.REQ)
+        client.connect(hostFullAddress)
         print("connected to ",hostFullAddress)
         T3T2 = []
+        client.send_string("Chang")
+        T3T2 = client.recv_pyobj()
+        '''
         while True:
-            T3T2 = subscriber.recv_pyobj()
+
+            T3T2 = client.recv_pyobj()
             print(T3T2)
             if len(T3T2) == NumRanging:
                 break
-
+        '''
         print("Read all T3-T2")
-        # print("T3T2:")
-        # print(T3T2)            
+        print("T3T2:")
+        print(T3T2)            
         Ranging_Record = SOUNDSPEED*(T4T1_Record - T3T2)/2/RATE
         a = Ranging_Record[(Ranging_Record>0) & (Ranging_Record<5)]
         
@@ -489,8 +493,12 @@ if __name__ == '__main__':
         mqttc.closeClient()
     else:
         # mqttc.sendMsg(topic_t3t2, T3T2_Record)
-        time.sleep(5)
-        publisher.send_pyobj(T3T2_Record)
+        # while True:
+        message = server.recv_string()
+        print("Received Request: ",message)
+        time.sleep(1)
+        server.send_pyobj(T3T2_Record)
+        # publisher.send_pyobj(T3T2_Record)
         print("T3T2:")
         print(T3T2_Record)
         print("Sending T3-T2 Status: Done")
