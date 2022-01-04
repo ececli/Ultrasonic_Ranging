@@ -41,6 +41,6 @@ string = "tcp://192.168.68.130:5556"
 client = context.socket(zmq.REQ)
 client.connect(string)
 
-client.send("Chang")
+client.send_string("Chang")
 a = subscriber.recv_pyobj()
 print(a)

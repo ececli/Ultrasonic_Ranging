@@ -40,7 +40,7 @@ print(a)
 
 time.sleep(5)
 while True:
-    message = server.recv()
+    message = server.recv_string()
     print("Received Request: ",message)
     time.sleep(1)
     server.send_pyobj(a)
