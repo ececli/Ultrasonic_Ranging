@@ -420,6 +420,7 @@ if __name__ == '__main__':
 
             if counter_NumRanging>=NumRanging:
                 print("Ranging Finished! Total counter=",counter)
+                GPIO.cleanup()
                 break
             
 
@@ -435,7 +436,7 @@ if __name__ == '__main__':
         print("Terminated by User")
 
     Duration = time.time()-startTime
-    GPIO.cleanup()
+    
 
     if ID == 1:
         '''
@@ -447,6 +448,8 @@ if __name__ == '__main__':
         ## End
         T3T2 = mqttc.readTopicData(topic_t3t2)
         '''
+        print("T4T1:")
+        print(T4T1_Record)
         IP_Address = get_ip_address()
         if IP_Address[-1] == '1':
             hostIP_Address = IP_Address[:-1]+'0'
@@ -467,8 +470,7 @@ if __name__ == '__main__':
         # print(T3T2)            
         Ranging_Record = SOUNDSPEED*(T4T1_Record - T3T2)/2/RATE
         a = Ranging_Record[(Ranging_Record>0) & (Ranging_Record<5)]
-        print("T4T1:")
-        print(T4T1_Record)
+        
         # print(a)
         if a.size>0:
             print(len(a),np.mean(a),np.std(a))
@@ -476,6 +478,7 @@ if __name__ == '__main__':
     else:
         # mqttc.sendMsg(topic_t3t2, T3T2_Record)
         publisher.send_pyobj(T3T2_Record)
+        print("T3T2:")
         print(T3T2_Record)
         print("Sending T3-T2 Status: Done")
         time.sleep(5)
@@ -483,6 +486,8 @@ if __name__ == '__main__':
     print("Duration is ", Duration)
 
     allFullData = np.concatenate(fulldata)
+    print("All FullData: ")
+    print(allFullData)
     a_file = open('Fulldata_'+role+'.dat', "w")
     np.savetxt(a_file, allFullData, fmt='%d', delimiter=',')
     a_file.close()
