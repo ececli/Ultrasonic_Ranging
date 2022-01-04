@@ -33,14 +33,13 @@ while True:
 
 a = np.int32(np.floor(np.random.rand(10)*10000))
 print(a)
-port  = 5563
 string = "tcp://192.168.68.131:5563"
 
 # Prepare our context and publisher
 context2 = zmq.Context()
 subscriber = context2.socket(zmq.SUB)
 subscriber.connect(string)
-'''
+
 subscriber.setsockopt(zmq.SUBSCRIBE, b'')
 print("Waiting data from the other device now")
 while True:
@@ -48,12 +47,12 @@ while True:
     if a:
         print(a)
         break
-'''
-subscriber.setsockopt(zmq.SUBSCRIBE, b"B")
 
-while True:
+# subscriber.setsockopt(zmq.SUBSCRIBE, b"")
+
+# while True:
     # Read envelope with address
-    [address, contents] = subscriber.recv_multipart()
-    print("[%s] %s" % (address, contents))
+    # [address, contents] = subscriber.recv_multipart()
+    # print("[%s] %s" % (address, contents))
 
 time.sleep(5)
