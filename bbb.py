@@ -38,6 +38,7 @@ string = "tcp://192.168.68.131:5563"
 # Prepare our context and publisher
 subscriber = context.socket(zmq.SUB)
 subscriber.connect(string)
+'''
 subscriber.setsockopt(zmq.SUBSCRIBE, b'')
 print("Waiting data from the other device now")
 while True:
@@ -45,6 +46,12 @@ while True:
     if a:
         print(a)
         break
+'''
+subscriber.setsockopt(zmq.SUBSCRIBE, b"B")
 
+while True:
+    # Read envelope with address
+    [address, contents] = subscriber.recv_multipart()
+    print("[%s] %s" % (address, contents))
 
 time.sleep(5)

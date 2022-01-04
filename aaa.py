@@ -36,6 +36,7 @@ context = zmq.Context()
 publisher = context.socket(zmq.PUB)
 publisher.bind("tcp://*:5563")
 
-publisher.send_pyobj(a)
+# publisher.send_pyobj(a)
+publisher.send_multipart([b"B", b"We would like to see this"])
 
 time.sleep(5)
