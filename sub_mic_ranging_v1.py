@@ -456,9 +456,10 @@ if __name__ == '__main__':
         else:
             hostIP_Address = IP_Address[:-1]+'1'
         print("HOST IP is "+hostIP_Address)
-
+        hostFullAddress = "tcp://"+hostIP_Address+":"+str(port)
         subscriber = context.socket(zmq.SUB)
-        subscriber.connect("tcp://"+hostIP_Address+":"+str(port))
+        subscriber.connect(hostFullAddress)
+        print("connected to ",hostFullAddress)
         T3T2 = []
         while True:
             T3T2 = subscriber.recv_pyobj()
@@ -485,10 +486,10 @@ if __name__ == '__main__':
         time.sleep(5)
 
     print("Duration is ", Duration)
-    print("FullData: ")
-    print(fulldata)
+    # print("FullData: ")
+    # print(fulldata)
 
-    allFullData = np.concatenate(fulldata)
+    allFullData = np.concatenate(fulldata[0:counter_NumRanging])
 
     a_file = open('Fulldata_'+role+'.dat', "w")
     np.savetxt(a_file, allFullData, fmt='%d', delimiter=',')
