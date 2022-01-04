@@ -405,7 +405,8 @@ if __name__ == '__main__':
                     # RecvRX_RecordCounter.append(counter)
                     ## End
 
-                    # jumpCount = 15
+                    jumpCount = 20
+                    Flag_jump = True
 
                     if ID == 1:
                         T4T1_Record[counter_NumRanging] = result[0][0]
@@ -504,7 +505,7 @@ if __name__ == '__main__':
         # print(a)
         if a.size>0:
             print(len(a),np.mean(a),np.std(a))
-        mqttc.closeClient()
+        # mqttc.closeClient()
     else:
         # mqttc.sendMsg(topic_t3t2, T3T2_Record)
         # while True:
