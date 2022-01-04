@@ -172,7 +172,8 @@ if __name__ == '__main__':
     #print('settings', settings_np)
 
     broker_address = "192.168.68.131"
-    topic_t3t2 = "ranging/delay/t3t2_delay_ms"
+    port = 5563
+    # topic_t3t2 = "ranging/delay/t3t2_delay_ms"
 
 
     initialStage_Duration = 5 # seconds
@@ -186,9 +187,14 @@ if __name__ == '__main__':
     socket.connect("ipc:///dev/shm/mic_data")
     socket.setsockopt(zmq.SUBSCRIBE, b'')
 
+    if ID == 2: 
+        publisher = context.socket(zmq.PUB)
+        publisher.bind("tcp://"+broker_address+":"+str(port))
 
 
 
+
+    '''
     # setup communication
     mqttc = myMQTT(broker_address)
     mqttc.registerTopic(topic_t3t2)
@@ -199,7 +205,7 @@ if __name__ == '__main__':
         mqttc.readTopicData(topic_t3t2)
     # if mqttc.checkTopicDataLength(topic_check_ifOtherReady)>0:
     #     mqttc.readTopicData(topic_check_ifOtherReady)
-
+    '''
 
 
 

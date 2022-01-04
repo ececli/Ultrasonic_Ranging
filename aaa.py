@@ -18,7 +18,7 @@ socket.setsockopt(zmq.SUBSCRIBE, b'')
 # context2 = zmq.Context()
 # publisher = context2.socket(zmq.PUB)
 publisher = context.socket(zmq.PUB)
-publisher.bind("tcp://*:5563")
+publisher.bind("tcp://192.168.68.130:5563")
 
 counter = 0
 while True:
