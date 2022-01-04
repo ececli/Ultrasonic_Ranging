@@ -2,7 +2,7 @@ import zmq
 import numpy as np
 import time
 
-
+'''
 dt = np.dtype([('counter', 'i4'),
                ('status', 'i4'),
                ('timestamp', 'f8')
@@ -29,7 +29,7 @@ while True:
     if counter == 10:
         break
 
-
+'''
 a = np.int32(np.floor(np.random.rand(10)*10000))
 print(a)
 context2 = zmq.Context()
