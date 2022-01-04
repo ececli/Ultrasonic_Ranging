@@ -462,6 +462,7 @@ if __name__ == '__main__':
         T3T2 = []
         while True:
             T3T2 = subscriber.recv_pyobj()
+            print(T3T2)
             if len(T3T2) == NumRanging:
                 break
 
@@ -486,7 +487,7 @@ if __name__ == '__main__':
     print("Duration is ", Duration)
     print("FullData: ")
     print(fulldata)
-    
+
     allFullData = np.concatenate(fulldata)
 
     a_file = open('Fulldata_'+role+'.dat', "w")
