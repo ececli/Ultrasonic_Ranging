@@ -44,9 +44,8 @@ subscriber.setsockopt(zmq.SUBSCRIBE, b'')
 print("Waiting data from the other device now")
 while True:
     a = subscriber.recv_pyobj()
-    if a:
-        print(a)
-        break
+    print(a)
+    
 
 # subscriber.setsockopt(zmq.SUBSCRIBE, b"")
 
