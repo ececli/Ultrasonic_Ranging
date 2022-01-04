@@ -39,7 +39,7 @@ string = "tcp://192.168.68.131:5563"
 subscriber = context.socket(zmq.SUB)
 subscriber.connect(string)
 subscriber.setsockopt(zmq.SUBSCRIBE, b'')
-
+print("Waiting data from the other device now")
 while True:
     a = subscriber.recv_pyobj()
     if a:
