@@ -286,12 +286,15 @@ if __name__ == '__main__':
     T3T2_Record = np.zeros(NumRanging)
     T4T1_Record = np.zeros(NumRanging)
 
+    logFile = open('log_ranging.txt','w+')
+
     try:
         # start loop 
         while True:
             rawData = mic_subscriber.recv()
 
             counter = counter + 1
+
 
             # Throw the first N second data
             if Flag_initial:
@@ -310,6 +313,8 @@ if __name__ == '__main__':
             COUNT = header[0][0]
             status = header[0][1]
             TS = header[0][2] # no use so far
+
+            logFile.write("%d,%d,%d,%r,%r,%r,%r \n" % (counter,COUNT,status,Flag_initial,Flag_warmUp,Flag_SendSig,Flag_ExpRX))
 
             
             # Warm up period: Collect data to calculate DC offset
@@ -421,6 +426,7 @@ if __name__ == '__main__':
             if counter_NumRanging>=NumRanging:
                 print("Ranging Finished! Total counter=",counter)
                 GPIO.cleanup()
+                logFile.close()
                 break
             
 
@@ -433,6 +439,7 @@ if __name__ == '__main__':
 
     except KeyboardInterrupt:
         GPIO.cleanup()
+        logFile.close()
         print("Terminated by User")
 
     Duration = time.time()-startTime
@@ -495,6 +502,7 @@ if __name__ == '__main__':
     np.savetxt(a_file, allFullData, fmt='%d', delimiter=',')
     a_file.close()
     print('Data written to file.')
+    '''
     logData = open('RawData_'+role+'.dat','wb')
 
     print("Length of the raw data is ",len(rawData))
@@ -506,4 +514,5 @@ if __name__ == '__main__':
     logData.close()
 
     print('Finished Writing Raw Data to Files')
+    '''
 
