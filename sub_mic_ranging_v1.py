@@ -198,9 +198,9 @@ if __name__ == '__main__':
     
     # initialize ZMQ
     context = zmq.Context()
-    socket = context.socket(zmq.SUB)
-    socket.connect("ipc:///dev/shm/mic_data")
-    socket.setsockopt(zmq.SUBSCRIBE, b'')
+    mic_subscriber = context.socket(zmq.SUB)
+    mic_subscriber.connect("ipc:///dev/shm/mic_data")
+    mic_subscriber.setsockopt(zmq.SUBSCRIBE, b'')
 
     if ID == 2: 
         publisher = context.socket(zmq.PUB)
@@ -289,7 +289,7 @@ if __name__ == '__main__':
     try:
         # start loop 
         while True:
-            rawData = socket.recv()
+            rawData = mic_subscriber.recv()
 
             counter = counter + 1
 
