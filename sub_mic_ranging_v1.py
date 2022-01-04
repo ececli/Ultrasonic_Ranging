@@ -173,7 +173,7 @@ if __name__ == '__main__':
     f0 = 25000 # Hz
     duration = 0.004 # second
 
-    NumRanging = 10
+    NumRanging = 1000
 
     settings_np = np.recarray(1, dtype=dt_settings)[0]
     settings_np.mph = 800
@@ -251,7 +251,8 @@ if __name__ == '__main__':
     pks_blocks = []
 
 
-    
+    # The purpose of this part is to speed up jit.
+    # I hope there is a better way to do so. Instead of initializing state, settings and filteredY again
     sg_block_v2(np.zeros(512, np.int32), 0, np.zeros(2), np.zeros(CHUNK), c, CHUNK, NumSigSamples)
     peak_marking_block(np.zeros(CHUNK), len(np.zeros(CHUNK)), filteredY, settings, state)
 
