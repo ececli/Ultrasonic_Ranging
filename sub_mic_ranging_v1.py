@@ -360,7 +360,7 @@ if __name__ == '__main__':
             Pxx, z = sg_block_v2(ring, write_addr, z, Pxx, c, CHUNK, NumSigSamples)
             write_addr += CHUNK
             write_addr &= (512-1)
-            result = peak_marking_block(Pxx, len(Pxx), filteredY, settings, state, packet_s)
+            result = peak_marking_block(Pxx, len(Pxx), filteredY, settings, state)
             if result:
                 #debug purpose:
                 pks_blocks.extend(result)
