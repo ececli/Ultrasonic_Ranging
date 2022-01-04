@@ -416,8 +416,8 @@ if __name__ == '__main__':
                     # RecvRX_RecordCounter.append(counter)
                     ## End
 
-                    jumpCount = 20
-                    Flag_jump = True
+                    # jumpCount = 20
+                    # Flag_jump = True
 
                     if ID == 1:
                         T4T1_Record[counter_NumRanging] = result[0][0]
@@ -438,8 +438,8 @@ if __name__ == '__main__':
                     # RecvTX_RecordCounter.append(self.counter)
                     ## End
 
-                    jumpCount = 20
-                    Flag_jump = True
+                    # jumpCount = 20
+                    # Flag_jump = True
 
                     # 2. For responder only:
                     if ID == 2:
