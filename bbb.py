@@ -36,7 +36,8 @@ port  = 5563
 string = "tcp://192.168.68.131:5563"
 
 # Prepare our context and publisher
-subscriber = context.socket(zmq.SUB)
+context2 = zmq.Context()
+subscriber = context2.socket(zmq.SUB)
 subscriber.connect(string)
 '''
 subscriber.setsockopt(zmq.SUBSCRIBE, b'')

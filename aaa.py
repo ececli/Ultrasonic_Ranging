@@ -32,8 +32,8 @@ while True:
 
 a = np.int32(np.floor(np.random.rand(10)*10000))
 print(a)
-context = zmq.Context()
-publisher = context.socket(zmq.PUB)
+context2 = zmq.Context()
+publisher = context2.socket(zmq.PUB)
 publisher.bind("tcp://*:5563")
 
 # publisher.send_pyobj(a)
