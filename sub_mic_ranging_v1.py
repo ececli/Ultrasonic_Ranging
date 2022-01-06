@@ -416,7 +416,7 @@ if __name__ == '__main__':
                     # RecvRX_RecordCounter.append(counter)
                     ## End
 
-                    jumpCount = 3
+                    jumpCount = 15
                     Flag_jump = True
 
                     if ID == 1:
@@ -438,7 +438,7 @@ if __name__ == '__main__':
                     # RecvTX_RecordCounter.append(self.counter)
                     ## End
 
-                    jumpCount = 3
+                    jumpCount = 15
                     Flag_jump = True
 
                     # 2. For responder only:
