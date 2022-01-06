@@ -484,8 +484,8 @@ if __name__ == '__main__':
         ## End
         T3T2 = mqttc.readTopicData(topic_t3t2)
         '''
-        print("T4T1:")
-        print(T4T1_Record)
+        # print("T4T1:")
+        # print(T4T1_Record)
         IP_Address = get_ip_address()
         if IP_Address[-1] == '1':
             hostIP_Address = IP_Address[:-1]+'0'
@@ -508,8 +508,8 @@ if __name__ == '__main__':
                 break
         '''
         print("Read all T3-T2")
-        print("T3T2:")
-        print(T3T2)            
+        # print("T3T2:")
+        # print(T3T2)            
         Ranging_Record = SOUNDSPEED*(T4T1_Record - T3T2)/2/RATE
         a = Ranging_Record[(Ranging_Record>0) & (Ranging_Record<5)]
         
@@ -525,8 +525,8 @@ if __name__ == '__main__':
         time.sleep(1)
         server.send_pyobj(T3T2_Record)
         # publisher.send_pyobj(T3T2_Record)
-        print("T3T2:")
-        print(T3T2_Record)
+        # print("T3T2:")
+        # print(T3T2_Record)
         print("Sending T3-T2 Status: Done")
         time.sleep(5)
 
