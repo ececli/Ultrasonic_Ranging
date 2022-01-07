@@ -539,7 +539,13 @@ if __name__ == '__main__':
     a_file = open('Fulldata_'+role+'.dat', "w")
     np.savetxt(a_file, allFullData, fmt='%d', delimiter=',')
     a_file.close()
-    print('Data written to file.')
+    print('Full Data written to file.')
+
+    if len(fulldata_temp)>0:
+        b_file = open('Lastdata_'+role+'.dat', "w")
+        np.savetxt(b_file, fulldata_temp, fmt='%d', delimiter=',')
+        a_file.close()
+        print('Last Data written to file.')
     '''
     logData = open('RawData_'+role+'.dat','wb')
 
