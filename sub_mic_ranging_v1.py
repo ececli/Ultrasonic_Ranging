@@ -175,6 +175,8 @@ if __name__ == '__main__':
 
     NumRanging = 1000
 
+    jumpCount_Set = 10
+
     settings_np = np.recarray(1, dtype=dt_settings)[0]
     settings_np.mph = 800
     settings_np.lag = 400
@@ -416,7 +418,7 @@ if __name__ == '__main__':
                     # RecvRX_RecordCounter.append(counter)
                     ## End
 
-                    jumpCount = 10
+                    jumpCount = jumpCount_Set
                     Flag_jump = True
 
                     if ID == 1:
@@ -438,7 +440,7 @@ if __name__ == '__main__':
                     # RecvTX_RecordCounter.append(self.counter)
                     ## End
 
-                    jumpCount = 10
+                    jumpCount = jumpCount_Set
                     Flag_jump = True
 
                     # 2. For responder only:
@@ -536,16 +538,19 @@ if __name__ == '__main__':
 
     allFullData = np.concatenate(fulldata[0:counter_NumRanging])
 
-    a_file = open('Fulldata_'+role+'.dat', "w")
-    np.savetxt(a_file, allFullData, fmt='%d', delimiter=',')
+    a_file = open('Fulldata_'+role+time.strftime("%Y%m%d_%H%M%S_")+'jump_'+str(jumpCount_Set)+'.dat', "w")
+    # np.savetxt(a_file, allFullData, fmt='%d', delimiter=',')
+    np.savetxt(a_file, np.concatenate((allFullData,fulldata_temp)), fmt='%d', delimiter=',')
     a_file.close()
     print('Full Data written to file.')
 
+    '''
     if len(fulldata_temp)>0:
         b_file = open('Lastdata_'+role+'.dat', "w")
         np.savetxt(b_file, fulldata_temp, fmt='%d', delimiter=',')
         a_file.close()
         print('Last Data written to file.')
+    '''
     '''
     logData = open('RawData_'+role+'.dat','wb')
 
