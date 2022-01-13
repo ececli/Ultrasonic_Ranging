@@ -175,7 +175,7 @@ if __name__ == '__main__':
 
     NumRanging = 1000
 
-    jumpCount_Set = 3
+    jumpCount_Set = 4
 
     settings_np = np.recarray(1, dtype=dt_settings)[0]
     settings_np.mph = 800
