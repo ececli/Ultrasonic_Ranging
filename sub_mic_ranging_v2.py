@@ -373,6 +373,22 @@ if __name__ == '__main__':
             COUNT_PRE = COUNT
             ## End of checking abnormal input data
 
+
+
+
+            
+
+
+            
+            ## mic data is ready to use for filtering and peak detection
+            ring[(write_addr):(write_addr+CHUNK)] = mic - DCOffset
+            Pxx, z = sg_block_v2(ring, write_addr, z, Pxx, c, CHUNK, NumSigSamples)
+            write_addr += CHUNK
+            write_addr &= (512-1)
+            result = peak_marking_block(Pxx, len(Pxx), filteredY, settings, state)
+
+
+
             if Flag_jump:
                 if jumpCount:
                     jumpCount = jumpCount -1
@@ -391,13 +407,7 @@ if __name__ == '__main__':
                 print('[Signal Sent] ',counter_NumRanging,counter)
 
 
-            
-            ## mic data is ready to use for filtering and peak detection
-            ring[(write_addr):(write_addr+CHUNK)] = mic - DCOffset
-            Pxx, z = sg_block_v2(ring, write_addr, z, Pxx, c, CHUNK, NumSigSamples)
-            write_addr += CHUNK
-            write_addr &= (512-1)
-            result = peak_marking_block(Pxx, len(Pxx), filteredY, settings, state)
+
             if result:
                 #debug purpose:
                 pks_blocks.extend(result)
