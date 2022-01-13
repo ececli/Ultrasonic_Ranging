@@ -175,7 +175,7 @@ if __name__ == '__main__':
 
     NumRanging = 1000
 
-    jumpCount_Set = 10
+    jumpCount_Set = 5
 
     settings_np = np.recarray(1, dtype=dt_settings)[0]
     settings_np.mph = 800
@@ -549,8 +549,10 @@ if __name__ == '__main__':
     allFullData = np.concatenate(fulldata[0:counter_NumRanging])
 
     a_file = open('Fulldata_'+role+time.strftime("_%Y%m%d_%H%M%S_")+'jump_'+str(jumpCount_Set)+'.dat', "w")
-    # np.savetxt(a_file, allFullData, fmt='%d', delimiter=',')
-    np.savetxt(a_file, np.concatenate((allFullData,fulldata_temp)), fmt='%d', delimiter=',')
+    if len(fulldata_temp)>0:
+        np.savetxt(a_file, np.concatenate((allFullData,fulldata_temp)), fmt='%d', delimiter=',')
+    else:
+        np.savetxt(a_file, allFullData, fmt='%d', delimiter=',')
     a_file.close()
     print('Full Data written to file.')
 
