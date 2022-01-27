@@ -547,7 +547,7 @@ if __name__ == '__main__':
     if ID == 1:
         # print("T4T1:")
         # print(T4T1_Record)
-        # This operation only works on my home network since two devices' IP is 140 and 141
+        # This operation only works on my home network since two devices' IP is 130 and 131
         IP_Address = get_ip_address()
         if IP_Address[-1] == '1': 
             hostIP_Address = IP_Address[:-1]+'0'
