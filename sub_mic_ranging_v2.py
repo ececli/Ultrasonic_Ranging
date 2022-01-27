@@ -44,6 +44,7 @@ def get_ip_address():
     s.close()
     return ip_address
 
+# Sliding Goertzol Filtering without any windowing
 @jit
 def sg_block_v2(x, offset, z, Pxx, c, block_size, window_size):
     z1, z2 = z
@@ -56,7 +57,40 @@ def sg_block_v2(x, offset, z, Pxx, c, block_size, window_size):
     z[1] = z2
     return Pxx, z
 
+# Sliding Goertzol Filtering with Hanning windowing
+@jit
+def sg_block_win_v3(x, offset, zz, Pxx, ccc, bbb, block_size, window_size):
 
+    z01, z02, z11, z12, z21, z22 = zz
+    c0, c1, c2 = ccc
+    b0, b1 = bbb
+    # c0 = np.cos(2*np.pi*k/N)
+    # c1 = np.cos(2*np.pi*(k-1)/N)
+    # c2 = np.cos(2*np.pi*(k+1)/N)
+    # b0 = np.cos(2*np.pi/N)
+    # b1 = np.cos(4*np.pi/N)
+    for idx in range(block_size):
+        z00 = x[offset + idx] - x[offset + idx - window_size] + 2*c0*z01 -z02
+        z02 = z01
+        z01 = z00
+        z10 = x[offset + idx] - x[offset + idx - window_size] + 2*c1*z11 -z12
+        z12 = z11
+        z11 = z10
+        z20 = x[offset + idx] - x[offset + idx - window_size] + 2*c2*z21 -z22
+        z22 = z21
+        z21 = z20
+
+        Pxx[idx] = np.sqrt(4*(z01*z01+z02*z02) + (z11*z11+z12*z12) + (z21*z21+z22*z22) - 4*(b0*z01*z11+z02*z12) - 4*(b0*z01*z21+z02*z22) + 2*(b1*z11*z21+z12*z22) - 2*(2*c0*z01-c1*z11-c2*z21)*(2*z02-z12-z22))
+    zz[0] = z01
+    zz[1] = z02
+    zz[2] = z11
+    zz[3] = z12
+    zz[4] = z21
+    zz[5] = z22
+    return Pxx, zz
+
+
+# Z-score peak finding algorithm, modified by Sae Woo Nam (NIST)
 @jit
 def peak_marking_block(y, yLen, filteredY, settings, state): #, signals): #, filteredY):
     lag = settings.lag
@@ -177,12 +211,31 @@ if __name__ == '__main__':
 
     jumpCount_Set = 5
 
-    settings_np = np.recarray(1, dtype=dt_settings)[0]
-    settings_np.mph = 800
-    settings_np.lag = 400
-    settings_np.width = 250
-    settings_np.threshold = 3
-    settings_np.influence = 7e-3
+
+    Flag_usingWindowing = True # choose whether to use hanning windowing or not
+
+    ringBufferSize = 512
+
+
+    
+
+
+    settings_np_noWin = np.recarray(1, dtype=dt_settings)[0]
+    settings_np_noWin.mph = 800
+    settings_np_noWin.lag = 400
+    settings_np_noWin.width = 250
+    settings_np_noWin.threshold = 3
+    settings_np_noWin.influence = 7e-3
+
+
+    settings_np_usingWin = np.recarray(1, dtype=dt_settings)[0]
+    settings_np_usingWin.mph = 573
+    settings_np_usingWin.lag = 509
+    settings_np_usingWin.width = 168
+    settings_np_usingWin.threshold = 3
+    settings_np_usingWin.influence = 9.8e-3
+
+
     #print('settings', settings_np)
 
     # broker_address = "192.168.68.131"
@@ -226,17 +279,33 @@ if __name__ == '__main__':
     # 
     k = int((f0/RATE)*NumSigSamples)
 
-    w = 2*np.pi*k/NumSigSamples
-    c = 2*np.cos(w)
-
+    # init for sliding goertzol filtering without hanning windowing
+    c = 2*np.cos(2*np.pi*k/NumSigSamples)
     z = np.zeros(2)
-    ring = np.zeros(512, np.int32)
+
+    
+    # init for hanning windowing approach
+    c0 = np.cos(2*np.pi*k/NumSigSamples)
+    c1 = np.cos(2*np.pi*(k-1)/NumSigSamples)
+    c2 = np.cos(2*np.pi*(k+1)/NumSigSamples)
+    b0 = np.cos(2*np.pi/NumSigSamples)
+    b1 = np.cos(4*np.pi/NumSigSamples)
+    ccc = np.asarray([c0,c1,c2])
+    bbb = np.asarray([b0,b1])
+    zz = np.zeros(6)
+
+
+    ring = np.zeros(ringBufferSize, np.int32)
     write_addr = 0
     Pxx = np.zeros(CHUNK)
 
+    # init z-score parameters
+    if Flag_usingWindowing:
+        settings = settings_np_usingWin
+    else:
+        settings = settings_np_noWin
 
-
-
+    # for z-score peak finding algorithm
     state = np.recarray(1, dtype=dt_state)[0]
     state.avgFilter = 0
     state.std2 = 0
@@ -247,15 +316,15 @@ if __name__ == '__main__':
     state.time_between = -1
     state.pk_time = -1
 
-
-    settings = settings_np
     filteredY = np.zeros(settings.lag)
-    pks_blocks = []
+    
 
 
     # The purpose of this part is to speed up jit.
     # I hope there is a better way to do so. Instead of initializing state, settings and filteredY again
     sg_block_v2(np.zeros(512, np.int32), 0, np.zeros(2), np.zeros(CHUNK), c, CHUNK, NumSigSamples)
+    sg_block_win_v3(np.zeros(512, np.int32), 0, np.zeros(6), np.zeros(CHUNK), ccc, bbb, CHUNK, NumSigSamples)
+
     peak_marking_block(np.zeros(CHUNK), len(np.zeros(CHUNK)), filteredY, settings, state)
 
     state = np.recarray(1, dtype=dt_state)[0]
@@ -268,14 +337,13 @@ if __name__ == '__main__':
     state.time_between = -1
     state.pk_time = -1
 
-
-    settings = settings_np
     filteredY = np.zeros(settings.lag)
 
     
-
+    # debug purpose
     fulldata_temp = []
     fulldata = np.frompyfunc(list, 0, 1)(np.empty((NumRanging), dtype=object))
+    pks_blocks = []
 
     counter = 0
     COUNT_PRE = 0
@@ -303,8 +371,6 @@ if __name__ == '__main__':
     T3T2_Record = np.zeros(NumRanging)
     T4T1_Record = np.zeros(NumRanging)
 
-    # logFile = open('log_ranging.txt','w+')
-
     try:
         # start loop 
         while True:
@@ -331,9 +397,6 @@ if __name__ == '__main__':
             status = header[0][1]
             TS = header[0][2] # no use so far
 
-
-
-            
 
             
             # Warm up period: Collect data to calculate DC offset
@@ -382,9 +445,12 @@ if __name__ == '__main__':
             
             ## mic data is ready to use for filtering and peak detection
             ring[(write_addr):(write_addr+CHUNK)] = mic - DCOffset
-            Pxx, z = sg_block_v2(ring, write_addr, z, Pxx, c, CHUNK, NumSigSamples)
+            if Flag_usingWindowing:
+                Pxx, zz = sg_block_win_v3(ring, write_addr, zz, Pxx, ccc, bbb, CHUNK, NumSigSamples)
+            else:
+                Pxx, z = sg_block_v2(ring, write_addr, z, Pxx, c, CHUNK, NumSigSamples)
             write_addr += CHUNK
-            write_addr &= (512-1)
+            write_addr &= (ringBufferSize-1)
             result = peak_marking_block(Pxx, len(Pxx), filteredY, settings, state)
 
 
@@ -412,6 +478,9 @@ if __name__ == '__main__':
                 #debug purpose:
                 pks_blocks.extend(result)
 
+                jumpCount = jumpCount_Set
+                Flag_jump = True
+
                 if Flag_ExpRX:
 
 
@@ -427,9 +496,6 @@ if __name__ == '__main__':
                     ## For debug and record purposes:
                     # RecvRX_RecordCounter.append(counter)
                     ## End
-
-                    jumpCount = jumpCount_Set
-                    Flag_jump = True
 
                     if ID == 1:
                         T4T1_Record[counter_NumRanging] = result[0][0]
@@ -450,8 +516,6 @@ if __name__ == '__main__':
                     # RecvTX_RecordCounter.append(self.counter)
                     ## End
 
-                    jumpCount = jumpCount_Set
-                    Flag_jump = True
 
                     # 2. For responder only:
                     if ID == 2:
@@ -472,12 +536,6 @@ if __name__ == '__main__':
             
 
 
-
-
-
-
-
-
     except KeyboardInterrupt:
         GPIO.cleanup()
         # logFile.close()
@@ -487,19 +545,11 @@ if __name__ == '__main__':
     
 
     if ID == 1:
-        '''
-        while True:
-            if mqttc.checkTopicDataLength(topic_t3t2)>=NumRanging:
-                break
-        ## For debug purpose, print out progress:
-        # print("Received T3-T2")
-        ## End
-        T3T2 = mqttc.readTopicData(topic_t3t2)
-        '''
         # print("T4T1:")
         # print(T4T1_Record)
+        # This operation only works on my home network since two devices' IP is 140 and 141
         IP_Address = get_ip_address()
-        if IP_Address[-1] == '1':
+        if IP_Address[-1] == '1': 
             hostIP_Address = IP_Address[:-1]+'0'
         else:
             hostIP_Address = IP_Address[:-1]+'1'
