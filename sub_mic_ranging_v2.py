@@ -212,7 +212,7 @@ if __name__ == '__main__':
     jumpCount_Set = 20
 
 
-    Flag_usingWindowing = True # choose whether to use hanning windowing or not
+    Flag_usingWindowing = False # choose whether to use hanning windowing or not
 
     ringBufferSize = 512
 
