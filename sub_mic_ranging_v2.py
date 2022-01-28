@@ -207,9 +207,9 @@ if __name__ == '__main__':
     f0 = 25000 # Hz
     duration = 0.004 # second
 
-    NumRanging = 10000
+    NumRanging = 1000
 
-    jumpCount_Set = 20
+    jumpCount_Set = 10
 
 
     Flag_usingWindowing = False # choose whether to use hanning windowing or not
