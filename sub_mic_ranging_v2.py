@@ -6,7 +6,7 @@ import RPi.GPIO as GPIO
 from scipy import signal
 import socket
 from numba import jit
-import of
+import os
 import csv
 
 dt = np.dtype([('counter', 'i4'),
