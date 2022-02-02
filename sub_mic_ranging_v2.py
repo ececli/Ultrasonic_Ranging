@@ -199,6 +199,17 @@ if __name__ == '__main__':
         role = 'responder'
         print('Please enter role. Otherwise, role is responder')
 
+
+    if len(sys.argv)>=3:
+        GT = sys.argv[2]
+        print("Ground Truth is set as ", GT)
+    else:
+        GT = 0
+        print("Ground Truth is not set")
+
+
+
+
     if role == 'initiator':
         ID = 1
         theOtherID = 2
@@ -265,7 +276,7 @@ if __name__ == '__main__':
 
 
     csv_filename = "two_way_ranging_results.csv"
-    csv_head = ["Set_Number_Ranging","Actual_Number_Ranging", "JumpCount", "Windowing", "Mean", "Std"]
+    csv_head = ["Set_Number_Ranging","Actual_Number_Ranging", "JumpCount", "Windowing", "Ground_Truth", "Mean", "Std"]
     
 
 
@@ -603,7 +614,7 @@ if __name__ == '__main__':
         if a.size>0:
             print(len(a),np.mean(a),np.std(a))
             create_csv(csv_filename, csv_head)
-            csv_data = [NumRanging,len(a),jumpCount_Set,int(Flag_usingWindowing),np.mean(a),np.std(a)]
+            csv_data = [NumRanging,len(a),jumpCount_Set,int(Flag_usingWindowing),GT,np.mean(a),np.std(a)]
             write_csv(csv_filaname, csv_data)
         # mqttc.closeClient()
     else:
