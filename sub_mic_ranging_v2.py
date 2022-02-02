@@ -6,6 +6,8 @@ import RPi.GPIO as GPIO
 from scipy import signal
 import socket
 from numba import jit
+import of
+import csv
 
 dt = np.dtype([('counter', 'i4'),
                ('status', 'i4'),
@@ -28,6 +30,21 @@ dt_state = np.dtype([('avgFilter', 'f8'),
                      ('pk', 'f8'),
                      ('pk_time', 'i4'),
                      ])
+
+def create_csv(filaname, csv_head):
+    if not os.path.exists(filaname):
+        with open(filename, "wb") as f:
+            csv_write = csv.writer(f)
+            csv_write.writerow(csv_head)
+
+def write_csv(filaname, csv_data):
+    with open(filename, "a+") as f:
+        csv_write = csv.writer(f)
+        csv_write.writerow(csv_data)
+
+
+
+
 
 def sendSignal(PIN,Duration):
     GPIO.output(PIN,True)
@@ -245,6 +262,13 @@ if __name__ == '__main__':
 
     initialStage_Duration = 5 # seconds
     warmUpStage_Duration = 5 # seconds
+
+
+    csv_filename = "two_way_ranging_results.csv"
+    csv_head = ["Set_Number_Ranging","Actual_Number_Ranging", "JumpCount", "Windowing", "Mean", "Std"]
+    create_csv(csv_filename, csv_head)
+
+
 
     # GPIO init
     GPIO.setmode(GPIO.BCM)
@@ -578,6 +602,8 @@ if __name__ == '__main__':
         # print(a)
         if a.size>0:
             print(len(a),np.mean(a),np.std(a))
+            csv_data = [NumRanging,len(a),jumpCount_Set,int(Flag_usingWindowing),np.mean(a),np.std(a)]
+            write_csv(csv_filaname, csv_data)
         # mqttc.closeClient()
     else:
         # mqttc.sendMsg(topic_t3t2, T3T2_Record)
@@ -598,7 +624,16 @@ if __name__ == '__main__':
 
     allFullData = np.concatenate(fulldata[0:counter_NumRanging])
 
-    a_file = open('Fulldata_'+role+time.strftime("_%Y%m%d_%H%M%S_")+'jump_'+str(jumpCount_Set)+'.dat', "w")
+    if Flag_usingWindowing:
+        winStr = "_win_"
+    else:
+        winStr = "_noWin_"
+
+    if 
+
+    filename = 'Fulldata_'+role+time.strftime("_%Y%m%d_%H%M_")+winStr+'jump_'+str(jumpCount_Set)+'.dat'
+
+    a_file = open(filename, "w")
     if len(fulldata_temp)>0:
         np.savetxt(a_file, np.concatenate((allFullData,fulldata_temp)), fmt='%d', delimiter=',')
     else:
