@@ -615,7 +615,7 @@ if __name__ == '__main__':
             print(len(a),np.mean(a),np.std(a))
             create_csv(csv_filename, csv_head)
             csv_data = [NumRanging,len(a),jumpCount_Set,int(Flag_usingWindowing),GT,np.mean(a),np.std(a)]
-            write_csv(csv_filaname, csv_data)
+            write_csv(csv_filename, csv_data)
         # mqttc.closeClient()
     else:
         # mqttc.sendMsg(topic_t3t2, T3T2_Record)
