@@ -31,13 +31,13 @@ dt_state = np.dtype([('avgFilter', 'f8'),
                      ('pk_time', 'i4'),
                      ])
 
-def create_csv(filaname, csv_head):
-    if not os.path.exists(filaname):
+def create_csv(filename, csv_head):
+    if not os.path.exists(filename):
         with open(filename, "wb") as f:
             csv_write = csv.writer(f)
             csv_write.writerow(csv_head)
 
-def write_csv(filaname, csv_data):
+def write_csv(filename, csv_data):
     with open(filename, "a+") as f:
         csv_write = csv.writer(f)
         csv_write.writerow(csv_data)
