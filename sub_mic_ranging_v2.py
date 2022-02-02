@@ -629,7 +629,6 @@ if __name__ == '__main__':
     else:
         winStr = "_noWin_"
 
-    if 
 
     filename = 'Fulldata_'+role+time.strftime("_%Y%m%d_%H%M_")+winStr+'jump_'+str(jumpCount_Set)+'.dat'
 
