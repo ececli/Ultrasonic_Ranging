@@ -33,7 +33,7 @@ dt_state = np.dtype([('avgFilter', 'f8'),
 
 def create_csv(filename, csv_head):
     if not os.path.exists(filename):
-        with open(filename, "wb") as f:
+        with open(filename, "w") as f:
             csv_write = csv.writer(f)
             csv_write.writerow(csv_head)
 
@@ -266,7 +266,7 @@ if __name__ == '__main__':
 
     csv_filename = "two_way_ranging_results.csv"
     csv_head = ["Set_Number_Ranging","Actual_Number_Ranging", "JumpCount", "Windowing", "Mean", "Std"]
-    create_csv(csv_filename, csv_head)
+    
 
 
 
@@ -602,6 +602,7 @@ if __name__ == '__main__':
         # print(a)
         if a.size>0:
             print(len(a),np.mean(a),np.std(a))
+            create_csv(csv_filename, csv_head)
             csv_data = [NumRanging,len(a),jumpCount_Set,int(Flag_usingWindowing),np.mean(a),np.std(a)]
             write_csv(csv_filaname, csv_data)
         # mqttc.closeClient()
