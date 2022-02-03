@@ -471,12 +471,6 @@ if __name__ == '__main__':
             COUNT_PRE = COUNT
             ## End of checking abnormal input data
 
-
-
-
-            
-
-
             
             ## mic data is ready to use for filtering and peak detection
             ring[(write_addr):(write_addr+CHUNK)] = mic - DCOffset
@@ -505,13 +499,19 @@ if __name__ == '__main__':
             if Flag_SendSig:
                 sendSignal(pin_OUT,1e-4)
                 Flag_SendSig = False
-                print('[Signal Sent] ',counter_NumRanging,counter)
+                msgSS = f"[Signal Sent], {counter_NumRanging}, {counter}"
 
 
 
             if result:
                 #debug purpose:
                 pks_blocks.extend(result)
+
+
+                timeoutCount = 0
+
+
+
 
                 jumpCount = jumpCount_Set
                 Flag_jump = True
@@ -523,7 +523,8 @@ if __name__ == '__main__':
 
                     ## For debug purpose, print out progress:
                     # print("Received signal from the other device")
-                    print("[RX Peak Detected] ",counter_NumRanging,counter,result)
+                    # print("[RX Peak Detected] ",counter_NumRanging,counter,result)
+                    msgRXPD = f"[RX Peak Detected], {counter_NumRanging}, {counter}, {result}"
                     ## End
                     # T_RX = absIndex
                     Flag_ExpRX = False
@@ -544,7 +545,8 @@ if __name__ == '__main__':
                     # print("Received own signal")
                     ## End
                     # 1. General process after receiving its own signal
-                    print("[TX Peak Detected] ",counter_NumRanging,counter,result)
+                    # print("[TX Peak Detected] ",counter_NumRanging,counter,result)
+                    msgTXPD = f"[TX Peak Detected], {counter_NumRanging}, {counter}, {result}"
                     # T_TX = absIndex
                     Flag_ExpRX = True
                     ## For debug and record purposes:
@@ -569,6 +571,16 @@ if __name__ == '__main__':
                 # logFile.close()
                 break
             
+
+            if timeoutCount >= max_timeoutCount:
+                print("Timeout")
+                print("Last status: ")
+                print(msgSS)
+                print(msgTXPD)
+                print(msgRXPD)
+                GPIO.cleanup()
+                break
+
 
 
     except KeyboardInterrupt:
