@@ -278,7 +278,7 @@ if __name__ == '__main__':
 
 
     csv_filename = "two_way_ranging_results.csv"
-    csv_head = ["Set_Number_Ranging","Actual_Number_Ranging", "JumpCount", "Windowing", "Ground_Truth", "Mean", "Std", "Duration", "Start_Time"]
+    csv_head = ["Set_Number_Ranging","Actual_Number_Ranging", "JumpCount", "Windowing", "Ground_Truth", "Mean", "Std", "Duration", "Start_Time", "Abnormal"]
     
 
 
@@ -303,6 +303,7 @@ if __name__ == '__main__':
 
     jumpCountExpRange = list(range(30, 1, -1))
     for jumpCount_Set in jumpCountExpRange:
+        print("---------------------------------")
         print("Jump Count set as ", jumpCount_Set)
 
 
@@ -632,7 +633,7 @@ if __name__ == '__main__':
             if a.size>0:
                 print(len(a),np.mean(a),np.std(a))
                 create_csv(csv_filename, csv_head)
-                csv_data = [NumRanging,len(a),jumpCount_Set,int(Flag_usingWindowing),GT,np.mean(a),np.std(a),Duration,startTime]
+                csv_data = [NumRanging,len(a),jumpCount_Set,int(Flag_usingWindowing),GT,np.mean(a),np.std(a),Duration,startTime, int(Flag_abnormal)]
                 write_csv(csv_filename, csv_data)
             # mqttc.closeClient()
 
