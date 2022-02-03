@@ -244,6 +244,8 @@ if __name__ == '__main__':
 
     ringBufferSize = 512
 
+    max_timeoutCount = 10000
+
 
     
 
@@ -383,6 +385,7 @@ if __name__ == '__main__':
     counter = 0
     COUNT_PRE = 0
     counter_NumRanging = 0
+    timeoutCount = 0
 
 
     if ID == 1:
@@ -571,7 +574,7 @@ if __name__ == '__main__':
                 # logFile.close()
                 break
             
-
+            timeoutCount = timeoutCount + 1
             if timeoutCount >= max_timeoutCount:
                 print("Timeout")
                 print("Last status: ")
