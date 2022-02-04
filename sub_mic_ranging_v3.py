@@ -409,6 +409,10 @@ if __name__ == '__main__':
     T3T2_Record = np.zeros(NumRanging)
     T4T1_Record = np.zeros(NumRanging)
 
+    msgRXPD = " "
+    msgSS = " "
+    msgTXPD = " "
+
     try:
         # start loop 
         while True:
