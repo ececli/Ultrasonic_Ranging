@@ -616,16 +616,19 @@ if __name__ == '__main__':
                 break
             
 
-            '''
+            
             if ID == 1:
                 timeoutCount = timeoutCount + 1
                 if timeoutCount >= max_timeoutCount:
                     print("Timeout")
-            '''
-
-
+                    Flag_SendSig = True
+                    Flag_ExpRX = False
 
             
+
+
+
+            '''
             timeoutCount = timeoutCount + 1
             if timeoutCount >= max_timeoutCount:
                 print("Timeout")
@@ -635,6 +638,7 @@ if __name__ == '__main__':
                 print(msgRXPD)
                 GPIO.cleanup()
                 break
+            '''
             
 
 
@@ -666,7 +670,7 @@ if __name__ == '__main__':
                 csv_data = [NumRanging,len(a),jumpCount_Set,int(Flag_usingWindowing),GT,np.mean(a),np.std(a),Duration,startTime, int(Flag_abnormal)]
                 write_csv(csv_filename, csv_data)
         # mqttc.closeClient()
-    else:
+    # else:
         # mqttc.sendMsg(topic_t3t2, T3T2_Record)
         # while True:
 
@@ -678,8 +682,8 @@ if __name__ == '__main__':
         # publisher.send_pyobj(T3T2_Record)
         # print("T3T2:")
         # print(T3T2_Record)
-        print("Sending T3-T2 Status: Done")
-        time.sleep(5)
+        # print("Sending T3-T2 Status: Done")
+        # time.sleep(5)
 
     print("Duration is ", Duration)
     # print("FullData: ")
