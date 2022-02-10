@@ -566,16 +566,17 @@ if __name__ == '__main__':
                         fulldata[counter_NumRanging] = fulldata_temp
                         fulldata_temp = []
                         ## END
-                        
+                        checkTime_start = time.time()
                         T3T2_R = 0
                         while True:
                             T3T2_R = T3T2_subscriber.recv_pyobj()
                             if T3T2_R:
                                 print("Received T3T2: ",T3T2_R)
                                 break
+                        checkTime = time.time() - checkTime_start
                         Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
                         Distance_Record[counter_NumRanging] = Distance
-                        print("[Distance Estimate], %.3f, %d, %d" %(Distance, counter_NumRanging,counter))
+                        print("[Distance Estimate], %.3f, %d, %d, %f" %(Distance, counter_NumRanging,counter,checkTime))
 
                         counter_NumRanging = counter_NumRanging + 1
 
@@ -630,19 +631,6 @@ if __name__ == '__main__':
 
             
 
-
-
-            '''
-            timeoutCount = timeoutCount + 1
-            if timeoutCount >= max_timeoutCount:
-                print("Timeout")
-                print("Last status: ")
-                print(msgSS)
-                print(msgTXPD)
-                print(msgRXPD)
-                GPIO.cleanup()
-                break
-            '''
             
 
 
