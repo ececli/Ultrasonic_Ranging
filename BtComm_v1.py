@@ -1,0 +1,124 @@
+import zmq
+import bluetooth
+
+
+
+address_list = ['DC:A6:32:E1:9F:C8', 'DC:A6:32:E8:BF:E0']
+
+own_address = bluetooth.read_local_bdaddr()[0]
+
+for addr in address_list:
+    if own_address.upper() != addr.upper():
+        target_address = addr
+
+print("Own Address is ", own_address)
+print("Target Address is ",target_address)
+
+bt_sock=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+port = 1
+
+
+controlData_client = context.socket(zmq.REQ)
+controlData_client.connect("ipc:///dev/shm/control_data")
+client.send_string("Inquiry Roll")
+ID = controlData_client.recv_pyobj()
+print("ID of this device is ", ID, type(ID),len(ID))
+
+
+'''
+ID = 0
+while True:
+    controlData = controlData_client.recv()
+    if controlData == 1:
+        ID = 1 # initiator
+        break
+    elif controlData == 2:
+        ID = 2 # responder
+        break
+    else:
+        continue
+
+'''
+
+
+
+
+
+if ID == 2:
+    # responder needs to sub and get data from data processing program and send it out via Bluetooth
+
+
+    T3T2_subscriber = context.socket(zmq.SUB)
+    T3T2_subscriber.connect("ipc:///dev/shm/T3T2_data")
+    T3T2_subscriber.setsockopt(zmq.SUBSCRIBE, b'')
+
+    try:
+        bt_sock.connect((target_address, port)) 
+        while True:
+            T3T2 = T3T2_subscriber.recv()
+            bt_sock.send(T3T2.encode())
+    except:
+        bt_sock.close()
+
+
+
+if ID == 1:
+    # initiator needs to wait for bluetooth data
+
+    zmq_socket = context.socket(zmq.PUB)
+    zmq_socket.bind("ipc:///dev/shm/T3T2_data")
+
+    server_sock.bind(("", port))   
+    server_sock.listen(1)
+
+    try:
+        while True:
+            print('Waiting data from the other device')
+            client_sock, address = server_sock.accept()  
+            print("Accepted connection from ", address)
+            while True:
+                T3T2 = client_sock.recv(1024).decode() 
+                print("received T3T2: %d" % T3T2)
+                zmq_socket.send(T3T2)
+
+    except:
+        client_sock.close()
+        server_sock.close()
+        print('disconnect!')
+
+
+'''
+server_sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+server_sock.bind(("", bluetooth.PORT_ANY))
+server_sock.listen(1)
+
+port = server_sock.getsockname()[1]
+
+uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
+
+bluetooth.advertise_service(server_sock, "SampleServer", service_id=uuid,
+                            service_classes=[uuid, bluetooth.SERIAL_PORT_CLASS],
+                            profiles=[bluetooth.SERIAL_PORT_PROFILE],
+                            # protocols=[bluetooth.OBEX_UUID]
+                            )
+
+print("Waiting for connection on RFCOMM channel", port)
+
+client_sock, client_info = server_sock.accept()
+print("Accepted connection from", client_info)
+
+try:
+    while True:
+        data = client_sock.recv(1024)
+        if not data:
+            break
+        print("Received", data)
+except OSError:
+    pass
+
+print("Disconnected.")
+
+client_sock.close()
+server_sock.close()
+print("All done.")
+'''

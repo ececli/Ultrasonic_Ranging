@@ -235,12 +235,14 @@ if __name__ == '__main__':
     f0 = 25000 # Hz
     duration = 0.004 # second
 
-    NumRanging = 1000
+    NumRanging = 10
 
     jumpCount_Set = 30
 
 
     Flag_usingWindowing = False # choose whether to use hanning windowing or not
+
+    Flag_write2CSV = False
 
     ringBufferSize = 512
 
@@ -291,15 +293,34 @@ if __name__ == '__main__':
 
     
     # initialize ZMQ
+    ## Subscribe mic data
     context = zmq.Context()
     mic_subscriber = context.socket(zmq.SUB)
     mic_subscriber.connect("ipc:///dev/shm/mic_data")
     mic_subscriber.setsockopt(zmq.SUBSCRIBE, b'')
 
-    if ID == 2: 
-        server = context.socket(zmq.REP)
-        server.bind("tcp://*:" + str(port))
-        print("Responder acts as a server. ")
+    ## Tell BtComm the ID of this device
+    control_server = context.socket(zmq.REP)
+    control_server.bind("ipc:///dev/shm/control_data")
+    message = control_server.recv_string()
+    print("Received Request: ",message)
+    time.sleep(1)
+    control_publisher.send_pyobj(ID)
+
+    ## 
+    if ID == 2: # responder, which need to send data out
+        T3T2_publisher = context.socket(zmq.PUB)
+        T3T2_publisher.bind("ipc:///dev/shm/T3T2_data")
+    if ID == 1:
+        T3T2_subscriber = context.socket(zmq.SUB)
+        T3T2_subscriber.connect("ipc:///dev/shm/T3T2_data")
+        T3T2_subscriber.setsockopt(zmq.SUBSCRIBE, b'')
+
+
+
+        # server = context.socket(zmq.REP)
+        # server.bind("tcp://*:" + str(port))
+        # print("Responder acts as a server. ")
 
 
     
@@ -403,6 +424,7 @@ if __name__ == '__main__':
 
     T3T2_Record = np.zeros(NumRanging)
     T4T1_Record = np.zeros(NumRanging)
+    Distance_Record = np.zeros(NumRanging)
 
     msgRXPD = " "
     msgSS = " "
@@ -536,12 +558,27 @@ if __name__ == '__main__':
                     ## End
 
                     if ID == 1:
+                        T4T1 = result[0][0]
                         T4T1_Record[counter_NumRanging] = result[0][0]
                         ## For debug and record purposes
                         fulldata[counter_NumRanging] = fulldata_temp
                         fulldata_temp = []
                         ## END
+                        
+                        T3T2_R = []
+                        while True:
+                            T3T2_R = T3T2_subscriber.recv()
+                            if not isempty(T3T2_R):
+                                break
+                        Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
+                        Distance_Record[counter_NumRanging] = Distance
+                        print("[Distance Estimate], %.3f, %d, %d" %(Distance, counter_NumRanging,counter))
+
                         counter_NumRanging = counter_NumRanging + 1
+
+
+
+
                 else:
                     ## For debug purpose, print out progress:
                     # print("Received own signal")
@@ -558,11 +595,15 @@ if __name__ == '__main__':
 
                     # 2. For responder only:
                     if ID == 2:
+                        T3T2 = result[0][0]
                         T3T2_Record[counter_NumRanging] = result[0][0]
                         ## For debug and record purposes
                         fulldata[counter_NumRanging] = fulldata_temp
                         fulldata_temp = []
                         ## End
+
+                        T3T2_publisher.send(T3T2)
+
                         counter_NumRanging = counter_NumRanging + 1
                     
 
@@ -639,9 +680,10 @@ if __name__ == '__main__':
         # print(a)
         if a.size>0:
             print(len(a),np.mean(a),np.std(a))
-            create_csv(csv_filename, csv_head)
-            csv_data = [NumRanging,len(a),jumpCount_Set,int(Flag_usingWindowing),GT,np.mean(a),np.std(a),Duration,startTime, int(Flag_abnormal)]
-            write_csv(csv_filename, csv_data)
+            if Flag_write2CSV:
+                create_csv(csv_filename, csv_head)
+                csv_data = [NumRanging,len(a),jumpCount_Set,int(Flag_usingWindowing),GT,np.mean(a),np.std(a),Duration,startTime, int(Flag_abnormal)]
+                write_csv(csv_filename, csv_data)
         # mqttc.closeClient()
     else:
         # mqttc.sendMsg(topic_t3t2, T3T2_Record)
