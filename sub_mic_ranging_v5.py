@@ -305,7 +305,7 @@ if __name__ == '__main__':
     message = control_server.recv_string()
     print("Received Request: ",message)
     time.sleep(1)
-    control_publisher.send_pyobj(ID)
+    control_server.send_pyobj(ID)
 
     ## 
     if ID == 2: # responder, which need to send data out
