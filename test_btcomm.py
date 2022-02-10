@@ -69,6 +69,7 @@ if __name__ == '__main__':
     while True:
         if ID == 2:
             T3T2_publisher.send_pyobj(counter)
+            print(counter)
             time.sleep(1)
             counter = counter + 1
             if counter == 10:
