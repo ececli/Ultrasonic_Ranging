@@ -52,7 +52,7 @@ if ID == 2:
     T3T2_subscriber = context.socket(zmq.SUB)
     T3T2_subscriber.connect("ipc:///dev/shm/T3T2_data")
     T3T2_subscriber.setsockopt(zmq.SUBSCRIBE, b'')
-    # time.sleep(10)
+    time.sleep(5)
     try:
         bt_sock.connect((target_address, port))
         print("Connected to target Device.")

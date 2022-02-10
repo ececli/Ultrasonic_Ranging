@@ -651,32 +651,12 @@ if __name__ == '__main__':
         # print("T4T1:")
         # print(T4T1_Record)
         # This operation only works on my home network since two devices' IP is 130 and 131
-        IP_Address = get_ip_address()
-        if IP_Address[-1] == '1': 
-            hostIP_Address = IP_Address[:-1]+'0'
-        else:
-            hostIP_Address = IP_Address[:-1]+'1'
-        print("HOST IP is "+hostIP_Address)
-        hostFullAddress = "tcp://"+hostIP_Address+":"+str(port)
-        client = context.socket(zmq.REQ)
-        client.connect(hostFullAddress)
-        print("connected to ",hostFullAddress)
-        T3T2 = []
-        client.send_string("Chang")
-        T3T2 = client.recv_pyobj()
-        '''
-        while True:
 
-            T3T2 = client.recv_pyobj()
-            print(T3T2)
-            if len(T3T2) == NumRanging:
-                break
-        '''
-        print("Read all T3-T2")
+
         # print("T3T2:")
         # print(T3T2)            
-        Ranging_Record = SOUNDSPEED*(T4T1_Record - T3T2)/2/RATE
-        a = Ranging_Record[(Ranging_Record>0) & (Ranging_Record<5)]
+        
+        a = Distance_Record[(Distance_Record>0) & (Distance_Record<5)]
         
         # print(a)
         if a.size>0:
