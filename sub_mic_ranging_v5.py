@@ -235,7 +235,7 @@ if __name__ == '__main__':
     f0 = 25000 # Hz
     duration = 0.004 # second
 
-    NumRanging = 10
+    NumRanging = 1000
 
     jumpCount_Set = 30
 
@@ -268,11 +268,6 @@ if __name__ == '__main__':
     settings_np_usingWin.influence = 9.8e-3
 
 
-    #print('settings', settings_np)
-
-    # broker_address = "192.168.68.131"
-    port = 5556
-    # topic_t3t2 = "ranging/delay/t3t2_delay_ms"
 
 
     initialStage_Duration = 5 # seconds
@@ -429,6 +424,8 @@ if __name__ == '__main__':
     msgRXPD = " "
     msgSS = " "
     msgTXPD = " "
+
+    timeoutEventCounter = 0
 
     try:
         # start loop 
@@ -625,6 +622,7 @@ if __name__ == '__main__':
                 timeoutCount = timeoutCount + 1
                 if timeoutCount >= max_timeoutCount:
                     print("Timeout")
+                    timeoutEventCounter = timeoutEventCounter + 1
                     Flag_SendSig = True
                     Flag_ExpRX = False
                     timeoutCount = 0
@@ -661,6 +659,7 @@ if __name__ == '__main__':
                 create_csv(csv_filename, csv_head)
                 csv_data = [NumRanging,len(a),jumpCount_Set,int(Flag_usingWindowing),GT,np.mean(a),np.std(a),Duration,startTime, int(Flag_abnormal)]
                 write_csv(csv_filename, csv_data)
+        print("Numbers of Timeout happens ",timeoutEventCounter)
         # mqttc.closeClient()
     # else:
         # mqttc.sendMsg(topic_t3t2, T3T2_Record)
