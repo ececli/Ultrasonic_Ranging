@@ -22,7 +22,7 @@ controlData_client = context.socket(zmq.REQ)
 controlData_client.connect("ipc:///dev/shm/control_data")
 controlData_client.send_string("Inquiry Roll")
 ID = controlData_client.recv_pyobj()
-print("ID of this device is ", ID, type(ID),len(ID))
+print("ID of this device is ", ID)
 
 
 '''
