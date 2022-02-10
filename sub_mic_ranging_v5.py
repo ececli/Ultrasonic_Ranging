@@ -565,11 +565,11 @@ if __name__ == '__main__':
                         fulldata_temp = []
                         ## END
                         
-                        T3T2_R = []
+                        T3T2_R = 0
                         while True:
                             T3T2_R = T3T2_subscriber.recv_pyobj()
-                            if not isempty(T3T2_R):
-                                print("Received T3T2: ",T3T2_R, type(T3T2_R))
+                            if T3T2_R:
+                                print("Received T3T2: ",T3T2_R)
                                 break
                         Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
                         Distance_Record[counter_NumRanging] = Distance

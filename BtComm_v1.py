@@ -52,7 +52,7 @@ if ID == 2:
     T3T2_subscriber = context.socket(zmq.SUB)
     T3T2_subscriber.connect("ipc:///dev/shm/T3T2_data")
     T3T2_subscriber.setsockopt(zmq.SUBSCRIBE, b'')
-    time.sleep(10)
+    # time.sleep(10)
     try:
         bt_sock.connect((target_address, port))
         print("Connected to target Device.")
@@ -85,7 +85,7 @@ if ID == 1:
 
             while True:
                 T3T2 = client_sock.recv(255).decode() 
-                T3T2 = int(T3T2)
+                T3T2 = int(float(T3T2))
                 print("received T3T2: %d" % T3T2)
                 zmq_socket.send_pyobj(T3T2)
                 print("Sent T3T2 to ZMQ")
