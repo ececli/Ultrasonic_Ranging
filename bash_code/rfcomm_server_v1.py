@@ -1,4 +1,5 @@
 import bluetooth
+import time
 
 server_sock=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 port = 1
@@ -10,10 +11,14 @@ try:
         print('Waiting data from the other device')
         client_sock,address=server_sock.accept()  
         print("Accepted connection from ", address)
+        time.sleep(2)
         while True:
-            data =client_sock.recv(1024).decode() 
-            print("received [%s]" % data)
-except:
+            data =client_sock.recv(1024).decode()
+            print("received ", data, type(data))
+            if int(data) == 5:
+                break
+except Exception as e: 
+    print(e)
     client_sock.close()
     server_sock.close()
     print('disconnect!')
