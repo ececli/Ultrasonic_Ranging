@@ -57,10 +57,13 @@ if ID == 2:
         bt_sock.connect((target_address, port))
         print("Connected to target Device.")
         while True:
-            T3T2 = T3T2_subscriber.recv()
+            T3T2 = T3T2_subscriber.recv_pyobj()
+            print("Received T3T2 from ZMQ, ", T3T2)
             bt_sock.send(T3T2.encode())
+            print("Sent T3T2 via Bluetooth")
     except:
         bt_sock.close()
+        print('disconnect!')
 
 
 
@@ -81,7 +84,8 @@ if ID == 1:
             while True:
                 T3T2 = client_sock.recv(1024).decode() 
                 print("received T3T2: %d" % T3T2)
-                zmq_socket.send(T3T2)
+                zmq_socket.send_pyobj(T3T2)
+                print("Received T3T2 to ZMQ")
 
     except:
         client_sock.close()
