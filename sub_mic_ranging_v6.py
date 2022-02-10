@@ -426,6 +426,7 @@ if __name__ == '__main__':
     msgTXPD = " "
 
     timeoutEventCounter = 0
+    Flag_waitingT3T2 = False
 
     try:
         # start loop 
