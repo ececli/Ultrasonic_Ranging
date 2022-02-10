@@ -17,7 +17,7 @@ print("Target Address is ",target_address)
 bt_sock=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 port = 1
 
-
+context = zmq.Context()
 controlData_client = context.socket(zmq.REQ)
 controlData_client.connect("ipc:///dev/shm/control_data")
 client.send_string("Inquiry Roll")
