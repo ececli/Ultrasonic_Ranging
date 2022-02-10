@@ -567,8 +567,9 @@ if __name__ == '__main__':
                         
                         T3T2_R = []
                         while True:
-                            T3T2_R = T3T2_subscriber.recv()
+                            T3T2_R = T3T2_subscriber.recv_pyobj()
                             if not isempty(T3T2_R):
+                                print("Received T3T2: ",T3T2_R, type(T3T2_R))
                                 break
                         Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
                         Distance_Record[counter_NumRanging] = Distance
@@ -602,7 +603,7 @@ if __name__ == '__main__':
                         fulldata_temp = []
                         ## End
 
-                        T3T2_publisher.send(T3T2)
+                        T3T2_publisher.send_pyobj(T3T2)
 
                         counter_NumRanging = counter_NumRanging + 1
                     
@@ -688,10 +689,12 @@ if __name__ == '__main__':
     else:
         # mqttc.sendMsg(topic_t3t2, T3T2_Record)
         # while True:
-        message = server.recv_string()
-        print("Received Request: ",message)
-        time.sleep(1)
-        server.send_pyobj(T3T2_Record)
+
+        # message = server.recv_string()
+        # print("Received Request: ",message)
+        # time.sleep(1)
+        # server.send_pyobj(T3T2_Record)
+        
         # publisher.send_pyobj(T3T2_Record)
         # print("T3T2:")
         # print(T3T2_Record)
