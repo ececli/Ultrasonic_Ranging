@@ -51,9 +51,10 @@ if ID == 2:
     T3T2_subscriber = context.socket(zmq.SUB)
     T3T2_subscriber.connect("ipc:///dev/shm/T3T2_data")
     T3T2_subscriber.setsockopt(zmq.SUBSCRIBE, b'')
-
+    time.sleep(5)
     try:
-        bt_sock.connect((target_address, port)) 
+        bt_sock.connect((target_address, port))
+        print("Connected to target Device.")
         while True:
             T3T2 = T3T2_subscriber.recv()
             bt_sock.send(T3T2.encode())
@@ -68,13 +69,13 @@ if ID == 1:
     zmq_socket = context.socket(zmq.PUB)
     zmq_socket.bind("ipc:///dev/shm/T3T2_data")
 
-    server_sock.bind(("", port))   
-    server_sock.listen(1)
+    bt_sock.bind(("", port))   
+    bt_sock.listen(1)
 
     try:
         while True:
             print('Waiting data from the other device')
-            client_sock, address = server_sock.accept()  
+            client_sock, address = bt_sock.accept()  
             print("Accepted connection from ", address)
             while True:
                 T3T2 = client_sock.recv(1024).decode() 
@@ -83,7 +84,7 @@ if ID == 1:
 
     except:
         client_sock.close()
-        server_sock.close()
+        bt_sock.close()
         print('disconnect!')
 
 
