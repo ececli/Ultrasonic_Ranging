@@ -26,24 +26,6 @@ ID = controlData_client.recv_pyobj()
 print("ID of this device is ", ID)
 
 
-'''
-ID = 0
-while True:
-    controlData = controlData_client.recv()
-    if controlData == 1:
-        ID = 1 # initiator
-        break
-    elif controlData == 2:
-        ID = 2 # responder
-        break
-    else:
-        continue
-
-'''
-
-
-
-
 
 if ID == 2:
     # responder needs to sub and get data from data processing program and send it out via Bluetooth
@@ -64,7 +46,11 @@ if ID == 2:
     except Exception as e: 
         print(e)
         bt_sock.close()
-        print('disconnect!')
+        print('Error! Disconnect!')
+    except KeyboardInterrupt:
+        client_sock.close()
+        bt_sock.close()
+        print('Disconnect by user.')
 
 
 
