@@ -94,7 +94,12 @@ if ID == 1:
         print(e)
         client_sock.close()
         bt_sock.close()
-        print('disconnect!')
+        print('Error! Disconnect!')
+    except KeyboardInterrupt:
+        client_sock.close()
+        bt_sock.close()
+        print('Disconnect by user.')
+
 
 
 '''
