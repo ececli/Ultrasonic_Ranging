@@ -620,7 +620,7 @@ if __name__ == '__main__':
                     print("Received T3T2: ",T3T2_R)
                     Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE
                     Distance_Record[counter_NumRanging] = Distance
-                    print("[Distance Estimate], %.3f, %d, %d, %f" %(Distance, counter_NumRanging,counter,checkTime))
+                    print("[Distance Estimate], %.3f, %d, %d" %(Distance, counter_NumRanging,counter))
                     counter_NumRanging = counter_NumRanging + 1
                     T3T2_R = 0
                     Flag_waitingT3T2 = False
