@@ -564,13 +564,14 @@ if __name__ == '__main__':
                         fulldata_temp = []
                         ## END
                         checkTime_start = time.time()
-                        T3T2_R = 0
-                        while True:
-                            T3T2_R = T3T2_subscriber.recv_pyobj()
-                            if T3T2_R:
-                                print("Received T3T2: ",T3T2_R)
-                                break
+                        # T3T2_R = 0
+                        # while True:
+                        T3T2_R = T3T2_subscriber.recv_pyobj()
+                            # if T3T2_R:
+                        
+                            #     break
                         checkTime = time.time() - checkTime_start
+                        print("Received T3T2: ",T3T2_R)
                         Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
                         Distance_Record[counter_NumRanging] = Distance
                         print("[Distance Estimate], %.3f, %d, %d, %f" %(Distance, counter_NumRanging,counter,checkTime))
