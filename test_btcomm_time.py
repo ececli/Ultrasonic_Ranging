@@ -29,7 +29,7 @@ else:
 
 
 
-bt_sock_T=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+# bt_sock_T=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 bt_sock_R=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 
 
@@ -37,7 +37,8 @@ bt_sock_R.bind(("", port1))
 bt_sock_R.listen(1)
 print("Binded to own device with port %d." % port1)
 time.sleep(5)
-bt_sock_T.connect((target_address, port2))
+# bt_sock_T.connect((target_address, port2))
+bt_sock_R.connect((target_address, port2))
 print("Connected to the other device.")
 
 
@@ -50,7 +51,8 @@ try:
 
         if own_address[-1] == 0:
             time.sleep(1)
-            bt_sock_T.send(str(T3T2).encode())
+            # bt_sock_T.send(str(T3T2).encode())
+            bt_sock_R.send(str(T3T2).encode())
 
 
         counter = 0
@@ -59,7 +61,8 @@ try:
             print("received T3T2: %s at %d" % (T3T2,counter))
             if counter == 0:
                 time.sleep(1)
-            bt_sock.send(str(T3T2).encode())
+            # bt_sock_T.send(str(T3T2).encode())
+            bt_sock_R.send(str(T3T2).encode())
             counter = counter + 1
 
 
@@ -67,13 +70,13 @@ try:
 except Exception as e: 
     print(e)
     client_sock.close()
-    bt_sock_1.close()
-    bt_sock_2.close()
+    bt_sock_R.close()
+    bt_sock_T.close()
     print('Error! Disconnect!')
 except KeyboardInterrupt:
     client_sock.close()
-    bt_sock_1.close()
-    bt_sock_2.close()
+    bt_sock_R.close()
+    bt_sock_T.close()
     print('Disconnect by user.')   
 
 
