@@ -8,6 +8,7 @@ import socket
 from numba import jit
 import os
 import csv
+import matplotlib.pyplot as plt
 
 dt = np.dtype([('counter', 'i4'),
                ('status', 'i4'),
@@ -420,6 +421,7 @@ if __name__ == '__main__':
     T3T2_Record = np.zeros(NumRanging)
     T4T1_Record = np.zeros(NumRanging)
     Distance_Record = np.zeros(NumRanging)
+    checkTime_Record = np.zeros(NumRanging)
 
     msgRXPD = " "
     msgSS = " "
@@ -567,14 +569,12 @@ if __name__ == '__main__':
                         # T3T2_R = 0
                         # while True:
                         T3T2_R = T3T2_subscriber.recv_pyobj()
-                            # if T3T2_R:
-                        
-                            #     break
                         checkTime = time.time() - checkTime_start
                         print("Received T3T2: ",T3T2_R)
                         Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
                         Distance_Record[counter_NumRanging] = Distance
                         print("[Distance Estimate], %.3f, %d, %d, %f" %(Distance, counter_NumRanging,counter,checkTime))
+                        checkTime_Record[counter_NumRanging] = checkTime
 
                         counter_NumRanging = counter_NumRanging + 1
 
@@ -661,6 +661,11 @@ if __name__ == '__main__':
                 csv_data = [NumRanging,len(a),jumpCount_Set,int(Flag_usingWindowing),GT,np.mean(a),np.std(a),Duration,startTime, int(Flag_abnormal)]
                 write_csv(csv_filename, csv_data)
         print("Numbers of Timeout happens ",timeoutEventCounter)
+
+        plt.figure()
+        plt.plot(checkTime_Record,'r.')
+        plt.savefig("bluetooth.png")
+        
         # mqttc.closeClient()
     # else:
         # mqttc.sendMsg(topic_t3t2, T3T2_Record)
