@@ -19,10 +19,11 @@ print("Target Address is ",target_address)
 
 
 if own_address[-1] == 0:
-
+    print("I am into 1")
     port1 = 1
     port2 = 2
 else:
+    print("I am into 2")
     port1 = 2
     port2 = 1
 
