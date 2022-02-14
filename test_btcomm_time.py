@@ -34,7 +34,7 @@ bt_sock_R=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 
 bt_sock_R.bind(("", port1))   
 bt_sock_R.listen(1)
-print("Binded to own device.")
+print("Binded to own device with port %d." % port1)
 time.sleep(5)
 bt_sock_T.connect((target_address, port2))
 print("Connected to the other device.")
