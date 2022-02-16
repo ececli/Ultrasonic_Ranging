@@ -41,10 +41,10 @@ try:
             # bt_sock_T.send(str(T3T2).encode())
         bt_sock.send(str(counter).encode())
         Received = bt_sock.recv(255).decode() 
-        print(Received)
+        # print(Received)
         counter = counter + 1
 
-        if counter == 1000:
+        if counter == 10000:
             duration = time.time() - startTime
             break
 
