@@ -607,6 +607,7 @@ if __name__ == '__main__':
                         print("Waiting T3-T2")
                         checkTime_start = time.time()
                         T3T2_R = client_sock.recv(255).decode()
+                        print("T3-T2 is ",T3T2_R)
                         T3T2_R = int(float(T3T2_R))
                         
                         checkTime = time.time() - checkTime_start
@@ -643,10 +644,10 @@ if __name__ == '__main__':
                         fulldata[counter_NumRanging] = fulldata_temp
                         fulldata_temp = []
                         ## End
-                        print("Prepare to send T3-T2")
+                        # print("Prepare to send T3-T2")
                         # time.sleep(0.1)
                         bt_sock.send(str(T3T2).encode())
-                        print("T3-T2 has been sent")
+                        print("T3-T2 has been sent: ",T3T2)
 
                         counter_NumRanging = counter_NumRanging + 1
                     
