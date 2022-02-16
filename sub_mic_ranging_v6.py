@@ -302,10 +302,10 @@ if __name__ == '__main__':
         bt_sock.bind(("", port))   
         bt_sock.listen(1)
         print("Binded to own device with port %d." % port)
-        while True:
-            print('Waiting data from the other device')
-            client_sock, address = bt_sock.accept()  
-            print("Accepted connection from ", address)
+
+        print('Waiting data from the other device')
+        client_sock, address = bt_sock.accept()  
+        print("Accepted connection from ", address)
 
     else: # initiator will act as a client
         time.sleep(5)
@@ -640,7 +640,7 @@ if __name__ == '__main__':
                         fulldata[counter_NumRanging] = fulldata_temp
                         fulldata_temp = []
                         ## End
-
+                        time.sleep(1)
                         bt_sock.send(str(T3T2).encode())
 
                         counter_NumRanging = counter_NumRanging + 1
