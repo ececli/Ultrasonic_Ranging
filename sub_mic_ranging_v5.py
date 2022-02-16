@@ -568,8 +568,9 @@ if __name__ == '__main__':
                         checkTime_start = time.time()
                         # T3T2_R = 0
                         # while True:
-                        T3T2_R = T3T2_subscriber.recv_pyobj()
+                        T3T2_R = T3T2_subscriber.recv()
                         checkTime = time.time() - checkTime_start
+                        T3T2_R = int(float(T3T2_R))
                         print("Received T3T2: ",T3T2_R)
                         Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
                         Distance_Record[counter_NumRanging] = Distance
@@ -605,7 +606,7 @@ if __name__ == '__main__':
                         fulldata_temp = []
                         ## End
 
-                        T3T2_publisher.send_pyobj(T3T2)
+                        T3T2_publisher.send(str(T3T2).encode())
 
                         counter_NumRanging = counter_NumRanging + 1
                     
