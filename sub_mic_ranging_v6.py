@@ -298,7 +298,7 @@ if __name__ == '__main__':
 
     bt_sock=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 
-    if ID == 2: # responder will bind and serve as a server
+    if ID == 1: # responder will bind and serve as a server
         bt_sock.bind(("", port))   
         bt_sock.listen(1)
         print("Binded to own device with port %d." % port)
@@ -605,7 +605,7 @@ if __name__ == '__main__':
                         # Flag_waitingT3T2 = True
                         print("Waiting T3-T2")
                         checkTime_start = time.time()
-                        T3T2_R = bt_sock.recv(255).decode()
+                        T3T2_R = client_sock.recv(255).decode()
                         T3T2_R = int(float(T3T2_R))
                         
                         checkTime = time.time() - checkTime_start
