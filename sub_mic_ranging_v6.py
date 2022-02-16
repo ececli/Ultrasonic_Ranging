@@ -298,7 +298,7 @@ if __name__ == '__main__':
 
     bt_sock=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 
-    if ID == 1: # responder will bind and serve as a server
+    if ID == 2: # responder will bind and serve as a server
         bt_sock.bind(("", port))   
         bt_sock.listen(1)
         print("Binded to own device with port %d." % port)
@@ -308,9 +308,10 @@ if __name__ == '__main__':
         print("Accepted connection from ", address)
 
     else: # initiator will act as a client
-        time.sleep(5)
+        time.sleep(2)
         bt_sock.connect((target_address, port))
         print("Connected to the other device.")
+        time.sleep(1)
 
     
 
