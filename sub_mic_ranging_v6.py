@@ -220,6 +220,12 @@ if __name__ == '__main__':
         ID = 2
         theOtherID = 1
         print("role options: 1. initiator, 2. responder (default)")
+
+
+    address_list = ['DC:A6:32:E1:9F:C8', 'DC:A6:32:E8:BF:E0']
+
+
+    port = 1
     
 
 
@@ -276,6 +282,35 @@ if __name__ == '__main__':
 
     csv_filename = "two_way_ranging_results.csv"
     csv_head = ["Set_Number_Ranging","Actual_Number_Ranging", "JumpCount", "Windowing", "Ground_Truth", "Mean", "Std", "Duration", "Start_Time", "Abnormal"]
+
+
+    # setup bluetooth
+
+    own_address = bluetooth.read_local_bdaddr()[0]
+
+    for addr in address_list:
+        if own_address.upper() != addr.upper():
+            target_address = addr
+
+    print("Own Address is ", own_address)
+    print("Target Address is ",target_address)
+
+    bt_sock=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+
+    if ID == 1: # responder will bind and serve as a server
+        bt_sock.bind(("", port))   
+        bt_sock.listen(1)
+        print("Binded to own device with port %d." % port)
+        while True:
+            print('Waiting data from the other device')
+            client_sock, address = bt_sock.accept()  
+            print("Accepted connection from ", address)
+
+    else: # initiator will act as a client
+        time.sleep(5)
+        bt_sock.connect((target_address, port))
+        print("Connected to the other device.")
+
     
 
 
@@ -294,6 +329,7 @@ if __name__ == '__main__':
     mic_subscriber.connect("ipc:///dev/shm/mic_data")
     mic_subscriber.setsockopt(zmq.SUBSCRIBE, b'')
 
+    '''
     ## Tell BtComm the ID of this device
     control_server = context.socket(zmq.REP)
     control_server.bind("ipc:///dev/shm/control_data")
@@ -316,7 +352,7 @@ if __name__ == '__main__':
         # server = context.socket(zmq.REP)
         # server.bind("tcp://*:" + str(port))
         # print("Responder acts as a server. ")
-
+    '''
 
     
 
@@ -564,23 +600,18 @@ if __name__ == '__main__':
                         fulldata[counter_NumRanging] = fulldata_temp
                         fulldata_temp = []
                         ## END
-                        Flag_waitingT3T2 = True
-                        
-                        '''
+                        # Flag_waitingT3T2 = True
                         checkTime_start = time.time()
-                        T3T2_R = 0
-                        while True:
-                            T3T2_R = T3T2_subscriber.recv_pyobj()
-                            if T3T2_R:
-                                print("Received T3T2: ",T3T2_R)
-                                break
+                        T3T2_R = bt_sock.recv(255).decode()
+                        T3T2_R = int(float(T3T2_R))
+                        
                         checkTime = time.time() - checkTime_start
                         Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
                         Distance_Record[counter_NumRanging] = Distance
                         print("[Distance Estimate], %.3f, %d, %d, %f" %(Distance, counter_NumRanging,counter,checkTime))
 
                         counter_NumRanging = counter_NumRanging + 1
-                        '''
+
 
 
 
@@ -609,21 +640,11 @@ if __name__ == '__main__':
                         fulldata_temp = []
                         ## End
 
-                        T3T2_publisher.send_pyobj(T3T2)
+                        bt_sock.send(str(T3T2).encode())
 
                         counter_NumRanging = counter_NumRanging + 1
                     
 
-            if Flag_waitingT3T2:
-                T3T2_R = T3T2_subscriber.recv_pyobj()
-                if T3T2_R:
-                    print("Received T3T2: ",T3T2_R)
-                    Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE
-                    Distance_Record[counter_NumRanging] = Distance
-                    print("[Distance Estimate], %.3f, %d, %d" %(Distance, counter_NumRanging,counter))
-                    counter_NumRanging = counter_NumRanging + 1
-                    T3T2_R = 0
-                    Flag_waitingT3T2 = False
 
 
 
