@@ -31,9 +31,9 @@ time.sleep(5)
 bt_sock.connect((target_address, port))
 print("Connected to the other device.")
 time.sleep(1)
-
-startTime = time.time()
 counter = 0
+startTime = time.time()
+
 try:
     while True:
 
@@ -41,6 +41,7 @@ try:
             # bt_sock_T.send(str(T3T2).encode())
         bt_sock.send(str(counter).encode())
         Received = bt_sock.recv(255).decode() 
+        print(Received)
         counter = counter + 1
 
         if counter == 1000:

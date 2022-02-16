@@ -38,11 +38,11 @@ try:
         counter = 0
         while True:
             T3T2 = client_sock.recv(255).decode() 
-            print("received T3T2: %s at %d" % (T3T2,counter))
+            # print("received T3T2: %s at %d" % (T3T2,counter))
             # bt_sock_T.send(str(T3T2).encode())
             # bt_sock.send(str(T3T2).encode())
             client_sock.send(str(T3T2).encode())
-            counter = counter + 1
+            # counter = counter + 1
 
 
 
@@ -54,8 +54,5 @@ except Exception as e:
     print('Error! Disconnect!')
 except KeyboardInterrupt:
     client_sock.close()
-    bt_sock.close(
-    print('Disconnect by user.')   
-
-
-
+    bt_sock.close()
+    print('Disconnect by user.')
