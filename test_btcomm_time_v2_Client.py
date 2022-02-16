@@ -39,7 +39,7 @@ try:
 
             
             # bt_sock_T.send(str(T3T2).encode())
-        bt_sock.send(str(counter).encode())
+        bt_sock.send(str(T3T2).encode())
         Received = bt_sock.recv(255).decode() 
         # print(Received)
         counter = counter + 1
