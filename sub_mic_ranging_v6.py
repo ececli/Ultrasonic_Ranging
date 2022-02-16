@@ -306,12 +306,13 @@ if __name__ == '__main__':
         print('Waiting data from the other device')
         client_sock, address = bt_sock.accept()  
         print("Accepted connection from ", address)
+        time.sleep(1)
 
     else: # initiator will act as a client
         time.sleep(2)
         bt_sock.connect((target_address, port))
         print("Connected to the other device.")
-        time.sleep(1)
+        
 
     
 
@@ -643,7 +644,7 @@ if __name__ == '__main__':
                         fulldata_temp = []
                         ## End
                         print("Prepare to send T3-T2")
-                        time.sleep(2)
+                        time.sleep(0.1)
                         bt_sock.send(str(T3T2).encode())
                         print("T3-T2 has been sent")
 
