@@ -602,6 +602,7 @@ if __name__ == '__main__':
                         fulldata_temp = []
                         ## END
                         # Flag_waitingT3T2 = True
+                        print("Waiting T3-T2")
                         checkTime_start = time.time()
                         T3T2_R = bt_sock.recv(255).decode()
                         T3T2_R = int(float(T3T2_R))
@@ -640,8 +641,10 @@ if __name__ == '__main__':
                         fulldata[counter_NumRanging] = fulldata_temp
                         fulldata_temp = []
                         ## End
-                        time.sleep(1)
+                        print("Prepare to send T3-T2")
+                        time.sleep(2)
                         bt_sock.send(str(T3T2).encode())
+                        print("T3-T2 has been sent")
 
                         counter_NumRanging = counter_NumRanging + 1
                     
