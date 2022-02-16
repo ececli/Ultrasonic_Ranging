@@ -8,7 +8,7 @@ import socket
 from numba import jit
 import os
 import csv
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 dt = np.dtype([('counter', 'i4'),
                ('status', 'i4'),
@@ -663,9 +663,9 @@ if __name__ == '__main__':
         print("Numbers of Timeout happens ",timeoutEventCounter)
         print("Bluetooth Receive Time stat: Mean = %.4f, Std= %.5f, Min = %.5f, Max = %.5f" % (np.mean(checkTime_Record),np.std(checkTime_Record),np.min(checkTime_Record),np.max(checkTime_Record)))
 
-        plt.figure()
-        plt.plot(checkTime_Record,'r.')
-        plt.savefig("bluetooth.png")
+        # plt.figure()
+        # plt.plot(checkTime_Record,'r.')
+        # plt.savefig("bluetooth.png")
 
         # mqttc.closeClient()
     # else:
