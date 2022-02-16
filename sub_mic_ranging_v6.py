@@ -644,7 +644,7 @@ if __name__ == '__main__':
                         fulldata_temp = []
                         ## End
                         print("Prepare to send T3-T2")
-                        time.sleep(0.1)
+                        # time.sleep(0.1)
                         bt_sock.send(str(T3T2).encode())
                         print("T3-T2 has been sent")
 
