@@ -8,6 +8,7 @@ import socket
 from numba import jit
 import os
 import csv
+import bluetooth
 
 dt = np.dtype([('counter', 'i4'),
                ('status', 'i4'),
