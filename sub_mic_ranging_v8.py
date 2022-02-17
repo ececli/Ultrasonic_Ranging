@@ -517,7 +517,7 @@ if __name__ == '__main__':
 
     # Timeout related setting
     timeoutEventCounter = 0
-    Flag_TimeoutHappen = False
+
 
     Flag_ExpRX = False
     Flag_ExpTX = False
