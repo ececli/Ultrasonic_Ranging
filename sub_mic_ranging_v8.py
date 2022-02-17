@@ -671,6 +671,7 @@ if __name__ == '__main__':
 
                 if Flag_TimeoutHappen:
                     T3T2 = 0
+                    print("Time out happens, T3T2 = ",T3T2)
                     bt_data_prepare.Flag_NumSamples = False
                     Flag_TimeoutHappen = False
                 else:
