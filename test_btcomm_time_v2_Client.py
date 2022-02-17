@@ -4,9 +4,10 @@ import time
 import numpy as np
 
 
-dt_bt = np.dtype([('status', 'i4'),
-               ('NumSamples', 'i4')
-               ])
+dt_bt = np.dtype([('id','U17'),
+                ('status', 'i4'),
+                ('NumSamples', 'i4')
+                ])
 
 bt_data = np.rec.array(np.zeros(1, dtype=dt_bt))
 
@@ -41,7 +42,7 @@ startTime = time.time()
 
 try:
     while True:
-
+        bt_data.id = own_address
         bt_data.status = 0 
         bt_data.NumSamples = counter
         raw_bt_data = bt_data.tobytes()

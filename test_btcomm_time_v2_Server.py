@@ -3,9 +3,10 @@ import bluetooth
 import time
 import numpy as np
 
-dt_bt = np.dtype([('status', 'i4'),
-               ('NumSamples', 'i4')
-               ])
+dt_bt = np.dtype([('id','U17'),
+                ('status', 'i4'),
+                ('NumSamples', 'i4')
+                ])
 
 
 address_list = ['DC:A6:32:E1:9F:C8', 'DC:A6:32:E8:BF:E0']
