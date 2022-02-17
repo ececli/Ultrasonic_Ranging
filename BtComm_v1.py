@@ -69,7 +69,7 @@ if ID == 1:
             print("Accepted connection from ", address)
 
             while True:
-                T3T2 = client_sock.recv(255).decode() 
+                T3T2 = client_sock.recv(255)# .decode() 
                 # T3T2 = int(float(T3T2))
                 print("received T3T2: ", T3T2)
                 zmq_socket.send(T3T2)
