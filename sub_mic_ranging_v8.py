@@ -67,7 +67,7 @@ def sendSignal(PIN,Duration):
 
 
 def func_determineRole(own_address,target_address):
-    if own_address > target_address:
+    if own_address < target_address:
         return 1 # initiator
     else:
         return 2 # responder
@@ -248,23 +248,6 @@ def bluetooth_thread(ID,target_address,port):
             bt_data = np.frombuffer(raw_bt_data, dtype=dt_bt)
             Flag_recvBluetooth = False
             Flag_recvdBluetooth = True
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-    
-
-
 
 
 
@@ -498,11 +481,17 @@ if __name__ == '__main__':
 
 
     if ID == 1:
+        # Initiator's setting
         Flag_ExpRX = False
-        Flag_SendSig = True
+        # Flag_SendSig = True
+        Flag_recvBluetooth = True
+        Flag_prepBluetooth = False
     else:
+        # Responder's setting
         Flag_ExpRX = True
         Flag_SendSig = False
+        Flag_prepBluetooth = True
+
 
 
     Flag_abnormal = False
@@ -523,9 +512,8 @@ if __name__ == '__main__':
     msgSS = " "
     msgTXPD = " "
 
+    # Timeout related setting
     timeoutEventCounter = 0
-    Flag_waitingT3T2 = False
-
     Flag_TimeoutHappen = False
 
 
@@ -613,9 +601,7 @@ if __name__ == '__main__':
             if Flag_jump:
                 if jumpCount:
                     jumpCount = jumpCount -1
-
                     continue
-
                 else:
                     Flag_jump = False
 
@@ -623,9 +609,14 @@ if __name__ == '__main__':
 
             if Flag_SendSig:
                 sendSignal(pin_OUT,1e-4)
-                Flag_SendSig = False
+                
+                ## For debug purpose, print out progress:
                 msgSS = f"[Signal Sent], {counter_NumRanging}, {counter}"
                 print(msgSS)
+                ## End
+
+                Flag_ExpTX = True
+                Flag_SendSig = False
 
 
 
@@ -633,152 +624,73 @@ if __name__ == '__main__':
                 #debug purpose:
                 # pks_blocks.extend(result)
 
-
                 timeoutCount = 0
-
-
-
-
-                
 
                 if Flag_ExpRX:
 
 
-
-
                     ## For debug purpose, print out progress:
-                    # print("Received signal from the other device")
-                    # print("[RX Peak Detected] ",counter_NumRanging,counter,result)
                     msgRXPD = f"[RX Peak Detected], {counter_NumRanging}, {counter}, {result}"
                     print(msgRXPD)
-                    ## End
-                    # T_RX = absIndex
-                    Flag_ExpRX = False
                     
-                    ## For debug and record purposes:
-                    # RecvRX_RecordCounter.append(counter)
-                    ## End
 
 
                     T4T1 = result[0][0]
                     T4T1_Record[counter_NumRanging] = T4T1
 
 
-                    
+                    Flag_recvBluetooth = True # start to receive Bluetooth
+                    Flag_ExpRX = False
 
 
-                    # Flag_waitBluetooth = True
-
-                    # Wait to receive Bluetooth signal. Two purposes: 
-                    # 1. After receiving Bluetooth signal, send ultrasonic sound out
-                    # 2. Get T3 - T2 info and calculate Distance.
-
-
-                    '''
-                    print("Prepare to Receive Bluetooth Data at ",time.time())
-                    if ID == 1:
-                        raw_bt_data = client_sock.recv(255)
-                    else:
-                        raw_bt_data = bt_sock.recv(255)
-                    print("Received Bluetooth Data at ",time.time())
-                    bt_data = np.frombuffer(raw_bt_data, dtype=dt_bt)
-                    '''
-                    Flag_recvBluetooth = True
-
-                    
-
-                    '''
-                    ## END
-                    # Flag_waitingT3T2 = True
-                    print("Waiting T3-T2")
-                    checkTime_start = time.time()
-                    T3T2_R = client_sock.recv(255).decode()
-                    print("T3-T2 is ",T3T2_R)
-                    T3T2_R = int(float(T3T2_R))
-                    
-                    checkTime = time.time() - checkTime_start
-                    Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
-                    Distance_Record[counter_NumRanging] = Distance
-                    print("[Distance Estimate], %.3f, %d, %d, %f" %(Distance, counter_NumRanging,counter,checkTime))
-
-                    counter_NumRanging = counter_NumRanging + 1
-                    '''
-
-
-
-
-
-                else:
+                if Flag_ExpTX:
                     ## For debug purpose, print out progress:
-                    # print("Received own signal")
-                    ## End
-                    # 1. General process after receiving its own signal
-                    # print("[TX Peak Detected] ",counter_NumRanging,counter,result)
                     msgTXPD = f"[TX Peak Detected], {counter_NumRanging}, {counter}, {result}"
                     print(msgTXPD)
-                    # T_TX = absIndex
-                    Flag_ExpRX = True
-                    ## For debug and record purposes:
-                    # RecvTX_RecordCounter.append(self.counter)
                     ## End
-
 
 
                     T3T2 = result[0][0]
-                    if Flag_TimeoutHappen:
-                        T3T2 = 0
-                        bt_data_prepare.Flag_NumSamples = False
-                        Flag_TimeoutHappen = False
-                    else:
-                        bt_data_prepare.Flag_NumSamples = True
-                    
-
-
+                    T3T2_Record[counter_NumRanging] = T3T2
                     # Send Bluetooth Data package to the other device with two purposes:
                     # 1. Let the other know that this device is ready to receive ultrasound signal from the other device
                     # 2. send T3-T2 information to the other device
 
-                    bt_data_prepare.Flag_Valid = True
-                    bt_data_prepare.Flag_LastReq = False
-                    # bt_data_prepare.Flag_NumSamples = True
-                    bt_data_prepare.NumSamples = T3T2
-                    bt_data_prepare.NumReTransmission = 0
 
-
-
-                    Flag_sendBluetooth = True
-
-
-
-                    '''
-                    raw_bt_data = bt_data_prepare.tobytes()
-
-                        ## End
-                        # print("Prepare to send T3-T2")
-                        # time.sleep(0.1)
-                    if ID == 1:
-                        client_sock.send(raw_bt_data)
-                    else:
-                        bt_sock.send(raw_bt_data)
-                    print("T3-T2 has been sent: ",T3T2)
-                    '''
-                        # counter_NumRanging = counter_NumRanging + 1
-
-                    # For debugging purpose
-                    T3T2_Record[counter_NumRanging] = T3T2
+                    Flag_prepBluetooth = True
+                    Flag_ExpTX = False
 
                     
+            if Flag_prepBluetooth:
+
+                if Flag_TimeoutHappen:
+                    T3T2 = 0
+                    bt_data_prepare.Flag_NumSamples = False
+                    Flag_TimeoutHappen = False
+                else:
+                    bt_data_prepare.Flag_NumSamples = True
+
+                bt_data_prepare.Flag_Valid = True
+                bt_data_prepare.Flag_LastReq = False
+
+                bt_data_prepare.NumSamples = T3T2
+                bt_data_prepare.NumReTransmission = 0
+
+                Flag_sendBluetooth = True
+                Flag_prepBluetooth = False
+                Flag_ExpRX = True
 
 
             if Flag_recvdBluetooth:
+
                 if len(bt_data)>1: 
-                    print("[Warning] More Than One Bluetooth Data Package Received")
+                    print("[Warning] More Than One Bluetooth Data Package Received at %d, %d" % (Distance, counter_NumRanging,counter))
 
                 if bt_data[-1][0] and bt_data[-1][1]:
                     T3T2_R = bt_data[-1][3]
                     Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
                     Distance_Record[counter_NumRanging] = Distance
-                    print("[Distance Estimate], %.3f, %d, %d" %(Distance, counter_NumRanging,counter))
+                    print("[Distance Estimate], %.3f, %d, %d" % (Distance, counter_NumRanging,counter))
 
 
 
@@ -796,6 +708,7 @@ if __name__ == '__main__':
                 jumpCount = jumpCount_Set
                 Flag_jump = True
                 Flag_SendSig = True
+                Flag_recvdBluetooth = False
 
 
 
@@ -878,7 +791,7 @@ if __name__ == '__main__':
         winStr = "_noWin_"
 
 
-    filename = 'Fulldata_'+role+time.strftime("_%Y%m%d_%H%M_")+winStr+'jump_'+str(jumpCount_Set)+'.dat'
+    filename = 'Fulldata_'+str(ID)+time.strftime("_%Y%m%d_%H%M_")+winStr+'jump_'+str(jumpCount_Set)+'.dat'
 
     a_file = open(filename, "w")
     if len(fulldata_temp)>0:
@@ -914,45 +827,7 @@ if __name__ == '__main__':
 
 
 
-    '''
-    # initialize ID
-    if len(sys.argv)>=2:
-        role = sys.argv[1]
-        print(role)
-    else:
-        role = 'responder'
-        print('Please enter role. Otherwise, role is responder')
 
-
-
-    if len(sys.argv)>=3:
-        GT = sys.argv[2]
-        print("Ground Truth is set as ", GT)
-    else:
-        GT = 0
-        print("Ground Truth is not set")
-    '''
-
-    
-
-
-
-
-
-    '''
-    if role == 'initiator':
-        ID = 1
-        theOtherID = 2
-    elif role == 'responder':
-        ID = 2
-        theOtherID = 1
-    else:
-        ID = 2
-        theOtherID = 1
-        print("role options: 1. initiator, 2. responder (default)")
-    '''
-
-    # Constants / Parameters
 
 
 
