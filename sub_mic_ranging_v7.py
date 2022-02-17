@@ -633,22 +633,22 @@ if __name__ == '__main__':
 
                     Flag_SendSig = True
 
-                        '''
-                        ## END
-                        # Flag_waitingT3T2 = True
-                        print("Waiting T3-T2")
-                        checkTime_start = time.time()
-                        T3T2_R = client_sock.recv(255).decode()
-                        print("T3-T2 is ",T3T2_R)
-                        T3T2_R = int(float(T3T2_R))
-                        
-                        checkTime = time.time() - checkTime_start
-                        Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
-                        Distance_Record[counter_NumRanging] = Distance
-                        print("[Distance Estimate], %.3f, %d, %d, %f" %(Distance, counter_NumRanging,counter,checkTime))
+                    '''
+                    ## END
+                    # Flag_waitingT3T2 = True
+                    print("Waiting T3-T2")
+                    checkTime_start = time.time()
+                    T3T2_R = client_sock.recv(255).decode()
+                    print("T3-T2 is ",T3T2_R)
+                    T3T2_R = int(float(T3T2_R))
+                    
+                    checkTime = time.time() - checkTime_start
+                    Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
+                    Distance_Record[counter_NumRanging] = Distance
+                    print("[Distance Estimate], %.3f, %d, %d, %f" %(Distance, counter_NumRanging,counter,checkTime))
 
-                        counter_NumRanging = counter_NumRanging + 1
-                        '''
+                    counter_NumRanging = counter_NumRanging + 1
+                    '''
 
 
 
