@@ -11,7 +11,8 @@ dt_bt = np.dtype([('id','U17'),
 '''
 dt_bt = np.dtype([('status','?'),
                 ('Flag_NumSamples', '?'),
-                ('NumSamples', 'i4')
+                ('NumSamples', 'i4'),
+                ('NumReTransmission', "i4")
                 ])
 
 
@@ -53,6 +54,7 @@ try:
             print(counter)
             print("length of data is ", len(bt_data))
             print(bt_data)
+            print(bt_data[-1].NumSamples)
             # print("received T3T2: %s at %d" % (T3T2,counter))
 
             # client_sock.send(str(T3T2).encode())

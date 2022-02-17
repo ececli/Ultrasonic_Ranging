@@ -29,8 +29,16 @@ dt_state = np.dtype([('avgFilter', 'f8'),
                      ('length', 'i4'),
                      ('pk_idx', 'i4'),
                      ('pk', 'f8'),
-                     ('pk_time', 'i4'),
+                     ('pk_time', 'i4')
                      ])
+
+
+dt_bt = np.dtype([('status','?'),
+                ('Flag_NumSamples', '?'),
+                ('NumSamples', 'i4'),
+                ('NumReTransmission', "i4")
+                ])
+
 
 def create_csv(filename, csv_head):
     if not os.path.exists(filename):
@@ -53,7 +61,7 @@ def sendSignal(PIN,Duration):
     GPIO.output(PIN,False)
     return
 
-
+'''
 def get_ip_address():
     ip_address = '';
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -61,6 +69,7 @@ def get_ip_address():
     ip_address = s.getsockname()[0]
     s.close()
     return ip_address
+'''
 
 # Sliding Goertzol Filtering without any windowing
 @jit
@@ -597,7 +606,21 @@ if __name__ == '__main__':
                     fulldata_temp = []
 
 
-                    Flag_waitBluetooth = True
+                    # Flag_waitBluetooth = True
+
+                    # Wait to receive Bluetooth signal. Two purposes: 
+                    # 1. After receiving Bluetooth signal, send ultrasonic sound out
+                    # 2. Get T3 - T2 info and calculate Distance.
+
+                    raw_bt_data = client_sock.recv(255)
+                    bt_data = np.frombuffer(raw_bt_data, dtype=dt_bt)
+                    if bt_data.Flag_NumSamples:
+                        T3T2_R = bt_data.NumSamples
+                        Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
+                        Distance_Record[counter_NumRanging] = Distance
+                        print("[Distance Estimate], %.3f, %d, %d" %(Distance, counter_NumRanging,counter))
+                        counter_NumRanging = counter_NumRanging + 1
+
 
 
 

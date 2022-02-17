@@ -6,7 +6,8 @@ import numpy as np
 
 dt_bt = np.dtype([('status','?'),
                 ('Flag_NumSamples', '?'),
-                ('NumSamples', 'i4')
+                ('NumSamples', 'i4'),
+                ('NumReTransmission', "i4")
                 ])
 
 bt_data = np.rec.array(np.zeros(1, dtype=dt_bt))
@@ -45,6 +46,7 @@ try:
         bt_data.Flag_NumSamples = True
         bt_data.status = False 
         bt_data.NumSamples = counter
+        bt_data.NumReTransmission = 0
         raw_bt_data = bt_data.tobytes()
         bt_sock.send(raw_bt_data)
         print("Sent ",counter)
