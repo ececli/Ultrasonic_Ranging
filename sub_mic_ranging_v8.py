@@ -482,15 +482,18 @@ if __name__ == '__main__':
 
     if ID == 1:
         # Initiator's setting
-        Flag_ExpRX = False
+        # Flag_ExpRX = False
         # Flag_SendSig = True
         Flag_recvBluetooth = True
         Flag_prepBluetooth = False
+        Flag_TimeoutHappen = False
     else:
         # Responder's setting
-        Flag_ExpRX = True
-        Flag_SendSig = False
+        # Flag_ExpRX = True
+        # Flag_SendSig = False
+        Flag_recvBluetooth = False
         Flag_prepBluetooth = True
+        Flag_TimeoutHappen = True
 
 
 
@@ -516,6 +519,9 @@ if __name__ == '__main__':
     timeoutEventCounter = 0
     Flag_TimeoutHappen = False
 
+    Flag_ExpRX = False
+    Flag_ExpTX = False
+    Flag_SendSig = False
 
     
 
