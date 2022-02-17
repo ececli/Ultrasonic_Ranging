@@ -476,6 +476,8 @@ if __name__ == '__main__':
     timeoutEventCounter = 0
     Flag_waitingT3T2 = False
 
+    Flag_TimeoutHappen = False
+
 
     bt_data_prepare = np.rec.array(np.zeros(1, dtype=dt_bt))
 
