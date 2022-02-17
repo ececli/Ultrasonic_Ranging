@@ -3,8 +3,14 @@ import bluetooth
 import time
 import numpy as np
 
+'''
 dt_bt = np.dtype([('id','U17'),
                 ('status', 'i4'),
+                ('NumSamples', 'i4')
+                ])
+'''
+dt_bt = np.dtype([('status','?'),
+                ('Flag_NumSamples', '?'),
                 ('NumSamples', 'i4')
                 ])
 

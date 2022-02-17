@@ -4,8 +4,8 @@ import time
 import numpy as np
 
 
-dt_bt = np.dtype([('id','U17'),
-                ('status', 'i4'),
+dt_bt = np.dtype([('status','?'),
+                ('Flag_NumSamples', '?'),
                 ('NumSamples', 'i4')
                 ])
 
@@ -42,8 +42,8 @@ startTime = time.time()
 
 try:
     while True:
-        bt_data.id = own_address
-        bt_data.status = 0 
+        bt_data.Flag_NumSamples = True
+        bt_data.status = False 
         bt_data.NumSamples = counter
         raw_bt_data = bt_data.tobytes()
         bt_sock.send(raw_bt_data)
