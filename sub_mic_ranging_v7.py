@@ -560,6 +560,15 @@ if __name__ == '__main__':
 
 
 
+            if Flag_jump:
+                if jumpCount:
+                    jumpCount = jumpCount -1
+
+                    continue
+
+                else:
+                    Flag_jump = False
+
 
 
             if Flag_SendSig:
@@ -580,8 +589,7 @@ if __name__ == '__main__':
 
 
 
-                # jumpCount = jumpCount_Set
-                # Flag_jump = True
+                
 
                 if Flag_ExpRX:
 
@@ -633,6 +641,9 @@ if __name__ == '__main__':
                         counter_NumRanging = counter_NumRanging + 1
 
 
+
+                    jumpCount = jumpCount_Set
+                    Flag_jump = True
                     Flag_SendSig = True
 
                     '''
