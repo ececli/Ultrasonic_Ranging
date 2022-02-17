@@ -1,9 +1,14 @@
 import zmq
 import bluetooth
 import time
+import numpy as np
 
 
-T3T2 = 2234.0
+dt_bt = np.dtype([('status', 'i4'),
+               ('NumSamples', 'i4')
+               ])
+
+bt_data = np.rec.array(np.zeros(1, dtype=dt_bt))
 
 address_list = ['DC:A6:32:E1:9F:C8', 'DC:A6:32:E8:BF:E0']
 
@@ -37,9 +42,10 @@ startTime = time.time()
 try:
     while True:
 
-            
-
-        bt_sock.send(str(counter).encode())
+        bt_data.status = 0 
+        bt_data.NumSamples = counter
+        raw_bt_data = bt_data.tobytes()
+        bt_sock.send(raw_bt_data)
         print("Sent ",counter)
         # Received = bt_sock.recv(255).decode() 
         # print(Received)
