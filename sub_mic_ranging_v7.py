@@ -671,10 +671,13 @@ if __name__ == '__main__':
 
 
                     T3T2 = result[0][0]
-                    T3T2_Record[counter_NumRanging] = result[0][0]
-                    ## For debug and record purposes
-                    fulldata[counter_NumRanging] = fulldata_temp
-                    fulldata_temp = []
+                    if Flag_TimeoutHappen:
+                        T3T2 = 0
+                        bt_data_prepare.Flag_NumSamples = False
+                        Flag_TimeoutHappen = False
+                    else:
+                        bt_data_prepare.Flag_NumSamples = True
+                    
 
 
                     # Send Bluetooth Data package to the other device with two purposes:
@@ -682,9 +685,14 @@ if __name__ == '__main__':
                     # 2. send T3-T2 information to the other device
 
                     bt_data_prepare.Valid = True
-                    bt_data_prepare.Flag_NumSamples = True
+                    # bt_data_prepare.Flag_NumSamples = True
                     bt_data_prepare.NumSamples = T3T2
                     bt_data_prepare.NumReTransmission = 0
+
+
+
+
+
                     raw_bt_data = bt_data_prepare.tobytes()
 
                         ## End
@@ -697,6 +705,12 @@ if __name__ == '__main__':
                     print("T3-T2 has been sent: ",T3T2)
 
                         # counter_NumRanging = counter_NumRanging + 1
+
+                    # For debugging purpose
+                    T3T2_Record[counter_NumRanging] = T3T2
+                    ## For debug and record purposes
+                    fulldata[counter_NumRanging] = fulldata_temp
+                    fulldata_temp = []
                     
 
 
@@ -720,6 +734,7 @@ if __name__ == '__main__':
                     Flag_SendSig = True
                     Flag_ExpRX = False
                     timeoutCount = 0
+                    Flag_TimeoutHappen = True
 
             
 
