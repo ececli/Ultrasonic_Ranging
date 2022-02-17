@@ -40,7 +40,7 @@ try:
             T3T2 = client_sock.recv(255).decode() 
             print("received T3T2: %s at %d" % (T3T2,counter))
 
-            client_sock.send(str(T3T2).encode())
+            # client_sock.send(str(T3T2).encode())
             counter = counter + 1
             time.sleep(1)
 

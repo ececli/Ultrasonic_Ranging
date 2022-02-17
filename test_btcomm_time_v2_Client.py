@@ -39,11 +39,12 @@ try:
 
             
 
-        bt_sock.send(str(T3T2).encode())
-
-        Received = bt_sock.recv(255).decode() 
-        print(Received)
+        bt_sock.send(str(counter).encode())
+        print("Sent ",counter)
+        # Received = bt_sock.recv(255).decode() 
+        # print(Received)
         counter = counter + 1
+        time.sleep(0.5)
 
         if counter == 100:
             duration = time.time() - startTime
