@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import time
 import zmq
 import sys
@@ -9,6 +11,7 @@ from numba import jit
 import os
 import csv
 import bluetooth
+import threading
 
 dt = np.dtype([('counter', 'i4'),
                ('status', 'i4'),
@@ -205,29 +208,71 @@ def peak_marking_block(y, yLen, filteredY, settings, state): #, signals): #, fil
 
 
 
+def bluetooth_thread(ID,target_address,port):
+    global Flag_sendBluetooth, Flag_recvBluetooth, Flag_recvdBluetooth
+    global bt_data_prepare, bt_data
+    bt_sock=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+
+    if ID == 1: # responder will bind and serve as a server
+        bt_sock.bind(("", port))   
+        bt_sock.listen(1)
+        print("[BLUETOOTH] Binded to own device with port %d." % port)
+
+        print('[BLUETOOTH] Waiting data from the other device')
+        client_sock, address = bt_sock.accept()  
+        print("[BLUETOOTH] Accepted connection from ", address)
+        time.sleep(1)
+
+    else: # initiator will act as a client
+        time.sleep(2)
+        bt_sock.connect((target_address, port))
+        print("[BLUETOOTH] Connected to the other device.")
+
+    while True:
+
+        if Flag_sendBluetooth:
+            raw_bt_data = bt_data_prepare.tobytes()
+            if ID == 1:
+                client_sock.send(raw_bt_data)
+            else:
+                bt_sock.send(raw_bt_data)
+            print("T3-T2 has been sent: ",T3T2)
+            Flag_sendBluetooth = False
+
+        if Flag_recvBluetooth:
+            if ID == 1:
+                raw_bt_data = client_sock.recv(255)
+            else:
+                raw_bt_data = bt_sock.recv(255)
+            # print("Received Bluetooth Data at ",time.time())
+            bt_data = np.frombuffer(raw_bt_data, dtype=dt_bt)
+            Flag_recvBluetooth = False
+            Flag_recvdBluetooth = True
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+    
+
+
+
+
+
 
 
 
 if __name__ == '__main__':
 
-    '''
-    # initialize ID
-    if len(sys.argv)>=2:
-        role = sys.argv[1]
-        print(role)
-    else:
-        role = 'responder'
-        print('Please enter role. Otherwise, role is responder')
-
-
-
-    if len(sys.argv)>=3:
-        GT = sys.argv[2]
-        print("Ground Truth is set as ", GT)
-    else:
-        GT = 0
-        print("Ground Truth is not set")
-    '''
 
     if len(sys.argv)>=2:
         GT = sys.argv[1]
@@ -236,29 +281,17 @@ if __name__ == '__main__':
         GT = 0
         print("Ground Truth is not set")
 
-
-
-
-
-    '''
-    if role == 'initiator':
-        ID = 1
-        theOtherID = 2
-    elif role == 'responder':
-        ID = 2
-        theOtherID = 1
-    else:
-        ID = 2
-        theOtherID = 1
-        print("role options: 1. initiator, 2. responder (default)")
-    '''
-
-    # Constants / Parameters
-    address_list = ['DC:A6:32:E1:9F:C8', 'DC:A6:32:E8:BF:E0']
+        address_list = ['DC:A6:32:E1:9F:C8', 'DC:A6:32:E8:BF:E0']
 
 
     port = 1
     
+
+
+    Flag_sendBluetooth = False
+    Flag_recvBluetooth = False
+    Flag_recvdBluetooth = False
+    bt_data_prepare = np.rec.array(np.zeros(1, dtype=dt_bt))
 
 
 
@@ -328,27 +361,19 @@ if __name__ == '__main__':
     print("Target Address is ",target_address)
 
 
-    bt_sock=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-
-    if ID == 1: # responder will bind and serve as a server
-        bt_sock.bind(("", port))   
-        bt_sock.listen(1)
-        print("Binded to own device with port %d." % port)
-
-        print('Waiting data from the other device')
-        client_sock, address = bt_sock.accept()  
-        print("Accepted connection from ", address)
-        time.sleep(1)
-
-    else: # initiator will act as a client
-        time.sleep(2)
-        bt_sock.connect((target_address, port))
-        print("Connected to the other device.")
+    
         
 
     # setup ID
     ID = func_determineRole(own_address,target_address)
     print("ID = ", ID)
+
+
+
+    t1 = threading.Thread(target=bluetooth_thread,args=(ID,target_address,port))
+
+    t1.start()
+
 
 
 
@@ -504,7 +529,7 @@ if __name__ == '__main__':
     Flag_TimeoutHappen = False
 
 
-    bt_data_prepare = np.rec.array(np.zeros(1, dtype=dt_bt))
+    
 
     try:
         # start loop 
@@ -647,6 +672,9 @@ if __name__ == '__main__':
                     # Wait to receive Bluetooth signal. Two purposes: 
                     # 1. After receiving Bluetooth signal, send ultrasonic sound out
                     # 2. Get T3 - T2 info and calculate Distance.
+
+
+                    '''
                     print("Prepare to Receive Bluetooth Data at ",time.time())
                     if ID == 1:
                         raw_bt_data = client_sock.recv(255)
@@ -654,31 +682,10 @@ if __name__ == '__main__':
                         raw_bt_data = bt_sock.recv(255)
                     print("Received Bluetooth Data at ",time.time())
                     bt_data = np.frombuffer(raw_bt_data, dtype=dt_bt)
-                    if len(bt_data)>1: 
-                        print("[Warning] More Than One Bluetooth Data Package Received")
+                    '''
+                    Flag_recvBluetooth = True
 
-                    if bt_data[-1][0] and bt_data[-1][1]:
-                        T3T2_R = bt_data[-1][3]
-                        Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
-                        Distance_Record[counter_NumRanging] = Distance
-                        print("[Distance Estimate], %.3f, %d, %d" %(Distance, counter_NumRanging,counter))
-
-
-
-
-                        ## For debug and record purposes
-                        fulldata[counter_NumRanging] = fulldata_temp
-                        fulldata_temp = []
-                        counter_NumRanging = counter_NumRanging + 1
-
-                    if bt_data[-1][2]: # last request
-                        Flag_lastRes = True
-
-
-
-                    jumpCount = jumpCount_Set
-                    Flag_jump = True
-                    Flag_SendSig = True
+                    
 
                     '''
                     ## END
@@ -739,8 +746,11 @@ if __name__ == '__main__':
 
 
 
+                    Flag_sendBluetooth = True
 
 
+
+                    '''
                     raw_bt_data = bt_data_prepare.tobytes()
 
                         ## End
@@ -751,7 +761,7 @@ if __name__ == '__main__':
                     else:
                         bt_sock.send(raw_bt_data)
                     print("T3-T2 has been sent: ",T3T2)
-
+                    '''
                         # counter_NumRanging = counter_NumRanging + 1
 
                     # For debugging purpose
@@ -760,7 +770,32 @@ if __name__ == '__main__':
                     
 
 
+            if Flag_recvdBluetooth:
+                if len(bt_data)>1: 
+                    print("[Warning] More Than One Bluetooth Data Package Received")
 
+                if bt_data[-1][0] and bt_data[-1][1]:
+                    T3T2_R = bt_data[-1][3]
+                    Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
+                    Distance_Record[counter_NumRanging] = Distance
+                    print("[Distance Estimate], %.3f, %d, %d" %(Distance, counter_NumRanging,counter))
+
+
+
+
+                    ## For debug and record purposes
+                    fulldata[counter_NumRanging] = fulldata_temp
+                    fulldata_temp = []
+                    counter_NumRanging = counter_NumRanging + 1
+
+                if bt_data[-1][2]: # last request
+                    Flag_lastRes = True
+
+
+
+                jumpCount = jumpCount_Set
+                Flag_jump = True
+                Flag_SendSig = True
 
 
 
@@ -873,4 +908,54 @@ if __name__ == '__main__':
 
     print('Finished Writing Raw Data to Files')
     '''
+
+
+
+
+
+
+    '''
+    # initialize ID
+    if len(sys.argv)>=2:
+        role = sys.argv[1]
+        print(role)
+    else:
+        role = 'responder'
+        print('Please enter role. Otherwise, role is responder')
+
+
+
+    if len(sys.argv)>=3:
+        GT = sys.argv[2]
+        print("Ground Truth is set as ", GT)
+    else:
+        GT = 0
+        print("Ground Truth is not set")
+    '''
+
+    
+
+
+
+
+
+    '''
+    if role == 'initiator':
+        ID = 1
+        theOtherID = 2
+    elif role == 'responder':
+        ID = 2
+        theOtherID = 1
+    else:
+        ID = 2
+        theOtherID = 1
+        print("role options: 1. initiator, 2. responder (default)")
+    '''
+
+    # Constants / Parameters
+
+
+
+
+    
 
