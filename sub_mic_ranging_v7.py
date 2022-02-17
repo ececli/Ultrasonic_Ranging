@@ -33,7 +33,7 @@ dt_state = np.dtype([('avgFilter', 'f8'),
                      ])
 
 
-dt_bt = np.dtype([('status','?'),
+dt_bt = np.dtype([('Valid','?'),
                 ('Flag_NumSamples', '?'),
                 ('NumSamples', 'i4'),
                 ('NumReTransmission', "i4")
@@ -251,7 +251,7 @@ if __name__ == '__main__':
     f0 = 25000 # Hz
     duration = 0.004 # second
 
-    NumRanging = 1000
+    NumRanging = 100
 
     jumpCount_Set = 20
 
@@ -476,6 +476,9 @@ if __name__ == '__main__':
     timeoutEventCounter = 0
     Flag_waitingT3T2 = False
 
+
+    bt_data_prepare = np.rec.array(np.zeros(1, dtype=dt_bt))
+
     try:
         # start loop 
         while True:
@@ -591,7 +594,7 @@ if __name__ == '__main__':
                     ## End
                     # T_RX = absIndex
                     Flag_ExpRX = False
-                    Flag_SendSig = True
+                    
                     ## For debug and record purposes:
                     # RecvRX_RecordCounter.append(counter)
                     ## End
@@ -611,19 +614,26 @@ if __name__ == '__main__':
                     # Wait to receive Bluetooth signal. Two purposes: 
                     # 1. After receiving Bluetooth signal, send ultrasonic sound out
                     # 2. Get T3 - T2 info and calculate Distance.
+                    if ID == 1:
+                        raw_bt_data = client_sock.recv(255)
+                    else:
+                        raw_bt_data = bt_sock.recv(255)
 
-                    raw_bt_data = client_sock.recv(255)
                     bt_data = np.frombuffer(raw_bt_data, dtype=dt_bt)
-                    if bt_data.Flag_NumSamples:
-                        T3T2_R = bt_data.NumSamples
+                    if len(bt_data)>1: 
+                        print("[Warning] More Than One Bluetooth Data Package Received")
+
+                    if bt_data[-1][0] and bt_data[-1][1]:
+                        T3T2_R = bt_data[-1][2]
                         Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
                         Distance_Record[counter_NumRanging] = Distance
                         print("[Distance Estimate], %.3f, %d, %d" %(Distance, counter_NumRanging,counter))
                         counter_NumRanging = counter_NumRanging + 1
 
 
+                    Flag_SendSig = True
 
-
+                        '''
                         ## END
                         # Flag_waitingT3T2 = True
                         print("Waiting T3-T2")
@@ -638,6 +648,7 @@ if __name__ == '__main__':
                         print("[Distance Estimate], %.3f, %d, %d, %f" %(Distance, counter_NumRanging,counter,checkTime))
 
                         counter_NumRanging = counter_NumRanging + 1
+                        '''
 
 
 
@@ -666,16 +677,26 @@ if __name__ == '__main__':
                     fulldata_temp = []
 
 
-                    # Send ready to receive US info and Send T3T2
+                    # Send Bluetooth Data package to the other device with two purposes:
+                    # 1. Let the other know that this device is ready to receive ultrasound signal from the other device
+                    # 2. send T3-T2 information to the other device
 
+                    bt_data_prepare.Valid = True
+                    bt_data_prepare.Flag_NumSamples = True
+                    bt_data_prepare.NumSamples = T3T2
+                    bt_data_prepare.NumReTransmission = 0
+                    raw_bt_data = bt_data_prepare.tobytes()
 
                         ## End
                         # print("Prepare to send T3-T2")
                         # time.sleep(0.1)
-                        bt_sock.send(str(T3T2).encode())
-                        print("T3-T2 has been sent: ",T3T2)
+                    if ID == 1:
+                        client_sock.send(raw_bt_data)
+                    else:
+                        bt_sock.send(raw_bt_data)
+                    print("T3-T2 has been sent: ",T3T2)
 
-                        counter_NumRanging = counter_NumRanging + 1
+                        # counter_NumRanging = counter_NumRanging + 1
                     
 
 
