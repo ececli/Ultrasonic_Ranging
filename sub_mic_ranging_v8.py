@@ -249,8 +249,10 @@ def bluetooth_thread(ID,target_address,port,stop_event):
             Flag_recvBluetooth = False
             Flag_recvdBluetooth = True
 
+
     bt_sock.close()
-    client_sock.close()
+    if ID == 1:
+        client_sock.close()
     print("[BLUETOOTH] Disconnected.")
 
 
@@ -294,7 +296,7 @@ if __name__ == '__main__':
     f0 = 25000 # Hz
     duration = 0.004 # second
 
-    NumRanging = 100
+    NumRanging = 5
 
     jumpCount_Set = 20
 
