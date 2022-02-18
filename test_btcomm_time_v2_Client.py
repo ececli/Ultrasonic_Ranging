@@ -11,7 +11,7 @@ dt_bt = np.dtype([('Flag_Valid','?'),
                 ('NumReTransmission', "i4")
                 ])
 
-bt_data_prep = np.rec.array(np.zeros(1, dtype=dt_bt))
+bt_data = np.rec.array(np.zeros(1, dtype=dt_bt))
 
 address_list = ['DC:A6:32:E1:9F:C8', 'DC:A6:32:E8:BF:E0']
 
@@ -44,16 +44,16 @@ startTime = time.time()
 
 try:
     while True:
-        bt_data_prep.Flag_NumSamples = True
-        bt_data_prep.Flag_Valid = True 
-        bt_data_prep.NumSamples = counter
-        bt_data_prep.NumReTransmission = 0
-        bt_data_prep.Flag_LastReq = False
-        raw_bt_data = bt_data_prep.tobytes()
+        bt_data.Flag_NumSamples = True
+        bt_data.Flag_Valid = True 
+        bt_data.NumSamples = counter
+        bt_data.NumReTransmission = 0
+        bt_data.Flag_LastReq = False
+        raw_bt_data = bt_data.tobytes()
         bt_sock.send(raw_bt_data)
         # print("Sent ",counter)
-        raw_bt_data = bt_sock.recv(255)
-        bt_data = np.frombuffer(raw_bt_data, dtype=dt_bt)
+        Received = bt_sock.recv(255)
+        bt_data_R = np.frombuffer(Received, dtype=dt_bt)
         # print(Received)
         counter = counter + 1
         # time.sleep(0.5)
