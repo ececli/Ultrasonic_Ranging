@@ -676,7 +676,7 @@ if __name__ == '__main__':
 
                     
             if Flag_prepBluetooth:
-                # print("Prepare to send Bluetooth Signal")
+                print("Prepare to send Bluetooth Signal")
 
                 if Flag_TimeoutHappen:
                     T3T2 = 0
@@ -690,7 +690,7 @@ if __name__ == '__main__':
                 if counter_NumRanging==NumRanging-1:
                     bt_data_prepare.Flag_LastReq = True
 
-
+                print("Send T3-T2 is ",T3T2)
                 bt_data_prepare.NumSamples = T3T2
                 bt_data_prepare.NumReTransmission = 0
 
@@ -704,13 +704,14 @@ if __name__ == '__main__':
 
 
             if Flag_recvdBluetooth:
-                # print("Received Bluetooth Data")
+                print("Received Bluetooth Data")
 
                 if len(bt_data)>1: 
                     print("[Warning] More Than One Bluetooth Data Package Received at %d, %d" % (counter_NumRanging,counter))
 
                 if bt_data[-1][0] and bt_data[-1][1]:
                     T3T2_R = bt_data[-1][3]
+                    print("Received T3-T2 is ", T3T2_R)
                     Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
                     Distance_Record[counter_NumRanging] = Distance
                     print("[Distance Estimate], %.3f, %d, %d" % (Distance, counter_NumRanging,counter))
