@@ -493,7 +493,7 @@ if __name__ == '__main__':
         # Flag_SendSig = True
         Flag_recvBluetooth = True
         Flag_prepBluetooth = False
-        Flag_TimeoutHappen = False
+        Flag_TimeoutHappen = True
     else:
         # Responder's setting
         # Flag_ExpRX = True
