@@ -296,7 +296,7 @@ if __name__ == '__main__':
     f0 = 25000 # Hz
     duration = 0.004 # second
 
-    NumRanging = 5
+    NumRanging = 1000
 
     jumpCount_Set = 20
 
@@ -676,7 +676,7 @@ if __name__ == '__main__':
 
                     
             if Flag_prepBluetooth:
-                print("Prepare to send Bluetooth Signal")
+                # print("Prepare to send Bluetooth Signal")
 
                 if Flag_TimeoutHappen:
                     T3T2 = 0
@@ -704,7 +704,7 @@ if __name__ == '__main__':
 
 
             if Flag_recvdBluetooth:
-                print("Received Bluetooth Data")
+                # print("Received Bluetooth Data")
 
                 if len(bt_data)>1: 
                     print("[Warning] More Than One Bluetooth Data Package Received at %d, %d" % (Distance, counter_NumRanging,counter))
