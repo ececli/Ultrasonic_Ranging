@@ -489,15 +489,11 @@ if __name__ == '__main__':
 
     if ID == 1:
         # Initiator's setting
-        # Flag_ExpRX = False
-        # Flag_SendSig = True
         Flag_recvBluetooth = True
         Flag_prepBluetooth = False
         Flag_TimeoutHappen = True
     else:
         # Responder's setting
-        # Flag_ExpRX = True
-        # Flag_SendSig = False
         Flag_recvBluetooth = False
         Flag_prepBluetooth = True
         Flag_TimeoutHappen = True
@@ -512,7 +508,7 @@ if __name__ == '__main__':
     Flag_jump = False
     jumpCount = 0
 
-    Flag_speedUpJit = True
+    # Flag_speedUpJit = True
 
     T3T2_Record = np.zeros(NumRanging)
     T4T1_Record = np.zeros(NumRanging)
@@ -521,6 +517,8 @@ if __name__ == '__main__':
     msgRXPD = " "
     msgSS = " "
     msgTXPD = " "
+    msgPB = " "
+    msgRB = " "
 
     # Timeout related setting
     timeoutEventCounter = 0
@@ -626,7 +624,7 @@ if __name__ == '__main__':
                 
                 ## For debug purpose, print out progress:
                 msgSS = f"[Signal Sent], {counter_NumRanging}, {counter}"
-                # print(msgSS)
+                print(msgSS)
                 ## End
 
                 Flag_ExpTX = True
@@ -645,7 +643,7 @@ if __name__ == '__main__':
 
                     ## For debug purpose, print out progress:
                     msgRXPD = f"[RX Peak Detected], {counter_NumRanging}, {counter}, {result}"
-                    # print(msgRXPD)
+                    print(msgRXPD)
                     
 
 
@@ -660,7 +658,7 @@ if __name__ == '__main__':
                 if Flag_ExpTX:
                     ## For debug purpose, print out progress:
                     msgTXPD = f"[TX Peak Detected], {counter_NumRanging}, {counter}, {result}"
-                    # print(msgTXPD)
+                    print(msgTXPD)
                     ## End
 
 
@@ -676,7 +674,9 @@ if __name__ == '__main__':
 
                     
             if Flag_prepBluetooth:
-                # print("Prepare to send Bluetooth Signal")
+
+                msgPB = f"[Prepare to Send Bluetooth], {counter_NumRanging}, {counter}"
+                print(msgPB)
 
                 if Flag_TimeoutHappen:
                     T3T2 = 0
@@ -704,7 +704,9 @@ if __name__ == '__main__':
 
 
             if Flag_recvdBluetooth:
-                # print("Received Bluetooth Data")
+
+                msgRB = f"[Received Bluetooth Data], {counter_NumRanging}, {counter}"
+                print(msgRB)
 
                 if len(bt_data)>1: 
                     print("[Warning] More Than One Bluetooth Data Package Received at %d, %d" % (counter_NumRanging,counter))
