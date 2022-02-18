@@ -57,7 +57,7 @@ try:
         counter = counter + 1
         # time.sleep(0.5)
 
-        if counter == 100:
+        if counter == 10000:
             duration = time.time() - startTime
             break
 
