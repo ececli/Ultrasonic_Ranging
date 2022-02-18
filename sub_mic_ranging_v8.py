@@ -707,7 +707,7 @@ if __name__ == '__main__':
                 # print("Received Bluetooth Data")
 
                 if len(bt_data)>1: 
-                    print("[Warning] More Than One Bluetooth Data Package Received at %d, %d" % (Distance, counter_NumRanging,counter))
+                    print("[Warning] More Than One Bluetooth Data Package Received at %d, %d" % (counter_NumRanging,counter))
 
                 if bt_data[-1][0] and bt_data[-1][1]:
                     T3T2_R = bt_data[-1][3]
