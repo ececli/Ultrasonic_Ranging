@@ -208,7 +208,7 @@ def peak_marking_block(y, yLen, filteredY, settings, state): #, signals): #, fil
 
 
 
-def bluetooth_thread(ID,target_address,port):
+def bluetooth_thread(ID,target_address,port,stop_event):
     global Flag_sendBluetooth, Flag_recvBluetooth, Flag_recvdBluetooth
     global bt_data_prepare, bt_data
     bt_sock=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
@@ -228,7 +228,7 @@ def bluetooth_thread(ID,target_address,port):
         bt_sock.connect((target_address, port))
         print("[BLUETOOTH] Connected to the other device.")
 
-    while True:
+    while not stop_event.is_set():
 
         if Flag_sendBluetooth:
             raw_bt_data = bt_data_prepare.tobytes()
@@ -236,7 +236,7 @@ def bluetooth_thread(ID,target_address,port):
                 client_sock.send(raw_bt_data)
             else:
                 bt_sock.send(raw_bt_data)
-            print("T3-T2 has been sent: ",T3T2)
+            # print("T3-T2 has been sent: ",T3T2)
             Flag_sendBluetooth = False
 
         if Flag_recvBluetooth:
@@ -248,6 +248,11 @@ def bluetooth_thread(ID,target_address,port):
             bt_data = np.frombuffer(raw_bt_data, dtype=dt_bt)
             Flag_recvBluetooth = False
             Flag_recvdBluetooth = True
+
+    bt_sock.close()
+    client_sock.close()
+    print("[BLUETOOTH] Disconnected.")
+
 
 
 
@@ -352,8 +357,8 @@ if __name__ == '__main__':
     print("ID = ", ID)
 
 
-
-    t1 = threading.Thread(target=bluetooth_thread,args=(ID,target_address,port))
+    stop_event = threading.Event()
+    t1 = threading.Thread(target=bluetooth_thread,args=(ID,target_address,port,stop_event))
 
     t1.start()
 
@@ -828,6 +833,7 @@ if __name__ == '__main__':
 
     print('Finished Writing Raw Data to Files')
     '''
+    stop_event.set()
 
 
 
