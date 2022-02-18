@@ -529,6 +529,7 @@ if __name__ == '__main__':
     Flag_ExpRX = False
     Flag_ExpTX = False
     Flag_SendSig = False
+    Flag_lastRes = False
 
     
 
@@ -686,6 +687,9 @@ if __name__ == '__main__':
 
                 bt_data_prepare.Flag_Valid = True
                 bt_data_prepare.Flag_LastReq = False
+                if counter_NumRanging==NumRanging-1:
+                    bt_data_prepare.Flag_LastReq = True
+
 
                 bt_data_prepare.NumSamples = T3T2
                 bt_data_prepare.NumReTransmission = 0
