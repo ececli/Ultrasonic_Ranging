@@ -9,8 +9,9 @@ dt_bt = np.dtype([('id','U17'),
                 ('NumSamples', 'i4')
                 ])
 '''
-dt_bt = np.dtype([('status','?'),
+dt_bt = np.dtype([('Flag_Valid','?'),
                 ('Flag_NumSamples', '?'),
+                ('Flag_LastReq','?'),
                 ('NumSamples', 'i4'),
                 ('NumReTransmission', "i4")
                 ])
@@ -51,15 +52,15 @@ try:
             # T3T2 = client_sock.recv(255).decode() 
             raw_bt_data = client_sock.recv(255)
             bt_data = np.frombuffer(raw_bt_data, dtype=dt_bt)
-            print(counter)
-            print("length of data is ", len(bt_data))
-            print(bt_data)
-            print(bt_data[-1][2])
+            # print(counter)
+            # print("length of data is ", len(bt_data))
+            # print(bt_data)
+            # print(bt_data[-1][3])
             # print("received T3T2: %s at %d" % (T3T2,counter))
-
-            # client_sock.send(str(T3T2).encode())
+            T3T2 = bt_data[-1][3]
+            client_sock.send(str(T3T2).encode())
             counter = counter + 1
-            time.sleep(1)
+            # time.sleep(1)
 
 
 

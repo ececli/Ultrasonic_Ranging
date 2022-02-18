@@ -4,8 +4,9 @@ import time
 import numpy as np
 
 
-dt_bt = np.dtype([('status','?'),
+dt_bt = np.dtype([('Flag_Valid','?'),
                 ('Flag_NumSamples', '?'),
+                ('Flag_LastReq','?'),
                 ('NumSamples', 'i4'),
                 ('NumReTransmission', "i4")
                 ])
@@ -44,16 +45,17 @@ startTime = time.time()
 try:
     while True:
         bt_data.Flag_NumSamples = True
-        bt_data.status = False 
+        bt_data.Flag_Valid = True 
         bt_data.NumSamples = counter
         bt_data.NumReTransmission = 0
+        bt_data.Flag_LastReq = False
         raw_bt_data = bt_data.tobytes()
         bt_sock.send(raw_bt_data)
         print("Sent ",counter)
-        # Received = bt_sock.recv(255).decode() 
+        Received = bt_sock.recv(255).decode() 
         # print(Received)
         counter = counter + 1
-        time.sleep(0.5)
+        # time.sleep(0.5)
 
         if counter == 100:
             duration = time.time() - startTime
