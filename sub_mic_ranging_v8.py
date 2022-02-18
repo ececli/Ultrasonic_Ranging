@@ -675,10 +675,10 @@ if __name__ == '__main__':
 
                     
             if Flag_prepBluetooth:
+                print("Prepare to send Bluetooth Signal")
 
                 if Flag_TimeoutHappen:
                     T3T2 = 0
-                    print("Time out happens, T3T2 = ",T3T2)
                     bt_data_prepare.Flag_NumSamples = False
                     Flag_TimeoutHappen = False
                 else:
@@ -696,6 +696,7 @@ if __name__ == '__main__':
 
 
             if Flag_recvdBluetooth:
+                print("Received Bluetooth Data")
 
                 if len(bt_data)>1: 
                     print("[Warning] More Than One Bluetooth Data Package Received at %d, %d" % (Distance, counter_NumRanging,counter))
