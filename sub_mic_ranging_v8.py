@@ -694,6 +694,10 @@ if __name__ == '__main__':
                 Flag_prepBluetooth = False
                 Flag_ExpRX = True
 
+                if Flag_lastRes:
+                    print("Sent out the last T3-T2. ")
+                    break
+
 
             if Flag_recvdBluetooth:
                 print("Received Bluetooth Data")
@@ -729,7 +733,7 @@ if __name__ == '__main__':
 
             if counter_NumRanging>=NumRanging:
                 print("Ranging Finished! Total counter=",counter)
-                GPIO.cleanup()
+                # GPIO.cleanup()
                 # logFile.close()
                 break
             
@@ -752,32 +756,25 @@ if __name__ == '__main__':
 
 
     except KeyboardInterrupt:
-        GPIO.cleanup()
+        # GPIO.cleanup()
         # logFile.close()
         print("Terminated by User")
 
     Duration = time.time()-startTime
-    
+    GPIO.cleanup()
+    time.sleep(1)
 
-    if ID == 1:
-        # print("T4T1:")
-        # print(T4T1_Record)
-        # This operation only works on my home network since two devices' IP is 130 and 131
-
-
-        # print("T3T2:")
-        # print(T3T2)            
-        
-        a = Distance_Record[(Distance_Record>0) & (Distance_Record<5)]
+           
+    a = Distance_Record[(Distance_Record>0) & (Distance_Record<5)]
         
         # print(a)
-        if a.size>0:
-            print(len(a),np.mean(a),np.std(a))
-            if Flag_write2CSV:
-                create_csv(csv_filename, csv_head)
-                csv_data = [NumRanging,len(a),jumpCount_Set,int(Flag_usingWindowing),GT,np.mean(a),np.std(a),Duration,startTime, int(Flag_abnormal)]
-                write_csv(csv_filename, csv_data)
-        print("Numbers of Timeout happens ",timeoutEventCounter)
+    if a.size>0:
+        print(len(a),np.mean(a),np.std(a))
+        if Flag_write2CSV:
+            create_csv(csv_filename, csv_head)
+            csv_data = [NumRanging,len(a),jumpCount_Set,int(Flag_usingWindowing),GT,np.mean(a),np.std(a),Duration,startTime, int(Flag_abnormal)]
+            write_csv(csv_filename, csv_data)
+    print("Numbers of Timeout happens ",timeoutEventCounter)
         # mqttc.closeClient()
     # else:
         # mqttc.sendMsg(topic_t3t2, T3T2_Record)
