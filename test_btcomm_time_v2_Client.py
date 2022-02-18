@@ -53,6 +53,7 @@ try:
         bt_sock.send(raw_bt_data)
         # print("Sent ",counter)
         Received = bt_sock.recv(255)
+        print(Received)
         bt_data_R = np.frombuffer(Received, dtype=dt_bt)
         # print(Received)
         counter = counter + 1
