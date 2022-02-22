@@ -296,7 +296,7 @@ if __name__ == '__main__':
     f0 = 25000 # Hz
     duration = 0.004 # second
 
-    NumRanging = 1000
+    NumRanging = 10
 
     jumpCount_Set = 20
 
@@ -535,6 +535,7 @@ if __name__ == '__main__':
         # start loop 
         while True:
             rawData = mic_subscriber.recv()
+            print(counter, time.time())
 
             counter = counter + 1
 
