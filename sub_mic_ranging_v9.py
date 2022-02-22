@@ -529,13 +529,13 @@ if __name__ == '__main__':
     Flag_SendSig = False
     Flag_lastRes = False
 
-    
+    systemStartTime = time.time()
 
     try:
         # start loop 
         while True:
             rawData = mic_subscriber.recv()
-            print(counter, time.time())
+            print(counter, time.time()-systemStartTime)
 
             counter = counter + 1
 
