@@ -502,6 +502,7 @@ if __name__ == '__main__':
                 sendSignal(pin_OUT,1e-4)
                 Flag_SendSig = False
                 msgSS = f"[Signal Sent], {counter_NumRanging}, {counter}"
+                print(msgSS)
 
 
 
@@ -527,6 +528,7 @@ if __name__ == '__main__':
                     # print("Received signal from the other device")
                     # print("[RX Peak Detected] ",counter_NumRanging,counter,result)
                     msgRXPD = f"[RX Peak Detected], {counter_NumRanging}, {counter}, {result}"
+                    print(msgRXPD)
                     ## End
                     # T_RX = absIndex
                     Flag_ExpRX = False
@@ -549,6 +551,7 @@ if __name__ == '__main__':
                     # 1. General process after receiving its own signal
                     # print("[TX Peak Detected] ",counter_NumRanging,counter,result)
                     msgTXPD = f"[TX Peak Detected], {counter_NumRanging}, {counter}, {result}"
+                    print(msgTXPD)
                     # T_TX = absIndex
                     Flag_ExpRX = True
                     ## For debug and record purposes:
