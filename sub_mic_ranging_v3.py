@@ -235,7 +235,7 @@ if __name__ == '__main__':
     f0 = 25000 # Hz
     duration = 0.004 # second
 
-    NumRanging = 1000
+    NumRanging = 10
 
     jumpCount_Set = 20
 
@@ -408,10 +408,17 @@ if __name__ == '__main__':
     msgSS = " "
     msgTXPD = " "
 
+    previousTime = time.time()
+
     try:
         # start loop 
         while True:
             rawData = mic_subscriber.recv()
+
+            currentTime = time.time()
+            if time.time()-previousTime > 0.001:
+                print(counter, time.time()-previousTime)
+            previousTime = currentTime
 
             counter = counter + 1
 
