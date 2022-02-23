@@ -253,7 +253,7 @@ if __name__ == '__main__':
     f0 = 25000 # Hz
     duration = 0.004 # second
 
-    NumRanging = 10
+    NumRanging = 1000
 
     jumpCount_Set = 20
 
@@ -606,7 +606,7 @@ if __name__ == '__main__':
 
                     ## For debug purpose, print out progress:
                     msgRXPD = f"[RX Peak Detected], {counter_NumRanging}, {counter}, {result}"
-                    print(msgRXPD)
+                    # print(msgRXPD)
                     
 
 
@@ -624,7 +624,7 @@ if __name__ == '__main__':
                 if Flag_ExpTX:
                     ## For debug purpose, print out progress:
                     msgTXPD = f"[TX Peak Detected], {counter_NumRanging}, {counter}, {result}"
-                    print(msgTXPD)
+                    # print(msgTXPD)
                     ## End
 
 
@@ -645,7 +645,7 @@ if __name__ == '__main__':
             if Flag_prepBluetooth:
 
                 msgPB = f"[Prepare to Send Bluetooth], {counter_NumRanging}, {counter}"
-                print(msgPB)
+                # print(msgPB)
 
                 if Flag_TimeoutHappen:
                     T3T2 = 0
@@ -706,7 +706,7 @@ if __name__ == '__main__':
             if Flag_recvdBluetooth:
 
                 msgRB = f"[Received Bluetooth Data], {counter_NumRanging}, {counter}"
-                print(msgRB)
+                # print(msgRB)
 
                 if len(bt_data)>1: 
                     print("[Warning] More Than One Bluetooth Data Package Received at %d, %d" % (counter_NumRanging,counter))
@@ -748,7 +748,7 @@ if __name__ == '__main__':
                 
                 ## For debug purpose, print out progress:
                 msgSS = f"[Signal Sent], {counter_NumRanging}, {counter}"
-                print(msgSS)
+                # print(msgSS)
                 ## End
 
                 Flag_ExpTX = True
