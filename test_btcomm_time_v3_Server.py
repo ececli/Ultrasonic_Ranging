@@ -50,7 +50,11 @@ try:
         counter = 0
         while True:
             # T3T2 = client_sock.recv(255).decode()
-            raw_bt_data = client_sock.recv(255)
+            try:
+                raw_bt_data = client_sock.recv(255)
+            except bluetooth.BluetoothError as e:
+                print(counter,e)
+
             bt_data = np.frombuffer(raw_bt_data, dtype=dt_bt)
             print(counter)
             print("length of data is ", len(bt_data))
