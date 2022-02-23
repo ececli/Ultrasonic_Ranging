@@ -55,12 +55,12 @@ try:
             print(counter)
             print("length of data is ", len(bt_data))
             print(bt_data)
-            print(bt_data[-1][3])
+            # print(bt_data[-1][3])
             
             T3T2 = bt_data[-1][3]
             client_sock.send(str(T3T2).encode())
             counter = counter + 1
-            # time.sleep(1)
+            time.sleep(1)
 
 
 

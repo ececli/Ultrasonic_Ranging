@@ -57,9 +57,9 @@ try:
         # bt_data_R = np.frombuffer(Received, dtype=dt_bt)
         # print(Received)
         counter = counter + 1
-        # time.sleep(0.5)
+        time.sleep(0.5)
 
-        if counter == 1000:
+        if counter == 10:
             duration = time.time() - startTime
             break
 
