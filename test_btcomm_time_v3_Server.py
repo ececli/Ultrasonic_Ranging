@@ -54,17 +54,19 @@ try:
                 raw_bt_data = client_sock.recv(255)
             except bluetooth.BluetoothError as e:
                 print(counter,e)
+                break
 
+            print(counter, time.time())
             bt_data = np.frombuffer(raw_bt_data, dtype=dt_bt)
             print(counter)
             print("length of data is ", len(bt_data))
             print(bt_data)
             # print(bt_data[-1][3])
             
-            T3T2 = bt_data[-1][3]
-            client_sock.send(str(T3T2).encode())
+            # T3T2 = bt_data[-1][3]
+            # client_sock.send(str(T3T2).encode())
             counter = counter + 1
-            time.sleep(1)
+            time.sleep(0.1)
 
 
 
