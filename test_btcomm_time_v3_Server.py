@@ -40,34 +40,45 @@ bt_sock.bind(("", port))
 bt_sock.listen(1)
 print("Binded to own device with port %d." % port)
 
-
+raw_bt_data = 0
 try:
     while True:
         print('Waiting data from the other device')
         client_sock, address = bt_sock.accept()  
         print("Accepted connection from ", address)
-        # bt_sock.setblocking(0)
+        client_sock.setblocking(0)
 
         counter = 0
         while True:
             # T3T2 = client_sock.recv(255).decode()
+            # print(counter, time.time())
             try:
-                raw_bt_data = client_sock.recv(255, flag=0)
-            except Exception as e:
-                print(counter,e)
-                
+                raw_bt_data = client_sock.recv(255)
+            # except Exception as e:
+            except bluetooth.BluetoothError as e:
+                if e.errno == 11: 
+                    pass
+                else:
+                    # print(e)
+                    raise e
+                    break
 
-            print(counter, time.time())
-            bt_data = np.frombuffer(raw_bt_data, dtype=dt_bt)
-            print(counter)
-            print("length of data is ", len(bt_data))
-            print(bt_data)
+            if raw_bt_data:
+                bt_data = np.frombuffer(raw_bt_data, dtype=dt_bt)
+                print("length of data is ", len(bt_data))
+                print(bt_data)
+                raw_bt_data = 0
+
+            
+            # bt_data = np.frombuffer(raw_bt_data, dtype=dt_bt)
+            # print(counter)
+            
             # print(bt_data[-1][3])
             
             # T3T2 = bt_data[-1][3]
             # client_sock.send(str(T3T2).encode())
             counter = counter + 1
-            # time.sleep(1)
+            time.sleep(1)
 
 
 
