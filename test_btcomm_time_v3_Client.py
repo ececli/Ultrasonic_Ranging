@@ -25,13 +25,13 @@ print("Own Address is ", own_address)
 print("Target Address is ",target_address)
 
 
-# port = 1
-port = 0x1001
+port = 1
+# port = 0x1001
 
 
 
-# bt_sock=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-bt_sock=bluetooth.BluetoothSocket(bluetooth.L2CAP)
+bt_sock=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+# bt_sock=bluetooth.BluetoothSocket(bluetooth.L2CAP)
 
 
 time.sleep(5)
