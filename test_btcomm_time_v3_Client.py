@@ -25,13 +25,13 @@ print("Own Address is ", own_address)
 print("Target Address is ",target_address)
 
 
-port = 1
-# port = 0x1001
+# port = 1
+port = 0x1001
 
 
 
-bt_sock=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-# bt_sock=bluetooth.BluetoothSocket(bluetooth.L2CAP)
+# bt_sock=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+bt_sock=bluetooth.BluetoothSocket(bluetooth.L2CAP)
 
 
 time.sleep(5)
@@ -39,7 +39,7 @@ time.sleep(5)
 bt_sock.connect((target_address, port))
 print("Connected to the other device.")
 # print("Current flush timeout is {} ms.".format(bluetooth.read_flush_timeout(target_address)))
-bluetooth.set_packet_timeout( target_address, 1 )
+# bluetooth.set_packet_timeout( target_address, 1 )
 
 time.sleep(1)
 counter = 0
