@@ -77,7 +77,9 @@ except Exception as e:
 except KeyboardInterrupt:
 
     bt_sock.close()
-    print('Disconnect by user.')   
+    print('Disconnect by user.')
+
+time.sleep(10)
 print("Duration is ", duration)
 bt_sock.close()
 

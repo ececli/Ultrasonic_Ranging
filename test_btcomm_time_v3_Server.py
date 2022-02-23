@@ -67,7 +67,7 @@ try:
             # T3T2 = bt_data[-1][3]
             # client_sock.send(str(T3T2).encode())
             counter = counter + 1
-            # time.sleep(0.1)
+            time.sleep(1)
 
 
 
