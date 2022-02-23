@@ -511,11 +511,12 @@ if __name__ == '__main__':
         # start loop 
         while True:
             rawData = mic_subscriber.recv()
+            '''
             currentTime = time.time()
             if time.time()-previousTime > 0.001:
                 print(counter, time.time()-previousTime)
             previousTime = currentTime
-
+            '''
             counter = counter + 1
 
 
