@@ -28,11 +28,12 @@ for addr in address_list:
 print("Own Address is ", own_address)
 print("Target Address is ",target_address)
 
-port = 0x1001
+# port = 0x1001
+port = 1
 
 
-# bt_sock_T=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-bt_sock=bluetooth.BluetoothSocket(bluetooth.L2CAP)
+bt_sock=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+# bt_sock=bluetooth.BluetoothSocket(bluetooth.L2CAP)
 
 
 bt_sock.bind(("", port))   
@@ -50,11 +51,11 @@ try:
         counter = 0
         while True:
             # T3T2 = client_sock.recv(255).decode()
-            try:
-                raw_bt_data = client_sock.recv(255)
-            except bluetooth.BluetoothError as e:
-                print(counter,e)
-                break
+            # try:
+            raw_bt_data = client_sock.recv(255)
+            # except bluetooth.BluetoothError as e:
+            #     print(counter,e)
+            #     break
 
             print(counter, time.time())
             bt_data = np.frombuffer(raw_bt_data, dtype=dt_bt)
@@ -66,7 +67,7 @@ try:
             # T3T2 = bt_data[-1][3]
             # client_sock.send(str(T3T2).encode())
             counter = counter + 1
-            time.sleep(0.1)
+            # time.sleep(0.1)
 
 
 
