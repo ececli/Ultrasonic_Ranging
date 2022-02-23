@@ -46,16 +46,16 @@ try:
         print('Waiting data from the other device')
         client_sock, address = bt_sock.accept()  
         print("Accepted connection from ", address)
-
+        # bt_sock.setblocking(0)
 
         counter = 0
         while True:
             # T3T2 = client_sock.recv(255).decode()
             try:
-                raw_bt_data = client_sock.recv(255, flag = NOBLOCKING)
-            except bluetooth.BluetoothError as e:
+                raw_bt_data = client_sock.recv(255, flag=0)
+            except Exception as e:
                 print(counter,e)
-                break
+                
 
             print(counter, time.time())
             bt_data = np.frombuffer(raw_bt_data, dtype=dt_bt)
