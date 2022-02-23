@@ -56,7 +56,7 @@ try:
             print("length of data is ", len(bt_data))
             print(bt_data)
             print(bt_data[-1][3])
-            print("received T3T2: %s at %d" % (T3T2,counter))
+            
             T3T2 = bt_data[-1][3]
             client_sock.send(str(T3T2).encode())
             counter = counter + 1
