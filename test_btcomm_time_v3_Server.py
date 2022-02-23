@@ -49,7 +49,7 @@ try:
 
         counter = 0
         while True:
-            # T3T2 = client_sock.recv(255).decode() 
+            # T3T2 = client_sock.recv(255).decode()
             raw_bt_data = client_sock.recv(255)
             bt_data = np.frombuffer(raw_bt_data, dtype=dt_bt)
             print(counter)

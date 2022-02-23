@@ -38,6 +38,8 @@ time.sleep(5)
 # bt_sock_T.connect((target_address, port2))
 bt_sock.connect((target_address, port))
 print("Connected to the other device.")
+print("Current flush timeout is {} ms.".format(bluetooth.read_flush_timeout(target_address)))
+
 time.sleep(1)
 counter = 0
 startTime = time.time()
