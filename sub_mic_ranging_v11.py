@@ -262,7 +262,7 @@ if __name__ == '__main__':
 
     NumRanging = 1000
 
-    jumpCount_Set = 15
+    jumpCount_Set = 10
 
 
     Flag_usingWindowing = False # choose whether to use hanning windowing or not
