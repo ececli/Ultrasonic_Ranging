@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
-
+# v11 - is the version using a seperate python code, i.e., BtComm_v2.py, which in charge of communication. This code (v11)
+#       uses zmq to communicate with Bt_Comm_v2.py. 
 # v10 - is the version without using threading. The author found a way to set the bluetooth recv as non-blocking method.
 # v9  - is the version using threading. The author added some debug commands to see why the two-way ranging took long time 
 #       than expected. Then the author found that it is because multi-threading. The bluetooth thread and main thread 
