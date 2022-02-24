@@ -723,7 +723,8 @@ if __name__ == '__main__':
                     # print("Received T3-T2 is ", T3T2_R)
                     Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
                     Distance_Record[counter_NumRanging] = Distance
-                    print("[Distance Estimate], %.3f, %d, %d" % (Distance, counter_NumRanging,counter))
+                    if (Distance>10) or (Distance<0):
+                        print("[Distance Estimate], %.3f, %d, %d" % (Distance, counter_NumRanging,counter))
 
 
 
