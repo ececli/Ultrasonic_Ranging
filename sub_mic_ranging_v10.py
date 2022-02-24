@@ -503,6 +503,7 @@ if __name__ == '__main__':
     msgTXPD = " "
     msgPB = " "
     msgRB = " "
+    msgTO = " "
 
     # Timeout related setting
     timeoutEventCounter = 0
@@ -522,7 +523,7 @@ if __name__ == '__main__':
             '''
             currentTime = time.time()
             if time.time()-previousTime > 0.001:
-                print(counter, time.time()-previousTime)
+                print("Time difference between two buffer data is ", time.time()-previousTime, counter_NumRanging, counter)
             previousTime = currentTime
             '''
             counter = counter + 1
@@ -776,7 +777,8 @@ if __name__ == '__main__':
             if ID == 1:
                 timeoutCount = timeoutCount + 1
                 if timeoutCount >= max_timeoutCount:
-                    print("Timeout")
+                    msgTO = f"Timeout, {counter_NumRanging}, {counter}"
+                    print(msgTO)
                     timeoutEventCounter = timeoutEventCounter + 1
                     Flag_SendSig = True
                     Flag_ExpRX = False

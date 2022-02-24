@@ -38,9 +38,10 @@ while True:
     try:
         blue2data = subscriber.recv(flags=zmq.NOBLOCK)
         bt_data = np.frombuffer(blue2data, dtype=dt_bt)
-        print("length of data is ", len(bt_data))
-        print(bt_data)
-    # except Exception as e:
+        print("length of data is ", len(bt_data), bt_data)
+
+        publisher.send(blue2data)
+
     except zmq.Again as e:
         pass
 
