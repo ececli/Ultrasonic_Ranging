@@ -728,6 +728,8 @@ if __name__ == '__main__':
                         T3T2_R = bt_data[-1][3]
                         Flag_recvdT3T2 = True
 
+                        print("Obtained T3-T2 at %d, %d" % (counter_NumRanging,counter))
+
    
                 else:
                     print("[Warning] Recevied Unexpected Bluetooth Data at %d, %d" % (counter_NumRanging,counter))
