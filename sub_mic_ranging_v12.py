@@ -482,7 +482,7 @@ if __name__ == '__main__':
         Flag_recvdTX = True
         Flag_TimeoutHappen = True
 
-
+    Flag_recvdT3T2 = False
 
     Flag_abnormal = False
     Flag_initial = True
@@ -623,8 +623,10 @@ if __name__ == '__main__':
                     T4T1_Record[counter_NumRanging] = T4T1
 
 
-                    Flag_recvdRX = True # mark that the RX signal is detected
+                    
                     Flag_ExpRX = False
+                    Flag_recvdRX = True
+                    
 
                     jumpCount = jumpCount_Set
                     Flag_jump = True
@@ -683,7 +685,7 @@ if __name__ == '__main__':
                 Flag_ExpRX = True
 
                 if Flag_lastRes:
-                    # print("Sent out the last T3-T2. ")
+                    print("[Info] Sent out the last T3-T2 at %d, %d" % (counter_NumRanging,counter))
                     break
 
 
@@ -722,33 +724,37 @@ if __name__ == '__main__':
                     # If waiting for a RX signal or just received a RX signal, 
                     # the received bluetooth is expected. Otherwise, something must be wrong
 
-
                     if bt_data[-1][0] and bt_data[-1][1]: # if data is valid and numSamples is valid
                         T3T2_R = bt_data[-1][3]
-                        # print("Received T3-T2 is ", T3T2_R)
-                        Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
-                        Distance_Record[counter_NumRanging] = Distance
-                        # if (Distance>10) or (Distance<0):
-                        print("[Distance Estimate], %.3f, %d, %d" % (Distance, counter_NumRanging,counter))
+                        Flag_recvdT3T2 = True
 
-                                            ## For debug and record purposes
-                        fulldata[counter_NumRanging] = fulldata_temp
-                        fulldata_temp = []
-                        counter_NumRanging = counter_NumRanging + 1
-
-
-                    Flag_SendSig = True
-                    Flag_recvdRX = False
-
+   
                 else:
                     print("[Warning] Recevied Unexpected Bluetooth Data at %d, %d" % (counter_NumRanging,counter))
 
 
 
                 if bt_data[-1][2]: # last request
+                    print("[Info] Last request received at %d, %d" % (counter_NumRanging,counter))
                     Flag_lastRes = True
 
 
+            if Flag_recvdRX and Flag_recvdT3T2:
+                # When both ready, Calculate Distance
+
+                Distance = SOUNDSPEED * (T4T1 - T3T2_R)/2/RATE 
+                Distance_Record[counter_NumRanging] = Distance
+                # if (Distance>10) or (Distance<0):
+                print("[Distance Estimate], %.3f, %d, %d" % (Distance, counter_NumRanging,counter))
+
+                                    ## For debug and record purposes
+                fulldata[counter_NumRanging] = fulldata_temp
+                fulldata_temp = []
+                counter_NumRanging = counter_NumRanging + 1
+
+                Flag_SendSig = True
+                Flag_recvdRX = False
+                Flag_recvdT3T2 = False
 
 
 
