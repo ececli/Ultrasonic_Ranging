@@ -730,6 +730,10 @@ if __name__ == '__main__':
 
                         print("Obtained T3-T2 at %d, %d" % (counter_NumRanging,counter))
 
+                    if bt_data[-1][0] and (not bt_data[-1][1]): # if data is valid but numSample is null
+                        Flag_SendSig = True
+                        Flag_recvdRX = False
+
    
                 else:
                     print("[Warning] Recevied Unexpected Bluetooth Data at %d, %d" % (counter_NumRanging,counter))
