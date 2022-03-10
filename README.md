@@ -23,3 +23,20 @@ The detailed descriptions can be found in each version, including the hardware a
 
 Please note that the code in the main branch may not be the latest updates. 
 
+
+## Copyright
+
+See [LICENSE.md](/LICENSE.md).
+
+<!--
+## Acknowledgments
+
+*Note: Add this if you want to acknowledge people beyond the main contributors.*
+
+* Hat tip to anyone whose code was used
+* Inspiration
+* etc
+-->
+## Contact
+
+Please contact Chang Li (<chang.li@nist.gov>) or Nader Moayeri (<nader.moayeri@nist.gov>) if you have any questions. Thank you.
