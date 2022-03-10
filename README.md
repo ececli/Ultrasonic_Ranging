@@ -1,49 +1,25 @@
-# Ultrasonic Ranging for Two Raspberry Pi
+# Ultrasonic Ranging for Two Raspberry Pis
 
-The purpose of this project is to obtain ranging estimation between two Raspberry Pi. To obtain accurate ranging, we deploy ultrasonic transmitter and receiver on a Raspberry Pi, and estimate the time-of-flight (ToF) to get the distance. The conventional two-way ranging method is applied. 
+This is a part of the proximity detection system of our project. The project is to develop an accurate proximity detection system based on the Raspberry Pi platform, which integrates Bluetooth, ultrasonic, and/or UWB techniques. The initial purpose of this project is to help to blunt the spread of COVID-19 by deploying a contact tracing system. The proximity detection system can also be used for collision avoidance, robot localization system, etc.  The project is divided into multiple phases. 
+* In the first phase, we used Bluetooth RSSI to estimate the distance between two devices, which could only provide a coarse estimation. 
+* In the second phase, which is the current one, we are developing an accurate proximity detection system using an ultrasonic signal. Specifically, instead of using strength to estimate the distance between two devices, we use the time-of-flight (ToF) of the ultrasonic signal to estimate the distance. 
+* In the third phase, we will investigate if the UWB technique can be applied to the Raspberry Pi platform to perform accurate ranging. 
+* In the fourth phase, we will integrate all the techniques we developed into the proximity detection system. 
 
-## Assembling Hardware
-
-In this project, we use Raspberry Pi 4B as micro-controllers, and we add a buzzer (i.e., speaker) and a microphone to a Raspberry Pi. The buzzer we used is a piezo buzzer from TDK Corporation with model no. PS1720P02. Please check this [link](https://www.digikey.com/en/products/detail/tdk-corporation/PS1720P02/935932) for reference. Although this buzzer is not designed for ultrasound, we found that it works fine with freqeuncy around 20-30 kHz. The microphone we choose is [Adafruit I2S MEMS Microphone Breakout](https://www.adafruit.com/product/3421) and its wiring and setup instrcution to the Raspberry Pi can be found [here](https://learn.adafruit.com/adafruit-i2s-mems-microphone-breakout/raspberry-pi-wiring-test). 
-
-It is simple to drive the buzzer. If you want the buzzer to generate a certain frequency sound, you can provide the same frequency square-wave to the buzzer. In the beginning, we used Pin 12 and GND to connect the buzzer. But now we have changed to use Pin 4 and Pin 12 to connect the buzzer and use diffierential signaling to drive the buzzer. In this way, the buzzer generates sound with more power. 
-
-
-
-## Setup
-
-To provide precise wave form the buzzer, pigpio package needs to be installed first. Detailed information about pigpio package can be found [here](https://abyz.me.uk/rpi/pigpio/). Based on the instruction from their [website](https://abyz.me.uk/rpi/pigpio/download.html), type:
-```
-$ sudo apt-get update
-$ sudo apt-get install pigpio python-pigpio python3-pigpio
-```
-After installing pigpio package, we need to enable pigpiod, by
-```
-$ sudo pigpiod
-```
-or
-```
-sudo systemctl enable pigpiod
-```
-
-To obtain the microphone data in Python, pyaudio package is needed. The installation instruction can be found [here](http://people.csail.mit.edu/hubert/pyaudio/). 
+Note that one feature of the ultrasonic signal is that the signal is easily blocked by the obstacles such as walls and doors, compared with the RF signal such as Bluetooth, Wi-Fi, or UWB. It becomes an advantage in terms of the COVID-19 proximity detection, because when two persons are separated by a wall,  the system won't estimate a very close distance, even though the distance between the two persons is close.
 
 
-## Two-Way Ranging Algorithm
+## Project Status: [Active Development]
 
+We have developed two versions of the prototype of the ultrasonic ranging system. Both versions use two-way ranging techniques. The difference between the versions is how the system acquires timestamps to calculate the ToF. 
 
+* **Version 1** -  A completed version that uses a Raspberry Pi,  a piezoelectric buzzer, and a microelectromechanical systems (MEMS) microphone. The system records timestamps of sending the signal out and receiving the signal by `time.time()` in Python. Compared with Version 2, this version doesn't need an additional Raspberry Pi Pico. 
 
+* **Version 2** - A developing version that uses a Raspberry Pi,  a piezoelectric buzzer, a MEMS microphone, and a Raspberry Pi Pico. The Raspberry Pi Pico controls the buzzer to send the ultrasonic signal. In this version, the microphone is turned on all the time. It not only detects the signal from the other device, but also detects the signal sending from its own device. The timestamps of the sending and receiving events are the indices of ultrasonic signal samples. Compared with Version 1, this version can obtain more accurate timestamps, which makes the ranging more accurate. 
 
+The detailed descriptions can be found in each version, including the hardware assembling, the algorithm design, and performance evaluation. Here are the links to specific versions:
+* [Version 1 - Use Raspberry Pi Only](https://github.com/ececli/Ultrasonic_Ranging/tree/RPi-4B-Only)
+* [Version 2 - Use Raspberry Pi and Raspberry Pi Pico](https://github.com/ececli/Ultrasonic_Ranging/tree/RPi-4B-and-RPi-Pico)
 
+Please note that the code in the main branch may not be the latest updates. 
 
-## To Do List
-
-1. Test Murata Speaker at 40kHz
-2. Use chirp or barker codes
-3. Optimizing code (numba)
-4. Compare different method (low pass filter vs. non-coherence detector)
-5. Battery power up Raspberry Pi
-6. Try "top" and "nice"
-7. Analyzing results with histogram and cdf
-8. Check [z-score algorithm](https://github.com/MatteoBattilana/robust-peak-detection-algorithm/blob/master/main.py) and related [link](https://stackoverflow.com/questions/22583391/peak-signal-detection-in-realtime-timeseries-data/22640362#22640362).
-9. Use 2 pins with reversed wave sequence to the buzzer
