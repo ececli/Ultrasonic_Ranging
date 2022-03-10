@@ -40,7 +40,7 @@ To assemble the microphone to the Raspberry Pi, follow the setup [here](https://
 ![Figure 1: Version 1 Hardware](https://github.com/ececli/Ultrasonic_Ranging/blob/RPi-4B-Only/Images/IMG_20210908_164705.jpg)
 --->
 <p align="center">
-<img src="https://github.com/ececli/Ultrasonic_Ranging/blob/RPi-4B-Only/Images/IMG_20210908_164705.jpg" alt="drawing" width="400"/>
+<img src="/Images/IMG_20210908_164705.jpg" alt="drawing" width="400"/>
 </p>
 <p align="center">
 Figure 1: Version 1 Hardware
