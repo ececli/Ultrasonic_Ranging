@@ -32,6 +32,16 @@ The developed code has been tested on Raspberry Pi 4.
 
 The ultrasonic ranging system requires at least 2 Raspberry Pis. In our project, we used [Raspberry Pi 4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/). In addition, a buzzer and a microphone are needed for each Raspberry Pi. The buzzer we used is a piezo buzzer from TDK Corporation with model no. PS1720P02. Please check this [link](https://www.digikey.com/en/products/detail/tdk-corporation/PS1720P02/935932) for reference. Although this buzzer is not designed for ultrasound, we found that it works fine with a frequency around 20-30 kHz. The microphone we choose is [Adafruit I2S MEMS Microphone Breakout](https://www.adafruit.com/product/3421) and its wiring and setup instruction to the Raspberry Pi can be found [here](https://learn.adafruit.com/adafruit-i2s-mems-microphone-breakout/raspberry-pi-wiring-test). 
 
+To estimate the distance based on two-way ranging, we need to know 4 timestamps. Let's name the two devices by initiator and responder. The initiator first sends a signal to the responder. The responder listens and detects this signal. After the signal is detected, the responder sends a signal back, and the initiator listens and detects this signal. The 4 timestamps are defined as:
+* $T_1$: The time when the signal is sent from the initiator. 
+* $T_2$: The time when the signal is received by the responder.
+* $T_3$: The time when the signal is sent from the responder. 
+* $T_4$: The time when the signal is received by the initiator.
+
+The distance between the two devices can be then estimated by
+$D = v[(T_4-T_1) - (T_3-T_2)]/2$,
+where $v$ is the speed of the sound. 
+
 
 ### 2. Hardware Assembling 
 
