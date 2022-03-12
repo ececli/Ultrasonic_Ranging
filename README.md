@@ -94,6 +94,8 @@ The two-way ranging algorithm contains two parts. One is receiving and detecting
 * **Signal Processing: Detecting Signal**
 	*   To detect the ultrasonic signal, we proposed an improved matched filter method. Specifically, we use both sine and cosine as the reference signal of the matched filter. It can be proved that without noise, this detection method can achieve zero errors with the random phase of the received signal. In late 2021, we realized that the proposed method is equivalent to the Goertzel filter. 
 
+	* After the matched filter, we use `scipy.signal.find_peaks` to detect the peak. After experiments, we found that adding the minimal width of the peak can greatly help to detect the right peak. 
+
 
 ## Contributing
 
