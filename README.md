@@ -69,3 +69,53 @@ Please note that it is simple to drive the buzzer. If you want the buzzer to gen
 To obtain the microphone data in Python, pyaudio package is needed. The installation instruction can be found [here](http://people.csail.mit.edu/hubert/pyaudio/). 
 
 _The other part of system setup will be finished later._
+
+
+
+## Two-Way Ranging Algorithm
+
+
+
+In this version, the microphone was turned on all the time, because we use a novel way to determine the timestamps. Note that in Version 1, we determine the timestamps of T1, T2, T3, and T4 by Python's `time.time()`, which is not accurate. In this version, the system not only detects the signal from the other device, but also detects the signal sent from its own device. Assume at Index I1, the initiator detects the signal sent from its own device. After the responder receives this ultrasonic signal and sends an ultrasonic signal back, the initiator detects the received signal at Index I4. Then, T4-T1 can be calculated by (I4-I1)/fs, where fs is the sampling frequency. Similarly, the responder can calculate T3-T2 with the same method. 
+
+
+* **Sending Ultrasonic Signal**
+	* The Raspberry Pi Pico is in charge of sending an ultrasonic signal. To generate the square wave, we used Programmable I/O (PIO) to generate the waveform. Micro Python is used in the project. 
+* **Receiving Ultrasonic Signal**
+	* In Version 1, we mentioned that we were using blocking-mode to receive microphone data. The chunk size is critical. To reduce the chunk size but avoid the overflow error, we use separate Python codes in this version. In particular, we wrote a piece of code to just receive the microphone data. And we wrote another piece of code to handle signal processing. Two pieces of code are executed by two different CPUs, and two pieces of code are communicated by ZeroMQ (pyzmq library is required). 
+* **Signal Processing: Detecting Signal**
+	*   To detect the ultrasonic signal, we applied the [sliding Goertzel filter](https://ieeexplore.ieee.org/document/1184347) to the system. And we modified the [z-score algorithm](https://stackoverflow.com/questions/22583391/peak-signal-detection-in-realtime-timeseries-data) to perform peak detection. 
+ 
+
+## Contributing
+
+Please read [CONTRIBUTING.md](/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+
+## Authors & Main Contributors
+
+* Chang Li (NIST in Gaithersburg, MD) 
+* Sae Woo Nam (NIST in Boulder, CO)
+* Nader Moayeri (NIST in Gaithersburg, MD)
+
+
+
+
+<!--See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.-->
+
+
+## Copyright
+
+See [LICENSE.md](/LICENSE.md).
+
+<!--
+## Acknowledgments
+
+*Note: Add this if you want to acknowledge people beyond the main contributors.*
+
+* Hat tip to anyone whose code was used
+* Inspiration
+* etc
+-->
+## Contact
+
+Please contact Chang Li (<chang.li@nist.gov>) or Nader Moayeri (<nader.moayeri@nist.gov>) if you have any questions. Thank you.
