@@ -71,6 +71,9 @@ sudo systemctl enable pigpiod
 
 To obtain the microphone data in Python, pyaudio package is needed. The installation instruction can be found [here](http://people.csail.mit.edu/hubert/pyaudio/). 
 
+
+In addition, for the two-way ranging system, the two devices need to communicate. Specifically, the responder needs to send T3-T2 information to the initiator. In this version, we use Wi-Fi to communicate. Note that we will switch to using Bluetooth for communications later. To enable Wi-Fi communications between two Raspberry Pis, the two devices must be in the same Wi-Fi network and the IP address must be known before running the code. Here we use the MQTT package to perform Wi-Fi communications. Follow [myMQTT](https://github.com/ececli/myMQTT) to install the related packages. 
+
 ## Two-Way Ranging Algorithm
 
 The two-way ranging algorithm contains two parts. One is receiving and detecting the signal, while the other part is sending an ultrasonic signal. The two parts work in turns. When the system sends the ultrasonic signal out, the microphone is paused receiving data. After the signal is sent out, the microphone is resumed to receive data and detect peaks. 
