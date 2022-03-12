@@ -73,7 +73,13 @@ To obtain the microphone data in Python, pyaudio package is needed. The installa
 
 ## Two-Way Ranging Algorithm
 
-
+The two-way ranging algorithm contains two parts. One is receiving and detecting the signal, while the other part is sending an ultrasonic signal. The two parts work in turns. When the system sends the ultrasonic signal out, the microphone is paused receiving data. After the signal is sent out, the microphone is resumed to receive data and detect peaks. 
+* **Sending Ultrasonic Signal**
+	* We choose to use a simple signal currently. Specifically, a single-frequency signal with a certain duration is used. (Here we use a 25kHz signal with 4 ms). We use the pigpio library to generate a square waveform, which will be fed to the buzzer. This way can guarantee the square wave has exact frequency and duration. Please refer this [link](https://abyz.me.uk/rpi/pigpio/python.html#wave_add_generic) for details. 
+* **Receiving Ultrasonic Signal**
+	* We use the blocking-mode of the pyaudio to receive ultrasonic signals. The sampling rate is 64 kHz and the chunk size is set as 2048 (samples). Note that 2048 chunk size means that every 32 ms (2048/64000 seconds = 32 ms) the receiver gets 2048 samples. In the blocking-mode, it means that the signal processing part needs to be done within 32 ms so that the system can wait to receive the next 2048 samples. If the signal processing part takes more than 32 ms, then the system will throw *InputOverflow Error*. Therefore, be careful to choose the chunk size. Smaller chunk size will let the system detect the signal faster, while larger chunk size allows longer processing time before receiving the next chunk data. 
+* **Signal Processing: Detecting Signal**
+	*   To detect the ultrasonic signal, we proposed an improved matched filter method. Specifically, we use both sine and cosine as the reference signal of the matched filter. It can be proved that without noise, this detection method can achieve zero errors with the random phase of the received signal. In late 2021, we realized that the proposed method is equivalent to the Goertzel filter. 
 
 
 ## Contributing
