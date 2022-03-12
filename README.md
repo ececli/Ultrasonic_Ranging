@@ -68,4 +68,4 @@ Please note that it is simple to drive the buzzer. If you want the buzzer to gen
 
 To obtain the microphone data in Python, pyaudio package is needed. The installation instruction can be found [here](http://people.csail.mit.edu/hubert/pyaudio/). 
 
-_The other part of system setup will be finished later. _
+_The other part of system setup will be finished later._
