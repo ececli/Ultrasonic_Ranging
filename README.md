@@ -61,3 +61,11 @@ Figure 1: Version 2 Hardware
 </p>
 
 Please note that it is simple to drive the buzzer. If you want the buzzer to generate a certain frequency sound, you can provide the same frequency square-wave to the buzzer. 
+
+
+
+### 3. System Setup
+
+To obtain the microphone data in Python, pyaudio package is needed. The installation instruction can be found [here](http://people.csail.mit.edu/hubert/pyaudio/). 
+
+_The other part of system setup will be finished later. _
