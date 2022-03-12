@@ -54,7 +54,7 @@ Different from Version 1, in this version, we use a Raspberry Pi Pico to control
 ![Figure 1: Version 2 Hardware](https://github.com/ececli/Ultrasonic_Ranging/blob/RPi-4B-and-RPi-Pico/images/IMG_20210910_114748.jpg)
 --->
 <p align="center">
-<img src="https://github.com/ececli/Ultrasonic_Ranging/blob/RPi-4B-Only/Images/IMG_20210908_164705.jpg" alt="drawing" width="400"/>
+<img src="https://github.com/ececli/Ultrasonic_Ranging/blob/RPi-4B-and-RPi-Pico/images/IMG_20210910_114748.jpg" alt="drawing" width="400"/>
 </p>
 <p align="center">
 Figure 1: Version 2 Hardware
