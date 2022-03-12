@@ -48,7 +48,7 @@ where $v$ is the speed of the sound.
 
 To assemble the microphone to the Raspberry Pi, follow the setup [here](https://learn.adafruit.com/adafruit-i2s-mems-microphone-breakout/raspberry-pi-wiring-test). 
 
-Different from Version 1, in this version, we use a Raspberry Pi Pico to control the buzzer. Thus, the buzzer is connected to 2 pins on the Raspberry Pi Pico. Note that the Raspberry Pi Pico is powered by the Raspberry Pi via the USB port. In addition, we need one wire between the Raspberry Pi and the Raspberry Pi Pico. This wire is used by the Raspberry Pi to send signal to Pico, telling Pico to send ultrasound signal. The advantage of such structure is that the Raspberry Pi is free of generating square wave. In this way, the microphone can be turned on all the time. 
+Different from Version 1, in this version, we use a Raspberry Pi Pico to control the buzzer. Thus, the buzzer is connected to 2 pins on the Raspberry Pi Pico. Note that the Raspberry Pi Pico is powered by the Raspberry Pi via the USB port. In addition, we need one wire between the Raspberry Pi and the Raspberry Pi Pico. This wire is used by the Raspberry Pi to send a signal to Pico, telling Pico to send an ultrasound signal. The advantage of such a structure is that the Raspberry Pi is free of generating the square wave. In this way, the microphone can be turned on all the time. 
 
 <!---
 ![Figure 1: Version 2 Hardware](https://github.com/ececli/Ultrasonic_Ranging/blob/RPi-4B-and-RPi-Pico/images/IMG_20210910_114748.jpg)
