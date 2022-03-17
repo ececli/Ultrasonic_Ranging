@@ -1,11 +1,39 @@
 #!/usr/bin/python3
 
 
-# v10 - is the version without using threading. The author found a way to set the bluetooth recv as non-blocking method.
+# v10 - is the version without using threading. The author found a way to set the bluetooth recv as non-blocking method. 
+#       The reason of not using threading is that threading causes the system to run different threads in TDMA manner. 
+#       After testing, I found that the system will turn to run the other thread every 6 ms. This is a huge time for the system. 
+#       It means that I have to wait an additional 6 ms to detect TX. And wait several 6 ms to finish one two-way ranging circle. 
+#       Please note that v10 is a stable version so far. 
 # v9  - is the version using threading. The author added some debug commands to see why the two-way ranging took long time 
 #       than expected. Then the author found that it is because multi-threading. The bluetooth thread and main thread 
 #       take 6 ms in turn. 
 # v5  - is the first version of using bluetooth instead of Wi-Fi to do communication. 
+
+
+# Usage of non-blocking method for receiving bluetooth data: 
+
+# 1. From pybluez's source code, I found that the socket can set blocking or non-blocking mode by sock.setblocking(1) or sock.setblocking(0). 
+# The source code can be found in Reference [1]. Tips: search "blocking" to locate the function in the source code. 
+# [1] https://github.com/pybluez/pybluez/blob/d7f36702bba2abc8ea41977b2eea56a17431ac6d/macos/_bluetoothsockets.py
+# Please note that such setting follows the socket library. In the socket library, it has the same usage. See Reference [2].
+# [2] https://stackoverflow.com/questions/25426447/creating-non-blocking-socket-in-python
+
+# 2. To use the non-blocking method at sock.recv(len), I followed the example in [3]. It uses try and except bluetooth.BluetoothError method. 
+# [3] https://github.com/pybluez/pybluez/blob/master/examples/advanced/l2-unreliable-server.py
+# 
+# More specifically, I found that this Reference [4] is quite useful. 
+# [4] https://stackoverflow.com/questions/26012132/zero-mq-socket-recv-call-is-blocking
+# Note that the ZMQ non-blocking method will be detailed presented in v11. 
+# Then, after testing, I got the information that when use bluetooth.BluetoothError to catch an error, the errno == 11 is the error that
+# there is no data received. One can easily seperate this error from other errors, so that the system would not pass other errors.
+# But for now, I comment this part in this code. 
+
+# Idea of using index of audio samples as timestamp, instead of using time.time() was proposed by Dr. Sae Woo Nam in 2021. 
+# Later, I also found the similar idea in https://stackoverflow.com/questions/53093247/how-to-get-accurate-timing-using-microphone-in-python. 
+
+
 
 import time
 import zmq
@@ -332,7 +360,7 @@ if __name__ == '__main__':
 
         print('[BLUETOOTH] Waiting data from the other device')
         client_sock, address = bt_sock.accept()
-        client_sock.setblocking(0)
+        client_sock.setblocking(0) # API can be found: https://github.com/pybluez/pybluez/blob/d7f36702bba2abc8ea41977b2eea56a17431ac6d/macos/_bluetoothsockets.py
         print("[BLUETOOTH] Accepted connection from ", address)
         time.sleep(1)
 
@@ -340,7 +368,7 @@ if __name__ == '__main__':
         time.sleep(2)
         bt_sock.connect((target_address, port))
         print("[BLUETOOTH] Connected to the other device.")
-        bt_sock.setblocking(0)
+        bt_sock.setblocking(0) # API can be found: https://github.com/pybluez/pybluez/blob/d7f36702bba2abc8ea41977b2eea56a17431ac6d/macos/_bluetoothsockets.py
 
 
 
