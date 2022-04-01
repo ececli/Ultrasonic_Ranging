@@ -18,7 +18,7 @@ def findDeviceIndex(p):
 FORMAT = pyaudio.paInt32
 RATE = 64000
 CHANNELS = 1
-CHUNK = 256
+CHUNK = 1024
 IgnoreTime = 5 # second
 recordTime = 0 # if 0, then means infinity
 
@@ -92,8 +92,8 @@ plt.figure()
 plt.plot(normalAllData)
 plt.show()
 
-yf = fft(normalAllData)
-xf = fftfreq(len(normalAllData), 1/RATE)
+yf = rfft(normalAllData)
+xf = rfftfreq(len(normalAllData), 1/RATE)
 plt.figure()
 plt.plot(xf,np.abs(yf))
 plt.show()
