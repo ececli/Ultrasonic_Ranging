@@ -4,7 +4,7 @@ import time
 ratio = 500000
 pin_OUT = 12
 
-f0 = 22000
+f0 = 30000
 
 
 pi_IO = pigpio.pi()

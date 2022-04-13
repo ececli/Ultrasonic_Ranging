@@ -20,7 +20,7 @@ RATE = 64000
 CHANNELS = 1
 CHUNK = 1024
 IgnoreTime = 5 # second
-recordTime = 0 # if 0, then means infinity
+recordTime = 100 # if 0, then means infinity
 
 
 NumIgnoredFrame = int(np.ceil(IgnoreTime*RATE/CHUNK))
