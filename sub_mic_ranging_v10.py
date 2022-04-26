@@ -154,7 +154,8 @@ def sg_block_win_v3(x, offset, zz, Pxx, ccc, bbb, block_size, window_size):
         z22 = z21
         z21 = z20
 
-        Pxx[idx] = np.sqrt(4*(z01*z01+z02*z02) + (z11*z11+z12*z12) + (z21*z21+z22*z22) - 4*(b0*z01*z11+z02*z12) - 4*(b0*z01*z21+z02*z22) + 2*(b1*z11*z21+z12*z22) - 2*(2*c0*z01-c1*z11-c2*z21)*(2*z02-z12-z22))
+        Pxx[idx] = np.sqrt(4*(z01*z01+z02*z02) + (z11*z11+z12*z12) + (z21*z21+z22*z22) - 4*(b0*z01*z11+z02*z12) - 4*(b0*z01*z21+z02*z22) + 2*(b1*z11*z21+z12*z22) 
+                    - 2*(2*c0*z01-c1*z11-c2*z21)*(2*z02-z12-z22))
     zz[0] = z01
     zz[1] = z02
     zz[2] = z11
@@ -288,7 +289,7 @@ if __name__ == '__main__':
     f0 = 25000 # Hz
     duration = 0.004 # second
 
-    NumRanging = 1000
+    NumRanging = 100
 
     jumpCount_Set = 15
 
